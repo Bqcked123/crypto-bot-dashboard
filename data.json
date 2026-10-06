@@ -1,0 +1,1842 @@
+{
+ "generated_at": "2026-10-06T03:49:32.493919-04:00",
+ "generated_at_et": "2026-10-06 03:49:32 EDT",
+ "paper_trading": true,
+ "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+ "price_status": "cache",
+ "prices": {
+  "bitcoin": {
+   "usd": 85558,
+   "chg24": -0.8773422326053916
+  },
+  "bonk": {
+   "usd": 3.76e-06,
+   "chg24": -6.832763284793968
+  },
+  "cat-in-a-dogs-world": {
+   "usd": 0.00052911,
+   "chg24": -1.1410848832634901
+  },
+  "dogecoin": {
+   "usd": 0.094671,
+   "chg24": -1.975245268263158
+  },
+  "dogwifcoin": {
+   "usd": 0.248827,
+   "chg24": -3.219593643719653
+  },
+  "ethereum": {
+   "usd": 2708.2,
+   "chg24": -0.5960276566195223
+  },
+  "pepe": {
+   "usd": 4.33e-06,
+   "chg24": -3.572796673062631
+  },
+  "pudgy-penguins": {
+   "usd": 0.00947875,
+   "chg24": -5.1498801591966705
+  },
+  "pump-fun": {
+   "usd": 0.00629599,
+   "chg24": -2.332966900869116
+  }
+ },
+ "bots": [
+  {
+   "id": "news",
+   "name": "Crypto News Scanner",
+   "short": "NEWS",
+   "kind": "scanner",
+   "status": "active",
+   "last_activity": "2026-10-06 03:45 EDT"
+  },
+  {
+   "id": "x",
+   "name": "Crypto X Scanner",
+   "short": "X",
+   "kind": "scanner",
+   "status": "active",
+   "last_activity": "2026-10-06 02:56 EDT"
+  },
+  {
+   "id": "chat",
+   "name": "Memecoin Chatter Scanner",
+   "short": "CHAT",
+   "kind": "scanner",
+   "status": "active",
+   "last_activity": "2026-10-06 03:29 EDT",
+   "note": null
+  },
+  {
+   "id": "launch",
+   "name": "Memecoin Launch Scanner",
+   "short": "LAUNCH",
+   "kind": "scanner",
+   "status": "active",
+   "last_activity": "2026-10-06 03:45 EDT",
+   "note": null
+  },
+  {
+   "id": "whale",
+   "name": "Whale Wallet Tracker",
+   "short": "WHALE",
+   "kind": "scanner",
+   "status": "active",
+   "last_activity": "2026-10-06 03:32 EDT",
+   "note": null
+  },
+  {
+   "id": "list",
+   "name": "Exchange Listings Scanner",
+   "short": "LIST",
+   "kind": "scanner",
+   "status": "active",
+   "last_activity": "2026-10-06 03:20 EDT",
+   "note": null
+  },
+  {
+   "id": "unlock",
+   "name": "Token Unlock Tracker",
+   "short": "UNLOCK",
+   "kind": "scanner",
+   "status": "active",
+   "last_activity": "2026-10-06 03:35 EDT",
+   "note": null
+  },
+  {
+   "id": "hype",
+   "name": "Mainstream Hype Tracker",
+   "short": "HYPE",
+   "kind": "scanner",
+   "status": "active",
+   "last_activity": "2026-10-06 03:17 EDT",
+   "note": null
+  },
+  {
+   "id": "core",
+   "name": "Crypto Paper Trader",
+   "short": "CORE",
+   "kind": "trader",
+   "status": "active",
+   "last_activity": "2026-10-06 03:33 EDT"
+  },
+  {
+   "id": "meme",
+   "name": "Memecoin Paper Trader",
+   "short": "MEME",
+   "kind": "trader",
+   "status": "active",
+   "last_activity": "2026-10-06 03:44:54 EDT"
+  }
+ ],
+ "sources": [
+  {
+   "id": "x",
+   "label": "X / Twitter",
+   "group": "social",
+   "scanned_by": [
+    "x"
+   ],
+   "seen_in_files": true,
+   "url": "https://x.com"
+  },
+  {
+   "id": "telegram",
+   "label": "Telegram channels",
+   "group": "social",
+   "scanned_by": [
+    "chat"
+   ],
+   "seen_in_files": true,
+   "url": "https://telegram.org"
+  },
+  {
+   "id": "discord",
+   "label": "Discord servers",
+   "group": "social",
+   "scanned_by": [
+    "chat"
+   ],
+   "seen_in_files": true,
+   "url": "https://discord.com"
+  },
+  {
+   "id": "pumpfun",
+   "label": "pump.fun",
+   "group": "launch",
+   "scanned_by": [
+    "launch"
+   ],
+   "seen_in_files": true,
+   "url": "https://pump.fun"
+  },
+  {
+   "id": "dex",
+   "label": "DexScreener",
+   "group": "launch",
+   "scanned_by": [
+    "launch",
+    "meme"
+   ],
+   "seen_in_files": true,
+   "url": "https://dexscreener.com"
+  },
+  {
+   "id": "geckoterminal",
+   "label": "GeckoTerminal",
+   "group": "launch",
+   "scanned_by": [
+    "launch"
+   ],
+   "seen_in_files": false,
+   "url": "https://www.geckoterminal.com"
+  },
+  {
+   "id": "birdeye",
+   "label": "Birdeye",
+   "group": "launch",
+   "scanned_by": [
+    "launch"
+   ],
+   "seen_in_files": true,
+   "url": "https://birdeye.so"
+  },
+  {
+   "id": "solscan",
+   "label": "Solscan",
+   "group": "chain",
+   "scanned_by": [
+    "whale"
+   ],
+   "seen_in_files": true,
+   "url": "https://solscan.io"
+  },
+  {
+   "id": "etherscan",
+   "label": "Etherscan",
+   "group": "chain",
+   "scanned_by": [
+    "whale"
+   ],
+   "seen_in_files": true,
+   "url": "https://etherscan.io"
+  },
+  {
+   "id": "smart",
+   "label": "Smart-wallet moves",
+   "group": "chain",
+   "scanned_by": [
+    "whale"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.lookonchain.com"
+  },
+  {
+   "id": "binance",
+   "label": "Binance announcements",
+   "group": "exchange",
+   "scanned_by": [
+    "list"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.binance.com/en/support/announcement"
+  },
+  {
+   "id": "coinbase",
+   "label": "Coinbase announcements",
+   "group": "exchange",
+   "scanned_by": [
+    "list"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.coinbase.com/blog"
+  },
+  {
+   "id": "okx",
+   "label": "OKX announcements",
+   "group": "exchange",
+   "scanned_by": [
+    "list"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.okx.com/help/section/announcements-latest-announcements"
+  },
+  {
+   "id": "bybit",
+   "label": "Bybit announcements",
+   "group": "exchange",
+   "scanned_by": [
+    "list"
+   ],
+   "seen_in_files": true,
+   "url": "https://announcements.bybit.com"
+  },
+  {
+   "id": "tokenomist",
+   "label": "Tokenomist",
+   "group": "unlock",
+   "scanned_by": [
+    "unlock"
+   ],
+   "seen_in_files": true,
+   "url": "https://tokenomist.ai"
+  },
+  {
+   "id": "cryptorank",
+   "label": "CryptoRank",
+   "group": "unlock",
+   "scanned_by": [
+    "unlock"
+   ],
+   "seen_in_files": true,
+   "url": "https://cryptorank.io"
+  },
+  {
+   "id": "cg_api",
+   "label": "CoinGecko Price API",
+   "group": "price",
+   "scanned_by": [
+    "core",
+    "meme"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.coingecko.com/en/api"
+  },
+  {
+   "id": "gtrends",
+   "label": "Google Trends",
+   "group": "hype",
+   "scanned_by": [
+    "hype"
+   ],
+   "seen_in_files": true,
+   "url": "https://trends.google.com"
+  },
+  {
+   "id": "wsb",
+   "label": "r/wallstreetbets",
+   "group": "hype",
+   "scanned_by": [
+    "hype"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.reddit.com/r/wallstreetbets"
+  },
+  {
+   "id": "farside",
+   "label": "Farside ETF Flows",
+   "group": "macro",
+   "scanned_by": [
+    "news"
+   ],
+   "seen_in_files": true,
+   "url": "https://farside.co.uk/btc/"
+  },
+  {
+   "id": "macro",
+   "label": "Macro / World News",
+   "group": "macro",
+   "scanned_by": [
+    "news"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.reuters.com/markets/"
+  },
+  {
+   "id": "cointelegraph",
+   "label": "Cointelegraph",
+   "group": "news",
+   "scanned_by": [
+    "news"
+   ],
+   "seen_in_files": false,
+   "url": "https://cointelegraph.com"
+  },
+  {
+   "id": "decrypt",
+   "label": "Decrypt",
+   "group": "news",
+   "scanned_by": [
+    "news"
+   ],
+   "seen_in_files": false,
+   "url": "https://decrypt.co"
+  },
+  {
+   "id": "theblock",
+   "label": "The Block",
+   "group": "news",
+   "scanned_by": [
+    "news"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.theblock.co"
+  },
+  {
+   "id": "coindesk",
+   "label": "CoinDesk",
+   "group": "news",
+   "scanned_by": [
+    "news"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.coindesk.com"
+  },
+  {
+   "id": "cmc",
+   "label": "CoinMarketCap",
+   "group": "market",
+   "scanned_by": [
+    "news"
+   ],
+   "seen_in_files": true,
+   "url": "https://coinmarketcap.com"
+  },
+  {
+   "id": "cg_trend",
+   "label": "CoinGecko Trending",
+   "group": "market",
+   "scanned_by": [
+    "news",
+    "meme"
+   ],
+   "seen_in_files": true,
+   "url": "https://www.coingecko.com/en/highlights/trending-crypto"
+  }
+ ],
+ "links": [
+  {
+   "source": "x",
+   "target": "x",
+   "type": "scan"
+  },
+  {
+   "source": "telegram",
+   "target": "chat",
+   "type": "scan"
+  },
+  {
+   "source": "discord",
+   "target": "chat",
+   "type": "scan"
+  },
+  {
+   "source": "pumpfun",
+   "target": "launch",
+   "type": "scan"
+  },
+  {
+   "source": "dex",
+   "target": "launch",
+   "type": "scan"
+  },
+  {
+   "source": "dex",
+   "target": "meme",
+   "type": "price"
+  },
+  {
+   "source": "geckoterminal",
+   "target": "launch",
+   "type": "scan"
+  },
+  {
+   "source": "birdeye",
+   "target": "launch",
+   "type": "scan"
+  },
+  {
+   "source": "solscan",
+   "target": "whale",
+   "type": "scan"
+  },
+  {
+   "source": "etherscan",
+   "target": "whale",
+   "type": "scan"
+  },
+  {
+   "source": "smart",
+   "target": "whale",
+   "type": "scan"
+  },
+  {
+   "source": "binance",
+   "target": "list",
+   "type": "scan"
+  },
+  {
+   "source": "coinbase",
+   "target": "list",
+   "type": "scan"
+  },
+  {
+   "source": "okx",
+   "target": "list",
+   "type": "scan"
+  },
+  {
+   "source": "bybit",
+   "target": "list",
+   "type": "scan"
+  },
+  {
+   "source": "tokenomist",
+   "target": "unlock",
+   "type": "scan"
+  },
+  {
+   "source": "cryptorank",
+   "target": "unlock",
+   "type": "scan"
+  },
+  {
+   "source": "cg_api",
+   "target": "core",
+   "type": "price"
+  },
+  {
+   "source": "cg_api",
+   "target": "meme",
+   "type": "price"
+  },
+  {
+   "source": "gtrends",
+   "target": "hype",
+   "type": "scan"
+  },
+  {
+   "source": "wsb",
+   "target": "hype",
+   "type": "scan"
+  },
+  {
+   "source": "farside",
+   "target": "news",
+   "type": "scan"
+  },
+  {
+   "source": "macro",
+   "target": "news",
+   "type": "scan"
+  },
+  {
+   "source": "cointelegraph",
+   "target": "news",
+   "type": "scan"
+  },
+  {
+   "source": "decrypt",
+   "target": "news",
+   "type": "scan"
+  },
+  {
+   "source": "theblock",
+   "target": "news",
+   "type": "scan"
+  },
+  {
+   "source": "coindesk",
+   "target": "news",
+   "type": "scan"
+  },
+  {
+   "source": "cmc",
+   "target": "news",
+   "type": "scan"
+  },
+  {
+   "source": "cg_trend",
+   "target": "news",
+   "type": "scan"
+  },
+  {
+   "source": "cg_trend",
+   "target": "meme",
+   "type": "price"
+  },
+  {
+   "source": "news",
+   "target": "core",
+   "type": "signal",
+   "count": 2
+  },
+  {
+   "source": "news",
+   "target": "meme",
+   "type": "signal",
+   "count": 8
+  },
+  {
+   "source": "x",
+   "target": "core",
+   "type": "signal",
+   "count": 5
+  },
+  {
+   "source": "x",
+   "target": "meme",
+   "type": "signal",
+   "count": 2
+  },
+  {
+   "source": "chat",
+   "target": "meme",
+   "type": "signal",
+   "count": 4
+  },
+  {
+   "source": "launch",
+   "target": "meme",
+   "type": "signal",
+   "count": 2
+  },
+  {
+   "source": "whale",
+   "target": "meme",
+   "type": "signal",
+   "count": 3
+  },
+  {
+   "source": "whale",
+   "target": "core",
+   "type": "signal",
+   "count": 0
+  },
+  {
+   "source": "list",
+   "target": "core",
+   "type": "signal",
+   "count": 0
+  },
+  {
+   "source": "list",
+   "target": "meme",
+   "type": "signal",
+   "count": 4
+  },
+  {
+   "source": "unlock",
+   "target": "core",
+   "type": "signal",
+   "count": 0
+  },
+  {
+   "source": "unlock",
+   "target": "meme",
+   "type": "signal",
+   "count": 3
+  },
+  {
+   "source": "hype",
+   "target": "meme",
+   "type": "signal",
+   "count": 1
+  },
+  {
+   "source": "hype",
+   "target": "core",
+   "type": "signal",
+   "count": 0
+  },
+  {
+   "source": "news",
+   "target": "x",
+   "type": "peer"
+  },
+  {
+   "source": "core",
+   "target": "meme",
+   "type": "peer"
+  }
+ ],
+ "traders": {
+  "core": {
+   "id": "core",
+   "name": "Crypto Paper Trader",
+   "available": true,
+   "start": 10000.0,
+   "strategy": "v3",
+   "cash": 5999.036914799132,
+   "last_check": "2026-10-06 03:33 EDT",
+   "realized": {
+    "core": 0.0,
+    "meme": -0.3633046108936247
+   },
+   "positions": [
+    {
+     "sym": "ETH",
+     "qty": 0.7419294,
+     "avg": 2692.44,
+     "price": 2708.2,
+     "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+     "chg24": -0.5960276566195223,
+     "value": 2009.2932010799998,
+     "cost": 1997.600393736,
+     "pnl": 11.692807343999903,
+     "pnl_pct": 0.5853426631605485
+    },
+    {
+     "sym": "BTC",
+     "qty": 0.02343942,
+     "avg": 85241.0,
+     "price": 85558,
+     "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+     "chg24": -0.8773422326053916,
+     "value": 2005.42989636,
+     "cost": 1997.9996002199998,
+     "pnl": 7.4302961400001095,
+     "pnl_pct": 0.3718867681045568
+    }
+   ],
+   "positions_value": 4014.72309744,
+   "equity": 10013.760012239132,
+   "pnl": 13.760012239132266,
+   "pnl_pct": 0.13760012239132263,
+   "cash_pct": 59.90793575507023,
+   "trades": [
+    {
+     "time": "2026-10-06 02:39 EDT",
+     "coin": "FLOKI",
+     "side": "SELL",
+     "qty": 17381758.4274262,
+     "price": 2.876e-05,
+     "usd": 499.9,
+     "fee": 0.5,
+     "reason": "meme sleeve retired (moved to Memecoin Paper Trader)",
+     "link": "https://www.coingecko.com/en/coins/floki",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:39 EDT",
+     "coin": "PUMP",
+     "side": "SELL",
+     "qty": 79624.69304084,
+     "price": 0.0062734,
+     "usd": 499.52,
+     "fee": 0.5,
+     "reason": "meme sleeve retired (moved to Memecoin Paper Trader)",
+     "link": "https://www.coingecko.com/en/coins/pump-fun",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:38 EDT",
+     "coin": "FLOKI",
+     "side": "BUY",
+     "qty": 17381758.4274262,
+     "price": 2.873e-05,
+     "usd": 499.88,
+     "fee": 0.5,
+     "reason": "meme momentum, +3.1% vs 7d avg",
+     "link": "https://www.coingecko.com/en/coins/floki",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:38 EDT",
+     "coin": "PUMP",
+     "side": "BUY",
+     "qty": 79624.69304084,
+     "price": 0.00627196,
+     "usd": 499.9,
+     "fee": 0.5,
+     "reason": "meme momentum, +5.7% vs 7d avg",
+     "link": "https://www.coingecko.com/en/coins/pump-fun",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:33 EDT",
+     "coin": "ETH",
+     "side": "BUY",
+     "qty": 0.7419294,
+     "price": 2692.44,
+     "usd": 1999.6,
+     "fee": 2.0,
+     "reason": "bullish trend",
+     "link": "https://www.coingecko.com/en/coins/ethereum",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:33 EDT",
+     "coin": "BTC",
+     "side": "BUY",
+     "qty": 0.02343942,
+     "price": 85241.0,
+     "usd": 2000.0,
+     "fee": 2.0,
+     "reason": "bullish trend",
+     "link": "https://www.coingecko.com/en/coins/bitcoin",
+     "link_kind": "CoinGecko coin page"
+    }
+   ],
+   "trade_count": 6,
+   "equity_series": [
+    {
+     "t": "2026-10-06 02:33 EDT",
+     "v": 9998.0,
+     "src": "trades.csv"
+    },
+    {
+     "t": "2026-10-06 02:33 EDT",
+     "v": 9996.0,
+     "src": "trades.csv"
+    },
+    {
+     "t": "2026-10-06 02:38 EDT",
+     "v": 9997.56,
+     "src": "trades.csv"
+    },
+    {
+     "t": "2026-10-06 02:38 EDT",
+     "v": 9997.06,
+     "src": "trades.csv"
+    },
+    {
+     "t": "2026-10-06 02:39 EDT",
+     "v": 9999.09,
+     "src": "trades.csv"
+    },
+    {
+     "t": "2026-10-06 02:39 EDT",
+     "v": 9998.59,
+     "src": "trades.csv"
+    }
+   ],
+   "decisions": [
+    {
+     "title": "2026-10-06 03:34 EDT - trade log correction (no rule change)",
+     "bullets": [
+      "The 02:39 PUMP sell row showed equity $9,499.19 because the one-off script that closed the meme sleeve left the still-held FLOKI out of its equity sum. Corrected to $9,999.09 (cash $5,499.64 + BTC + ETH + FLOKI $499.90). The main engine (check.py) already records equity after each trade settles and counts every position, so no code change was needed."
+     ]
+    },
+    {
+     "title": "2026-10-06 03:07 EDT - reporting: BTC benchmark and drawdown (no rule change)",
+     "bullets": [
+      "check.py now tracks a buy-and-hold BTC benchmark ($10,000 into BTC at $85,241 at the 02:33 EDT start), peak equity, and max drawdown (sampled at each hourly check). Both go in the 9 PM summary. User stays on paper money until the bots are reliably profitable."
+     ]
+    },
+    {
+     "title": "2026-10-06 02:54 EDT - first X Scanner read (no change)",
+     "bullets": [
+      "BTC/ETH mildly bullish 2/5 on X (chart talk, reported whale longs). Too weak to outweigh Farside-confirmed ETF outflows; haircuts stay through FOMC minutes.",
+      "HYPE (top-50) bullish 3/5 on X, but News Scanner rated the same OTC unlock slightly bearish 3/5. Conflicting reads, so no entry. Revisit after Oct 7 if on-chain shows the OTC tokens aren't hitting exchanges and price holds near highs.",
+      "NEAR 2/5 (fee and Intents growth): fundamentals-only, no price confirmation yet. Watchlist."
+     ]
+    },
+    {
+     "title": "v3 - 2026-10-06 02:41 EDT - memecoin sleeve retired, event-risk rule",
+     "bullets": [
+      "User moved memecoins to a separate bot (Memecoin Paper Trader). Closed PUMP and FLOKI to cash (combined -$0.36 after fees), removed rules 7-12 and the meme code (archived in check_v2_with_memes.py). Summaries no longer cover memecoins.",
+      "News Scanner weekly brief (Farside-confirmed): BTC ETF -$89.8M Oct 5 and weekly inflows down to +$241M from +$2.39B; ETH ETFs had 5 straight outflow days (-$138M week). FOMC minutes Wed Oct 7 2 PM ET, Waller Thu, CPI Oct 14.",
+      "Change: BTC and ETH -10 pt haircuts extended from Oct 7 2:35 AM to Oct 7 6 PM ET so we don't add before the FOMC minutes. New rule 9 makes that the standing practice for high-impact events."
+     ]
+    }
+   ],
+   "valuation_history": [
+    {
+     "ts": 1791269900.051198,
+     "t": "2026-10-06 02:58 EDT",
+     "v": 10000.07
+    },
+    {
+     "ts": 1791270182.692464,
+     "t": "2026-10-06 03:03 EDT",
+     "v": 9998.27
+    },
+    {
+     "ts": 1791270423.3575938,
+     "t": "2026-10-06 03:07 EDT",
+     "v": 9998.98
+    },
+    {
+     "ts": 1791270664.198073,
+     "t": "2026-10-06 03:11 EDT",
+     "v": 9997.94
+    },
+    {
+     "ts": 1791270939.086899,
+     "t": "2026-10-06 03:15 EDT",
+     "v": 9999.0
+    },
+    {
+     "ts": 1791271180.9070082,
+     "t": "2026-10-06 03:19 EDT",
+     "v": 10001.54
+    },
+    {
+     "ts": 1791271424.4831064,
+     "t": "2026-10-06 03:23 EDT",
+     "v": 9999.17
+    },
+    {
+     "ts": 1791271666.94395,
+     "t": "2026-10-06 03:27 EDT",
+     "v": 9999.69
+    },
+    {
+     "ts": 1791271909.2026615,
+     "t": "2026-10-06 03:31 EDT",
+     "v": 9999.24
+    },
+    {
+     "ts": 1791272151.6075273,
+     "t": "2026-10-06 03:35 EDT",
+     "v": 10002.56
+    },
+    {
+     "ts": 1791272393.935775,
+     "t": "2026-10-06 03:39 EDT",
+     "v": 10004.61
+    },
+    {
+     "ts": 1791272636.081411,
+     "t": "2026-10-06 03:43 EDT",
+     "v": 10008.59
+    },
+    {
+     "ts": 1791272878.3876138,
+     "t": "2026-10-06 03:47 EDT",
+     "v": 10012.24
+    }
+   ]
+  },
+  "meme": {
+   "id": "meme",
+   "name": "Memecoin Paper Trader",
+   "available": true,
+   "start": 10000.0,
+   "cash": 4300.0,
+   "last_check": "2026-10-06 03:44:54 EDT",
+   "realized": {
+    "total": 0.0
+   },
+   "strategy": "v1",
+   "positions": [
+    {
+     "sym": "DOGE",
+     "qty": 15725.601491019994,
+     "avg": 0.094432,
+     "price": 0.094671,
+     "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+     "chg24": -1.975245268263158,
+     "value": 1488.7584187563539,
+     "cost": 1485.0,
+     "pnl": 3.7584187563538762,
+     "pnl_pct": 0.25309217214504187
+    },
+    {
+     "sym": "PEPE",
+     "qty": 229698375.8700696,
+     "avg": 4.31e-06,
+     "price": 4.33e-06,
+     "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+     "chg24": -3.572796673062631,
+     "value": 994.5939675174013,
+     "cost": 990.0,
+     "pnl": 4.593967517401325,
+     "pnl_pct": 0.46403712296982924
+    },
+    {
+     "sym": "PUMP",
+     "qty": 126170.90422481361,
+     "avg": 0.0062772,
+     "price": 0.00629599,
+     "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+     "chg24": -2.332966900869116,
+     "value": 794.3707512903842,
+     "cost": 792.0,
+     "pnl": 2.3707512903841916,
+     "pnl_pct": 0.2993372841394226
+    },
+    {
+     "sym": "WIF",
+     "qty": 2791.3046630496515,
+     "avg": 0.248271,
+     "price": 0.248827,
+     "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+     "chg24": -3.219593643719653,
+     "value": 694.5519653926556,
+     "cost": 693.0,
+     "pnl": 1.5519653926555748,
+     "pnl_pct": 0.2239488301090331
+    },
+    {
+     "sym": "BONK",
+     "qty": 184308510.6382979,
+     "avg": 3.76e-06,
+     "price": 3.76e-06,
+     "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+     "chg24": -6.832763284793968,
+     "value": 693.0,
+     "cost": 693.0,
+     "pnl": 0.0,
+     "pnl_pct": 0.0
+    },
+    {
+     "sym": "PENGU",
+     "qty": 62689.57263441848,
+     "avg": 0.00947526,
+     "price": 0.00947875,
+     "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+     "chg24": -5.1498801591966705,
+     "value": 594.2187866084942,
+     "cost": 594.0,
+     "pnl": 0.2187866084941561,
+     "pnl_pct": 0.03683276237276267
+    },
+    {
+     "sym": "MEW",
+     "qty": 748922.0062031924,
+     "avg": 0.00052876,
+     "price": 0.00052911,
+     "price_source": "CoinGecko quote 2026-10-06 03:48 EDT",
+     "chg24": -1.1410848832634901,
+     "value": 396.2621227021711,
+     "cost": 396.0,
+     "pnl": 0.2621227021710979,
+     "pnl_pct": 0.06619260155835693
+    }
+   ],
+   "positions_value": 5655.75601226746,
+   "equity": 9955.75601226746,
+   "pnl": -44.24398773253961,
+   "pnl_pct": -0.44243987732539614,
+   "cash_pct": 43.19109462607912,
+   "trades": [
+    {
+     "time": "2026-10-06 02:41:29 EDT",
+     "coin": "MEW",
+     "side": "BUY",
+     "qty": 748922.00620319,
+     "price": 0.00052876,
+     "usd": 400.0,
+     "fee": 4.0,
+     "reason": "Smaller trending: 7d +13.6%, Raydium liq ~$10.7M, CG vol ~$4.6M; small size",
+     "link": "https://www.coingecko.com/en/coins/cat-in-a-dogs-world",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:41:25 EDT",
+     "coin": "PENGU",
+     "side": "BUY",
+     "qty": 62689.57263442,
+     "price": 0.00947526,
+     "usd": 600.0,
+     "fee": 6.0,
+     "reason": "Trending (CG trending list), vol ~$212M, Meteora liq ~$4.4M, 7d +2.7%",
+     "link": "https://www.coingecko.com/en/coins/pudgy-penguins",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:41:20 EDT",
+     "coin": "BONK",
+     "side": "BUY",
+     "qty": 184308510.6382979,
+     "price": 3.76e-06,
+     "usd": 700.0,
+     "fee": 7.0,
+     "reason": "Established SOL meme: CG vol ~$48M, 7d +9.4%, buying -6.3% 24h dip",
+     "link": "https://www.coingecko.com/en/coins/bonk",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:41:16 EDT",
+     "coin": "WIF",
+     "side": "BUY",
+     "qty": 2791.30466305,
+     "price": 0.248271,
+     "usd": 700.0,
+     "fee": 7.0,
+     "reason": "Established SOL meme: CG vol ~$66M, 7d +7.2%, -1.4% 24h",
+     "link": "https://www.coingecko.com/en/coins/dogwifcoin",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:41:12 EDT",
+     "coin": "PUMP",
+     "side": "BUY",
+     "qty": 126170.90422481,
+     "price": 0.0062772,
+     "usd": 800.0,
+     "fee": 8.0,
+     "reason": "Momentum: 7d +29.6%, CG trending, vol ~$260M, PumpSwap liq ~$27.7M; buying -2% 24h pullback",
+     "link": "https://www.coingecko.com/en/coins/pump-fun",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:41:08 EDT",
+     "coin": "PEPE",
+     "side": "BUY",
+     "qty": 229698375.8700696,
+     "price": 4.31e-06,
+     "usd": 1000.0,
+     "fee": 10.0,
+     "reason": "Core: CG vol ~$246M, Uniswap liq ~$31.8M; 7d +3.8%, -2.6% 24h dip",
+     "link": "https://www.coingecko.com/en/coins/pepe",
+     "link_kind": "CoinGecko coin page"
+    },
+    {
+     "time": "2026-10-06 02:41:03 EDT",
+     "coin": "DOGE",
+     "side": "BUY",
+     "qty": 15725.60149102,
+     "price": 0.094432,
+     "usd": 1500.0,
+     "fee": 15.0,
+     "reason": "Core: #1 memecoin, CG 24h vol ~$587M, mcap ~$14.7B; -1.3% 24h dip, +1.7% 7d",
+     "link": "https://www.coingecko.com/en/coins/dogecoin",
+     "link_kind": "CoinGecko coin page"
+    }
+   ],
+   "trade_count": 7,
+   "equity_series": [
+    {
+     "t": "2026-10-06 02:41:33 EDT",
+     "v": 9942.97,
+     "src": "history.csv"
+    },
+    {
+     "t": "2026-10-06 03:08:34 EDT",
+     "v": 9940.13,
+     "src": "history.csv"
+    },
+    {
+     "t": "2026-10-06 03:44:54 EDT",
+     "v": 9949.61,
+     "src": "history.csv"
+    }
+   ],
+   "decisions": [
+    {
+     "title": "2026-10-06 ~02:41 EDT: initial allocation",
+     "bullets": [
+      "CoinGecko `coins/markets?category=meme-token` (top 60)",
+      "CoinGecko `search/trending`",
+      "CoinGecko `coins/{id}` for contract addresses"
+     ]
+    }
+   ],
+   "valuation_history": [
+    {
+     "ts": 1791269900.0512123,
+     "t": "2026-10-06 02:58 EDT",
+     "v": 9934.31
+    },
+    {
+     "ts": 1791270182.6924837,
+     "t": "2026-10-06 03:03 EDT",
+     "v": 9935.47
+    },
+    {
+     "ts": 1791270423.3576245,
+     "t": "2026-10-06 03:07 EDT",
+     "v": 9938.63
+    },
+    {
+     "ts": 1791270664.1980898,
+     "t": "2026-10-06 03:11 EDT",
+     "v": 9934.56
+    },
+    {
+     "ts": 1791270939.0869226,
+     "t": "2026-10-06 03:15 EDT",
+     "v": 9935.09
+    },
+    {
+     "ts": 1791271180.9070287,
+     "t": "2026-10-06 03:19 EDT",
+     "v": 9938.64
+    },
+    {
+     "ts": 1791271424.4831696,
+     "t": "2026-10-06 03:23 EDT",
+     "v": 9938.84
+    },
+    {
+     "ts": 1791271666.9439766,
+     "t": "2026-10-06 03:27 EDT",
+     "v": 9942.94
+    },
+    {
+     "ts": 1791271909.2026799,
+     "t": "2026-10-06 03:31 EDT",
+     "v": 9944.68
+    },
+    {
+     "ts": 1791272151.6075447,
+     "t": "2026-10-06 03:35 EDT",
+     "v": 9950.26
+    },
+    {
+     "ts": 1791272393.935801,
+     "t": "2026-10-06 03:39 EDT",
+     "v": 9945.83
+    },
+    {
+     "ts": 1791272636.0814564,
+     "t": "2026-10-06 03:43 EDT",
+     "v": 9946.34
+    },
+    {
+     "ts": 1791272878.3876336,
+     "t": "2026-10-06 03:47 EDT",
+     "v": 9948.98
+    }
+   ]
+  }
+ },
+ "scanners": {
+  "x": {
+   "id": "x",
+   "name": "Crypto X Scanner",
+   "kind": "scanner",
+   "available": true,
+   "scan_count": 1,
+   "last_scan_title": "Scan 2026-10-06 ~2:50 AM ET (first scan)",
+   "last_activity": "2026-10-06 02:56 EDT",
+   "findings": {
+    "Majors": [
+     "BTC $85,316 (-0.58%): mildly bullish chart talk, range 80K-88K (@0xChainMind). Whale longs: $99M ETH, $24M BTC, $15M HYPE, $9M PUMP (@0xSweep). Fed Treasury-buying \"bullish\" posts (@DeFiTracer).",
+     "ETH: \"highest weekly close in 8 months\", close above 2.8K, target 3,450 (@0xChainMind). Some promo-tied ETH posts (@CryptoWizardd shilling $NPC).",
+     "HYPE $93.15 (+1.82%): ~5% from its high, ~$10M burn (@nokaramo). The 3.75M HYPE (~$340M) unlock on Oct 7 goes OTC to one buyer (@WOLFOFHYPER, @Altcoinbuzzio), which News Scanner confirmed. \"ICE buyer\" = speculation.",
+     "CARDS $0.29 (+19%): Blockworks Q2 report. SCAM WARNING: @CryptCardFndn \"allocation live\" posts look like impersonation; the real account is @Collector_Crypt.",
+     "NIGHT $0.0503 (+10.5%): ambassador-driven (@Hemsketsmelvet), Hoskinson praise via @AltcoinDaily; 24B max supply and dilution flagged by @Stycrypt.",
+     "BTW: ~1,800% in 90 days, manipulation talk (@Crypto__Haris, @ZetoshiX). No news. Ignore.",
+     "SAND: \"to $100\" hype; no news. Ignore.",
+     "MON $0.029 (-10.7%): perpl volume down 95% (@fomoebdao); @monad teased \"Tomorrow.\" (812 likes).",
+     "NEAR Intents: best fee month in September (@Delphi_Digital), $32B+ volume (@Bankless). Organic and positive. No live exploit chatter.",
+     "News tab: Russia opens crypto exchange registration portal."
+    ],
+    "Memecoins": [
+     "Mostly red: BONK -6.56%, PEPE -3.10%, FLOKI -3.19%, PENGU -3.05%, TRUMP -2.32%, SHIB -1.24%, DOGE -1.18%.",
+     "PUMP: split; \"2x in 2 weeks\" (@rektfencer), S tier (@ellioclips), vs a $60K short (@Crypto__Haris). @WhaleScan giveaway = engagement farming.",
+     "DOGE: templated hype (@CoinvoTrading).",
+     "PEPE: Canary spot PEPE ETF S-1 amendment claim (@TheMoneyApe, low reach, unverified).",
+     "BONK: coordinated copy-paste \"Grok $50 -> $3,532\" promo (@w1nklerr, @laoyingkhq).",
+     "SHIB: \"landed on Solana\" (@Shibtoken, @sunrise), real listing.",
+     "TRUMP: top-185-holder dinner claim (@cryptorover, 235K views).",
+     "FLOKI: -$396.1K net whale flow over 30 days (@DeepBlueAlpha).",
+     "Shill-heavy small caps, avoid: $VACAT (@EarlyRada), $SHIBLING (@MemeQueen__12, @Shiblingx), $darwin bot (@smartflowradar), @miladydegens tg CA, @Salemxbt \"1000x\".",
+     "Scams: $SPEPE presale \"send SOL\" paid partnership (@Whale___SOLL); bundle-rug example (@Null_S0L)."
+    ],
+    "Rumors": [
+     "The \"SEC shutdown froze ETFs\" rumor is NOT spreading (old or low-reach posts only).",
+     "PumpFun \"banned in US/India\" (@y0lloo, Sep 16): unverified."
+    ],
+    "News Scanner verdicts (2:55 AM ET Oct 6)": [
+     "PEPE ETF S-1/A by Canary: TRUE, filed Oct 2. Not an approval.",
+     "TRUMP top-185 dinner: TRUE. Gala Nov 22, snapshot Nov 12.",
+     "SHIB on Solana: TRUE (Sunrise/Wormhole, Oct 4). Official mint shib5gSoVKPjwkXrxRk7SbQFzb2R9rQB3TgQWYX4RwW. FAKE SHIB tokens exist on Solana.",
+     "PumpFun US/India ban: FALSE. The iOS app was pulled Sept 10-11 and restored Sept 18.",
+     "CARDS Blockworks report: TRUE. @CryptCardFndn allocation posts = likely wallet-drainer lure.",
+     "Russia exchange portal: TRUE (rules in effect Oct 5).",
+     "Fed $5.8B Treasuries \"bullish\": MISLEADING. It's a routine rollover."
+    ],
+    "Watchlist (from Crypto Paper Trader)": [
+     "X reaction to FOMC minutes (Wed Oct 7, 2 PM ET) and Waller (Thu Oct 8). Watch for sharp BTC/ETH sentiment flips.",
+     "HYPE after Oct 7: on-chain posts (Lookonchain, Arkham) on whether the OTC unlock tokens move to exchanges, and whether price holds near the high.",
+     "NEAR: is price confirming the fundamentals?"
+    ]
+   },
+   "highlights": [
+    "BTC $85,316 (-0.58%): mildly bullish chart talk, range 80K-88K (@0xChainMind). Whale longs: $99M ETH, $24M BTC, $15M HYPE, $9M PUMP (@0xSweep). Fed Treasury-buying \"bullish\" posts (@DeFiTracer).",
+    "ETH: \"highest weekly close in 8 months\", close above 2.8K, target 3,450 (@0xChainMind). Some promo-tied ETH posts (@CryptoWizardd shilling $NPC).",
+    "HYPE $93.15 (+1.82%): ~5% from its high, ~$10M burn (@nokaramo). The 3.75M HYPE (~$340M) unlock on Oct 7 goes OTC to one buyer (@WOLFOFHYPER, @Altcoinbuzzio), which News Scanner confirmed. \"ICE buyer\" = speculation.",
+    "CARDS $0.29 (+19%): Blockworks Q2 report. SCAM WARNING: @CryptCardFndn \"allocation live\" posts look like impersonation; the real account is @Collector_Crypt.",
+    "NIGHT $0.0503 (+10.5%): ambassador-driven (@Hemsketsmelvet), Hoskinson praise via @AltcoinDaily; 24B max supply and dilution flagged by @Stycrypt.",
+    "BTW: ~1,800% in 90 days, manipulation talk (@Crypto__Haris, @ZetoshiX). No news. Ignore.",
+    "SAND: \"to $100\" hype; no news. Ignore.",
+    "MON $0.029 (-10.7%): perpl volume down 95% (@fomoebdao); @monad teased \"Tomorrow.\" (812 likes)."
+   ],
+   "status": "active"
+  },
+  "news": {
+   "id": "news",
+   "name": "Crypto News Scanner",
+   "kind": "scanner",
+   "available": true,
+   "verdicts": [],
+   "last_activity": "2026-10-06 03:45 EDT",
+   "status": "active"
+  },
+  "chat": {
+   "id": "chat",
+   "name": "Memecoin Chatter Scanner",
+   "kind": "scanner",
+   "feeds": [
+    "meme"
+   ],
+   "available": true,
+   "last_activity": "2026-10-06 03:29 EDT",
+   "highlights": [],
+   "last_scan_title": "Coverage",
+   "note": null,
+   "status": "active",
+   "short": "CHAT"
+  },
+  "launch": {
+   "id": "launch",
+   "name": "Memecoin Launch Scanner",
+   "kind": "scanner",
+   "feeds": [
+    "meme"
+   ],
+   "available": true,
+   "last_activity": "2026-10-06 03:45 EDT",
+   "status": "active",
+   "short": "LAUNCH"
+  },
+  "whale": {
+   "id": "whale",
+   "name": "Whale Wallet Tracker",
+   "kind": "scanner",
+   "feeds": [
+    "meme",
+    "core"
+   ],
+   "available": true,
+   "last_activity": "2026-10-06 03:32 EDT",
+   "highlights": [],
+   "last_scan_title": "Files",
+   "note": null,
+   "status": "active",
+   "short": "WHALE"
+  },
+  "list": {
+   "id": "list",
+   "name": "Exchange Listings Scanner",
+   "kind": "scanner",
+   "feeds": [
+    "core",
+    "meme"
+   ],
+   "available": true,
+   "last_activity": "2026-10-06 03:20 EDT",
+   "highlights": [
+    "Default window is 7 days; dedupe is by exchange+url+title (Alpha by alphaId). Noise filter drops campaigns, copy-trade, dividends, funding/leverage tweaks. Use `--all` to see everything.",
+    "Bithumb's 5-notice API window means hourly runs are needed so nothing gets missed.",
+    "Type classifier is keyword-based (`classify()` in scan.py). Korean: \uc2e0\uaddc \uac70\ub798\uc9c0\uc6d0/\ub9c8\ucf13 \ucd94\uac00 = listing, \uac70\ub798\uc9c0\uc6d0 \uc885\ub8cc = delisting, \uac70\ub798 \uc720\uc758 = warning (Korean \"monitoring tag\"), \ud574\uc81c = warning lifted."
+   ],
+   "last_scan_title": "Notes for scheduled runs",
+   "note": null,
+   "status": "active",
+   "short": "LIST"
+  },
+  "unlock": {
+   "id": "unlock",
+   "name": "Token Unlock Tracker",
+   "kind": "scanner",
+   "feeds": [
+    "core",
+    "meme"
+   ],
+   "available": true,
+   "last_activity": "2026-10-06 03:35 EDT",
+   "highlights": [],
+   "last_scan_title": "Files",
+   "note": null,
+   "status": "active",
+   "short": "UNLOCK"
+  },
+  "hype": {
+   "id": "hype",
+   "name": "Mainstream Hype Tracker",
+   "kind": "scanner",
+   "feeds": [
+    "meme",
+    "core"
+   ],
+   "available": true,
+   "last_activity": "2026-10-06 03:17 EDT",
+   "highlights": [],
+   "last_scan_title": "Signals (all weak)",
+   "note": null,
+   "status": "active",
+   "short": "HYPE"
+  }
+ },
+ "signals": [
+  {
+   "from": "news",
+   "to": "core",
+   "coin": "BTC",
+   "adj": -0.1,
+   "kind": "applied adjustment",
+   "direction": "bearish",
+   "text": "News Scanner 2:30 AM Oct 6: 3rd rejection at $87K since Sept 23, 10y yield 5.32% (22-yr high), ~$90M ETF outflow (unconfirmed). Hold first tranche, don't chase into resistance. Extended to Oct 7 6 PM ET to cover FOMC minutes (2 PM). Farside: BTC ETF -$89.8M Oct 5, weekly inflows slowed to +$241M.",
+   "time": "2:30 AM ET",
+   "expires": "2026-10-07 18:00 EDT",
+   "active": true,
+   "link": "https://farside.co.uk/btc/",
+   "link_kind": "source named in signal"
+  },
+  {
+   "from": "news",
+   "to": "core",
+   "coin": "ETH",
+   "adj": -0.1,
+   "kind": "applied adjustment",
+   "direction": "bearish",
+   "text": "Macro headwind (yields) applies to ETH too; ETH tracking BTC, low-confidence coin signal. Raised to -10 pts to match BTC (ETH is higher-beta to the same macro risk). Extended to Oct 7 6 PM ET. Farside: ETH ETFs 5 straight outflow days, -$138M last week.",
+   "time": "2026-10-06 02:39 EDT",
+   "expires": "2026-10-07 18:00 EDT",
+   "active": true,
+   "link": "https://farside.co.uk/eth/",
+   "link_kind": "source named in signal"
+  },
+  {
+   "from": "x",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "bearish",
+   "text": "Memes broadly red. PUMP mixed 2/5 (bull calls vs notable shorts, \"overextended\"). SHIB mildly up 2/5 (SHIB on Solana listing looks real). TRUMP watch 2/5 (holder dinner claim, being verified). PEPE 1/5 unverified spot ETF S-1 claim. FLOKI down 2/5 (whale outflows). BONK down 2/5 + coordinated shill-promo warning. DOGE hype only 1/5. PENGU weak 1/5.",
+   "time": "2:50 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "x",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "avoid",
+   "text": "AVOID: $SPEPE (presale scam), $VACAT, $SHIBLING, $darwin, $cashcat, telegram \"early CA\" calls. No organic fast-rising memecoin seen.",
+   "time": "2:50 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "news",
+   "to": "meme",
+   "coin": "TRUMP",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "bearish",
+   "text": "TRUMP bearish 3/5: team moved ~$249M to exchanges, holds ~72% supply; unlock Oct 18 (~3.8%, unconfirmed). Holder dinner (snapshot Nov 12) mildly bullish.",
+   "time": "2:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "news",
+   "to": "meme",
+   "coin": "PUMP",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "bearish",
+   "text": "PUMP mildly bearish 2/5: unlock ~Oct 12 (~0.9%, unconfirmed); offset by big buybacks/burns. \"US/India ban\" claim is FALSE.",
+   "time": "2:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "news",
+   "to": "meme",
+   "coin": "PENGU",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "bearish",
+   "text": "PENGU bearish 2/5: unlock Oct 17 (456M-723M). HELD: consider trimming/tightening before Oct 17.",
+   "time": "2:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "news",
+   "to": "meme",
+   "coin": "CARDS",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "avoid",
+   "text": "CARDS: impersonator phishing (@CryptCardFndn); avoid.",
+   "time": "2:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": "https://x.com/CryptCardFndn",
+   "link_kind": "cited X account @CryptCardFndn"
+  },
+  {
+   "from": "news",
+   "to": "meme",
+   "coin": "PEPE",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "bullish",
+   "text": "PEPE mildly bullish 2/5: Canary spot ETF S-1/A filed Oct 2 (verified, not approval).",
+   "time": "2:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "news",
+   "to": "meme",
+   "coin": "SHIB",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "SHIB neutral: official Solana mint shib5gSoVKPjwkXrxRk7SbQFzb2R9rQB3TgQWYX4RwW; fake copies exist.",
+   "time": "2:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "news",
+   "to": "meme",
+   "coin": "DOGE",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "DOGE low risk (DogeOS testnet, small ETF inflows). FLOKI low risk. BONK weak trend, neutral-bearish 1/5.",
+   "time": "2:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "news",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "Macro: FOMC minutes Wed Oct 7 2 PM ET; Waller Thu Oct 8 4:30 AM ET; CPI Oct 14 8:30 AM ET. 10y 5.32%, ETF flows softening = headwind.",
+   "time": "2:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "launch",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "Signals VACAT (liq $90.7k, 1.6h old, +1748%; ALSO flagged shill-only by X Scanner), MINTRO (liq $115k, -65% off peak, paid boost), AGENTCOIN (liq $30k, <1h old). ALL REJECTED: fail $500k liquidity and 48h age rules.",
+   "time": "3:09 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "launch",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "avoid",
+   "text": "AVOID: cluster of 21 coordinated \"fund/dividend\" tokens (DOTF, IOF, UDR, USDP, USDF, GOIF, others): huge MC on tiny liquidity, likely sell-blocked honeypots.",
+   "time": "3:09 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "hype",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "bullish",
+   "text": "Mainstream memecoin interest quiet. DOGE searches at 3-month low (\"is dogecoin dead\" rising). TRUMP searches faded since Oct 2. SHIB searches up this week (Solana launch) but flat on 3 months. No breakout with regular people.",
+   "time": "3:15 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "list",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "Momentum: AGENCY, HOOKED, GM moved from MEXC Meme+ to Innovation Zone + perps on MEXC/Gate. MEXC Meme+ new: MOE, PRIORS, SAPLING, \u65fa\u67f4, HIGGS.",
+   "time": "3:18 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "list",
+   "to": "meme",
+   "coin": "WOJAK",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "WOJAK (ERC-20) Kraken listing ~Sep 30, -8.2% since.",
+   "time": "3:18 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "list",
+   "to": "meme",
+   "coin": "CHEEMS",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "avoid",
+   "text": "CHEEMS: KuCoin delisting Oct 8 04:00 ET, so expect sell pressure (avoid).",
+   "time": "3:18 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "list",
+   "to": "meme",
+   "coin": "BLAST",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "avoid",
+   "text": "BLAST: Upbit/Bithumb warnings, project shutting down. AVOID.",
+   "time": "3:18 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "chat",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "phubber (CBcjQNdtgb4SHwKDqKFxD3yPSk7pEMpKHQiMmZrgpump): liq $77k, 7h old, +996%. REJECTED.",
+   "time": "3:28 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "chat",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "Cybertruck (CLHMgCrEz7GE5HJPsrTEgvE5MYYtQQ1Tkm11Yan9wKwr): liq $31k, 1.5h old. REJECTED.",
+   "time": "3:28 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "chat",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "cat wif sword (5tCju6YNxHq5zrA6tGndr6F7TK42mpUFmeE31cSFpump): MC $3.56M, liq $250k, ~8 days old, +19%. Cleanest, but fails $500k liquidity. WATCH: buy candidate if liquidity reaches $500k.",
+   "time": "3:28 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "chat",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "bearish",
+   "text": "Skip: Sacabambaspis, Homio, HABBO (down 78-93%), $Malfoid (Reddit shill). Always match by contract address.",
+   "time": "3:28 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "whale",
+   "to": "meme",
+   "coin": "CAESAR",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "CAESAR (8cp1WhUDxTbfX8nDe1kAB1ogPUyQvUSKgzFz365LbQyZ): smart wallet OGAntD bought 32 SOL; liq $55k, 2.7h old, +542%. REJECTED (liquidity, age, chase).",
+   "time": "3:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "whale",
+   "to": "meme",
+   "coin": "PLAGUE",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "PLAGUE (CscZaq5twomhUkvCY8Jdd1tge32L4Yj9FbkFFEZQpump): mixed smart-money (buys by token launchers, King Solomon sold ~98 SOL); liq $129k, 68h old, +146%. REJECTED (liquidity, chase). Watch only.",
+   "time": "3:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "whale",
+   "to": "meme",
+   "coin": null,
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "Skip: Chungus, KURA (smart wallets exited).",
+   "time": "3:30 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "unlock",
+   "to": "meme",
+   "coin": "PUMP",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "PUMP (HELD): cliff unlock Sun Oct 11 ~10:15 PM ET to Mon Oct 12 ~2 AM ET, 6.875B-8.96B tokens (~$43-56M, ~1.3% circ) to team/investors. Biggest unlock this week. WATCH: decide on trimming PUMP by Sun Oct 11 evening.",
+   "time": "3:36 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "unlock",
+   "to": "meme",
+   "coin": "PENGU",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "PENGU (HELD): ~695M team tokens (~$6.6M), possibly lump ~Fri Oct 16 8 PM ET (unconfirmed). WATCH: decide on trimming by Oct 16.",
+   "time": "3:36 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "unlock",
+   "to": "meme",
+   "coin": "DOGE",
+   "adj": null,
+   "kind": "scanner note",
+   "direction": "neutral",
+   "text": "DOGE: mining issuance only. PEPE, WIF, BONK, MEW: nothing scheduled.",
+   "time": "3:36 AM ET",
+   "expires": null,
+   "active": true,
+   "link": null,
+   "link_kind": null
+  },
+  {
+   "from": "x",
+   "to": "core",
+   "coin": "BTC",
+   "adj": null,
+   "kind": "scan finding",
+   "direction": "bullish",
+   "text": "BTC $85,316 (-0.58%): mildly bullish chart talk, range 80K-88K (@0xChainMind). Whale longs: $99M ETH, $24M BTC, $15M HYPE, $9M PUMP (@0xSweep). Fed Treasury-buying \"bullish\" posts (@DeFiTracer).",
+   "time": "2:50 AM ET",
+   "expires": null,
+   "active": true,
+   "link": "https://x.com/0xChainMind",
+   "link_kind": "cited X account @0xChainMind"
+  },
+  {
+   "from": "x",
+   "to": "core",
+   "coin": "ETH",
+   "adj": null,
+   "kind": "scan finding",
+   "direction": "neutral",
+   "text": "ETH: \"highest weekly close in 8 months\", close above 2.8K, target 3,450 (@0xChainMind). Some promo-tied ETH posts (@CryptoWizardd shilling $NPC).",
+   "time": "2:50 AM ET",
+   "expires": null,
+   "active": true,
+   "link": "https://x.com/0xChainMind",
+   "link_kind": "cited X account @0xChainMind"
+  },
+  {
+   "from": "x",
+   "to": "core",
+   "coin": "HYPE",
+   "adj": null,
+   "kind": "scan finding",
+   "direction": "neutral",
+   "text": "HYPE $93.15 (+1.82%): ~5% from its high, ~$10M burn (@nokaramo). The 3.75M HYPE (~$340M) unlock on Oct 7 goes OTC to one buyer (@WOLFOFHYPER, @Altcoinbuzzio), which News Scanner confirmed. \"ICE buyer\" = speculation.",
+   "time": "2:50 AM ET",
+   "expires": null,
+   "active": true,
+   "link": "https://x.com/nokaramo",
+   "link_kind": "cited X account @nokaramo"
+  },
+  {
+   "from": "x",
+   "to": "core",
+   "coin": "CARDS",
+   "adj": null,
+   "kind": "scan finding",
+   "direction": "avoid",
+   "text": "CARDS $0.29 (+19%): Blockworks Q2 report. SCAM WARNING: @CryptCardFndn \"allocation live\" posts look like impersonation; the real account is @Collector_Crypt.",
+   "time": "2:50 AM ET",
+   "expires": null,
+   "active": true,
+   "link": "https://x.com/CryptCardFndn",
+   "link_kind": "cited X account @CryptCardFndn"
+  },
+  {
+   "from": "x",
+   "to": "core",
+   "coin": "NIGHT",
+   "adj": null,
+   "kind": "scan finding",
+   "direction": "neutral",
+   "text": "NIGHT $0.0503 (+10.5%): ambassador-driven (@Hemsketsmelvet), Hoskinson praise via @AltcoinDaily; 24B max supply and dilution flagged by @Stycrypt.",
+   "time": "2:50 AM ET",
+   "expires": null,
+   "active": true,
+   "link": "https://x.com/Hemsketsmelvet",
+   "link_kind": "cited X account @Hemsketsmelvet"
+  }
+ ],
+ "provenance": [
+  "Portfolio, trades, signals and scan notes are read from the bots' own files (read-only).",
+  "Position values = file quantities x CoinGecko quote 2026-10-06 03:48 EDT; if no quote, the bot's own last price or entry price is used (labeled per position).",
+  "Pulse animations along threads are illustrative of scanning/signalling, not individual logged events."
+ ],
+ "public_view": "public read-only copy; file paths and account names removed"
+}

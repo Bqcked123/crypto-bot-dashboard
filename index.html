@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><link rel="icon" href="data:,"><title>SUIT · Crypto bot dashboard (paper trading)</title>
+<meta name="description" content="Paper-trading crypto bot dashboard (pretend money)">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="common.js"></script>
+<script src="live.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+:root{--bg:#05060a;--panel:rgba(14,17,28,.72);--line:rgba(140,160,255,.14);--txt:#dfe6ff;--mut:#7d88a8;--core:#4cc9ff;--meme:#ff5fd2;--news:#ffb84c;--x:#a78bff;--up:#3dffa8;--down:#ff5470}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--txt);font:13px/1.4 Inter,sans-serif;overflow:hidden}
+body{background:radial-gradient(ellipse at 50% 45%,#121735 0%,#070912 55%,#03040a 100%)}
+header{position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:center;padding:0 26px;gap:16px;z-index:5}
+.logo{width:34px;height:34px}
+h1{font-size:18px;font-weight:800;letter-spacing:.3px}
+h1 span{color:var(--mut);font-weight:500;margin-left:8px;font-size:13px}
+.hdr-r{margin-left:auto;display:flex;gap:10px;align-items:center;font:11px 'JetBrains Mono';color:var(--mut)}
+.chip{border:1px solid var(--line);padding:5px 10px;border-radius:20px;background:rgba(255,255,255,.03)}
+.chip.paper{color:#ffd36b;border-color:rgba(255,211,107,.35)}
+.live{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 10px var(--up);margin-right:6px;animation:bl 1.6s infinite}
+@keyframes bl{50%{opacity:.3}}
+#web{position:absolute;inset:0}
+.panel{position:absolute;top:74px;bottom:56px;width:320px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 18px 12px;backdrop-filter:blur(14px);z-index:4;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+#pl{left:22px;box-shadow:0 0 60px rgba(76,201,255,.08) inset}#pr{right:22px;box-shadow:0 0 60px rgba(255,95,210,.08) inset}
+.ph{display:flex;align-items:center;gap:10px}
+.dot{width:10px;height:10px;border-radius:50%}
+#pl .dot{background:var(--core);box-shadow:0 0 12px var(--core)}#pr .dot{background:var(--meme);box-shadow:0 0 12px var(--meme)}
+.ph b{font-size:14px}.ph small{margin-left:auto;color:var(--mut);font:10px 'JetBrains Mono'}
+.sd-eq{font-size:34px;font-weight:800;letter-spacing:-1px}
+.sd-pnl{font:600 14px 'JetBrains Mono'}.sd-pnl span{opacity:.75;margin-left:6px}
+.up{color:var(--up)}.down{color:var(--down)}.flat{color:var(--mut)}
+.sd-sub{color:var(--mut);font-size:11px;margin-top:2px}
+.sec{font:600 10px 'JetBrains Mono';letter-spacing:1.6px;color:var(--mut);text-transform:uppercase;border-top:1px solid var(--line);padding-top:10px}
+.sd-pos{width:100%;border-collapse:collapse;font:11.5px 'JetBrains Mono'}
+.sd-pos td{padding:3px 0}.sd-pos .sym{font-weight:600}.sd-pos .val,.sd-pos .px,.sd-pos .pl{text-align:right}.sd-pos .px{color:var(--mut)}
+.sd-trades,.sd-sigs{list-style:none;display:flex;flex-direction:column;gap:6px}
+.sd-trade{display:grid;grid-template-columns:38px 36px 50px 1fr;gap:4px;font:11px 'JetBrains Mono';align-items:baseline}
+.sd-trade .tm{color:var(--mut)}.sd-trade.buy .sd-side{color:var(--up)}.sd-trade.sell .sd-side{color:var(--down)}
+.sd-trade .usd{text-align:right}.sd-trade .why{grid-column:2/5;color:var(--mut);font:10.5px Inter;margin-top:-2px}
+.sd-sig{border-left:2px solid var(--mut);padding:2px 0 2px 8px}
+.sd-sig.dir-bearish{border-color:var(--down)}.sd-sig.dir-bullish{border-color:var(--up)}.sd-sig.dir-avoid{border-color:#ffb84c}
+.sd-sig-h{display:flex;gap:6px;align-items:center;font:11px 'JetBrains Mono'}
+.sd-sig .ic{font-size:9px}.dir-bearish .ic{color:var(--down)}.dir-bullish .ic{color:var(--up)}.dir-avoid .ic{color:#ffb84c}
+.sd-sig .route{color:var(--mut);font-size:9.5px}.sd-sig .adj{color:#ffd36b}.sd-sig .tm{margin-left:auto;color:var(--mut)}
+.sd-sig-t{color:#aab3cf;font-size:10.5px;line-height:1.35}
+.sd-wait{border:1px dashed rgba(255,255,255,.2);border-radius:12px;padding:14px;text-align:center}
+.sd-wait-t{font:700 12px 'JetBrains Mono';letter-spacing:2px;color:#ffd36b}.sd-wait-d{color:var(--mut);font-size:11px;margin-top:4px}
+.spark{color:var(--core)}#pr .spark{color:var(--meme)}
+.sd-spark-wait{font-size:10px;color:var(--mut);font-style:italic}
+footer{position:absolute;bottom:14px;left:0;right:0;text-align:center;font:10.5px 'JetBrains Mono';color:var(--mut);z-index:5}
+.sd-paper{color:#ffd36b}
+.legend{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:flex;gap:18px;font:10.5px 'JetBrains Mono';color:var(--mut);z-index:5}
+.legend i{display:inline-block;width:18px;height:2px;vertical-align:middle;margin-right:6px}
+svg text{font-family:Inter}
+.nlabel{fill:#c9d2f2;font-size:11px;font-weight:500}.nlabel.dim{fill:#66708f}
+.blabel{fill:#fff;font-size:12px;font-weight:700;letter-spacing:.3px}.bsub{fill:#8b96b8;font:9.5px 'JetBrains Mono'}
+</style>
+<style>
+body{background:radial-gradient(ellipse at 50% 55%,#06223a 0%,#03101d 45%,#01060c 100%)}
+#holo{position:absolute;inset:0;z-index:1}
+#holo canvas{display:block;animation:flick 7s infinite}
+@keyframes flick{0%,100%{opacity:1}41%{opacity:1}42%{opacity:.72}43%{opacity:1}44%{opacity:.85}45%{opacity:1}77%{opacity:1;transform:none}77.5%{opacity:.8;transform:translateX(3px)}78%{opacity:1;transform:none}}
+.scanl{position:absolute;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(120,220,255,.045) 0 1px,transparent 1px 3px)}
+.sweep{position:absolute;left:0;right:0;height:140px;z-index:2;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(110,220,255,.07),transparent);animation:sw 6s linear infinite}
+@keyframes sw{from{top:-140px}to{top:100%}}
+.vig{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,4,10,.7))}
+.hl{font:600 12px Rajdhani,sans-serif;letter-spacing:1.4px;color:#9eeaff;text-shadow:0 0 6px #2fc8ff,0 0 14px rgba(47,200,255,.6);white-space:nowrap;pointer-events:none;text-transform:uppercase;transition:opacity .2s}
+.hl.src{color:#8fe2ff;font-size:11px}.hl.src.dim{color:#3f7f99;text-shadow:none}
+.hl.bot{font-size:12.5px;text-align:center;line-height:1.15}.hl.bot small{display:block;font:500 9px 'JetBrains Mono';letter-spacing:.5px;color:#6fcbe8;text-transform:none}
+.hl.bot b{font-weight:700;color:#e6fbff}
+.hl.bot.off{color:#4d8fa8}.hl.bot.off b{color:#78b9cf}.hl.bot.off small{color:#ffd36b}
+.hl.hot{color:#fff;text-shadow:0 0 8px #fff,0 0 18px #2fc8ff}
+#mission{position:absolute;left:50%;transform:translateX(-50%);bottom:78px;max-width:740px;overflow:hidden;text-overflow:ellipsis;z-index:5;font:600 12px Rajdhani;letter-spacing:2px;color:#9eeaff;text-shadow:0 0 8px #2fc8ff;text-transform:uppercase;text-align:center;white-space:nowrap}
+#mission small{display:block;overflow:hidden;text-overflow:ellipsis;max-width:740px;font:10px 'JetBrains Mono';letter-spacing:.5px;color:#4fa6c4;text-transform:none;text-shadow:none;margin-top:2px}
+.htitle{position:absolute;top:74px;left:50%;transform:translateX(-50%);z-index:5;font:700 12px Rajdhani;letter-spacing:5px;color:#7fe0ff;text-shadow:0 0 10px #2fc8ff;text-align:center}
+.htitle small{display:block;font:10px 'JetBrains Mono';letter-spacing:1px;color:#3f8fae;text-shadow:none}
+.legend span{color:#6fb6cf}
+.hl.hover{color:#fff!important;text-shadow:0 0 8px #fff,0 0 20px #2fc8ff,0 0 32px #2fc8ff!important;opacity:1!important}
+.sd-link{cursor:pointer;border-radius:6px;transition:background .15s}.sd-link:hover{background:rgba(95,216,255,.10)}
+#card{position:absolute;z-index:8;width:300px;display:none;padding:14px 16px 12px;color:#cfefff;font:12px/1.4 Inter,sans-serif;background:linear-gradient(160deg,rgba(10,50,80,.82),rgba(3,18,32,.88));border:1px solid rgba(95,216,255,.6);box-shadow:0 0 24px rgba(47,200,255,.35),inset 0 0 30px rgba(47,200,255,.12);clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));backdrop-filter:blur(6px)}
+#card.on{display:block;animation:cardin .25s ease-out}
+@keyframes cardin{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+#card:before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(120,220,255,.06) 0 1px,transparent 1px 3px)}
+#card h4{font:700 15px Rajdhani;letter-spacing:2px;text-transform:uppercase;color:#fff;text-shadow:0 0 8px #2fc8ff;margin-right:20px}
+#card .st{font:10.5px 'JetBrains Mono';color:#7fe0ff;margin:2px 0 6px}#card .mut{color:#7fa9bd;font-size:11px;margin-bottom:4px}
+#card .kv{font:700 20px Inter;color:#fff;margin:2px 0}#card .kv span{font:600 12px 'JetBrains Mono'}
+#card .hd{font:600 10px 'JetBrains Mono';letter-spacing:1.6px;color:#5fd8ff;text-transform:uppercase;margin:8px 0 4px;border-top:1px solid rgba(95,216,255,.25);padding-top:6px}
+#card ul{list-style:none;display:flex;flex-direction:column;gap:6px}#card li{font-size:11px;color:#b8dcec;padding:3px 4px}#card li i{color:#5f9fb8;font-style:normal;font-size:10px}
+#card .d-bearish{color:#ff6b86}#card .d-bullish{color:#3dffa8}#card .d-avoid{color:#ffd36b}#card .d-neutral{color:#9eeaff}
+#card .x{position:absolute;top:8px;right:10px;background:none;border:0;color:#9eeaff;font-size:14px;cursor:pointer}
+header,.htitle,#mission,.legend,footer{pointer-events:none}header a,header .chip{pointer-events:auto}
+#holo canvas{touch-action:none}
+.hint{position:absolute;left:50%;transform:translateX(-50%);top:116px;z-index:5;pointer-events:none;font:10px 'JetBrains Mono';letter-spacing:1.5px;color:#5fb8d6;opacity:.75;text-shadow:0 0 6px rgba(47,200,255,.5);animation:hintp 4s ease-in-out infinite}
+@keyframes hintp{50%{opacity:.4}}
+.legend{bottom:42px;gap:14px;font-size:10px;white-space:nowrap}
+
+/* ---------- phones / narrow screens ---------- */
+#card{position:fixed}
+@media (max-width:760px){
+  html,body{height:auto;overflow-x:hidden;overflow-y:auto}
+  #holo{position:relative;height:66vh;min-height:420px;inset:auto}
+  .scanl,.sweep,.vig{position:absolute;top:0;bottom:auto;height:max(66vh,420px)}
+  header{position:absolute;height:48px;padding:0 12px;gap:8px}
+  header h1{font-size:15px}header h1 span{display:none}.logo{width:26px;height:26px}
+  .hdr-r{gap:6px;font-size:9.5px}.hdr-r a.chip{display:none}.hdr-r .chip{padding:4px 7px}
+  .htitle{top:50px;font-size:10px;letter-spacing:3px;width:100%}.htitle small{font-size:9px}
+  .hint{top:84px;font-size:9px}
+  #mission{top:calc(max(66vh,420px) - 50px);bottom:auto;font-size:10px;letter-spacing:1px;max-width:94vw}#mission small{max-width:94vw;font-size:9px}
+  .legend{display:none}
+  .panel{position:relative;top:auto;bottom:auto;left:auto!important;right:auto!important;width:auto;margin:10px 10px 0;max-height:none}
+  footer{position:relative;bottom:auto;padding:14px 10px 22px;line-height:1.6}
+  .hl{font-size:9.5px;letter-spacing:.8px}.hl.src{font-size:8.5px}.hl.bot{font-size:10px}.hl.bot small{display:none}.hl.src{opacity:.85}
+  .hint{white-space:nowrap;letter-spacing:.6px}.hdr-r .chip{white-space:nowrap}.xm{display:none}
+  #card{width:min(320px,92vw)}
+}
+</style></head><body>
+<div id="holo"></div><div class="scanl"></div><div class="sweep"></div><div class="vig"></div>
+<header>
+  <svg class="logo" viewBox="0 0 40 40"><g fill="none" stroke="#7fe0ff" stroke-width="1.3"><circle cx="20" cy="20" r="17" opacity=".45"/><circle cx="20" cy="20" r="11"/><path d="M20 9v4M20 27v4M9 20h4M27 20h4M12.2 12.2l2.8 2.8M25 25l2.8 2.8M27.8 12.2L25 15M15 25l-2.8 2.8" opacity=".8"/></g><circle cx="20" cy="20" r="5" fill="#dff8ff"/></svg>
+  <h1>SUIT<span>holographic bot web · flight mode</span></h1>
+  <div class="hdr-r"><span class="chip paper">PAPER TRADING<span class="xm"> · pretend money</span></span><span class="chip"><span class="live"></span><span id="upd">loading…</span></span></div>
+</header>
+<div class="htitle">◇ BOT WEB · HOLOGRAPHIC PROJECTION ◇<small id="hsub">initialising projector…</small></div>
+<div class="hint" id="hint">⟲ drag to rotate · scroll to zoom</div>
+<aside class="panel" id="pl"></aside>
+<aside class="panel" id="pr"></aside>
+<div id="mission">SUIT STANDING BY</div>
+<div id="card"></div>
+<div class="legend"><span><i style="background:#5fd8ff"></i>scan thread</span><span><i style="background:#ffffff"></i>signal thread</span><span><i style="background:#2d6f8a"></i>dim = not cited yet / no output</span><span>suit route = real signals, oldest→newest · click nodes</span></div>
+<footer id="foot"></footer>
+<script>
+function panel(id,t,d,key){
+  const el=document.getElementById(id);
+  el.innerHTML=`<div class="ph"><span class="dot"></span><b>${SD.esc(t.name)}</b><small>${t.strategy?'strategy '+t.strategy+' · ':''}${t.last_check?'checked '+SD.hm(t.last_check):''}</small></div>
+  ${SD.kpiHTML(t)}<div class="spark">${t.available?SD.sparkSVG(t,284,34):''}</div>
+  ${t.available?`<div class="sec">Positions · marked ${SD.esc((t.positions[0]||{}).price_source||'')}</div>${SD.positionsHTML(t,id==='pl'?4:5)}`:''}
+  ${t.available?`<div class="sec">Recent trades</div>${SD.tradesHTML(t,3,44)}`:''}
+  <div class="sec">Latest signals in</div>${SD.signalsHTML(d,3,g=>g.to===key,96)}`;
+}
+
+SD.start((d,first)=>{panel('pl',d.traders.core,d,'core');panel('pr',d.traders.meme,d,'meme');
+  document.getElementById('upd').textContent='data '+SD.hm(d.generated_at_et)+' ET'+(innerWidth<760?'':' · polls 60s');
+  document.getElementById('foot').innerHTML=SD.footHTML(d);
+  window.dispatchEvent(new CustomEvent('sd-data',{detail:{d,first}}));});
+</script>
+<script>if(matchMedia("(pointer: coarse)").matches)document.getElementById("hint").textContent="⟲ drag · pinch to zoom · tap nodes";</script>
+<script type="module" src="holo.js"></script>
+</body></html>
