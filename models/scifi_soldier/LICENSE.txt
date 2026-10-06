@@ -1,0 +1,12 @@
+Model: Sci-fi Soldier
+Source page: https://opengameart.org/content/sci-fi-soldier
+Author: Irondust
+Licence: CC0 1.0 (Public Domain Dedication) - https://creativecommons.org/publicdomain/zero/1.0/
+Downloaded: 2026-10-06 (no login)
+Processing: Converted from Mesh.blend with Blender 4.2.3; kept Body + Head1 + HandSimple (dropped Cannon arm and alternate heads Head2/Head3); gave Head1/HandSimple the same object transform as Body (they were authored Y-up without it); FederalSoldierSkin albedo/normal/emission textures; meshopt + WebP 1024.
+Credit (optional for CC0): "Sci-fi Soldier" by Irondust, https://opengameart.org/content/sci-fi-soldier
+
+Additional edits (2026-10-06): the stencilled chest number and the original visor slit were painted out of the
+albedo/normal/emission textures (inpainted from surrounding pixels); the two angled eye slits, chest light and
+thruster effects are separate geometry added at runtime in v11/suit_rig.js and v11/holo.js. Proportions
+(forearms ~20% shorter/slimmer, shorter neck) and all poses are applied to the skeleton in code.

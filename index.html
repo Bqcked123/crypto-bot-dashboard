@@ -5,6 +5,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="common.js"></script>
 <script src="live.js"></script>
+<script>window.SUIT_MODEL_URL = "./models/scifi_soldier/model.glb";</script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <style>
 :root{--bg:#05060a;--panel:rgba(14,17,28,.72);--line:rgba(140,160,255,.14);--txt:#dfe6ff;--mut:#7d88a8;--core:#4cc9ff;--meme:#ff5fd2;--news:#ffb84c;--x:#a78bff;--up:#3dffa8;--down:#ff5470}
@@ -95,6 +96,10 @@ header,.htitle,#mission,.legend,footer{pointer-events:none}header a,header .chip
 @keyframes hintp{50%{opacity:.4}}
 .legend{bottom:42px;gap:14px;font-size:10px;white-space:nowrap}
 
+/* sound toggle + model credit */
+.snd{position:absolute;right:22px;bottom:12px;z-index:7;font:600 10px 'JetBrains Mono';letter-spacing:1px;color:#9eeaff;background:rgba(3,18,32,.72);border:1px solid rgba(95,216,255,.45);border-radius:14px;padding:5px 11px;cursor:pointer;box-shadow:0 0 12px rgba(47,200,255,.18)}
+.snd:hover{border-color:#9eeaff;color:#fff}.snd.on{color:#e6fbff;border-color:rgba(158,234,255,.85)}
+.credit{position:absolute;left:22px;bottom:14px;z-index:6;font:9px 'JetBrains Mono';color:#3f7f99;letter-spacing:.3px}.credit a{color:#5fa9c4;text-decoration:none}.credit a:hover{text-decoration:underline}
 /* ---------- phones / narrow screens ---------- */
 #card{position:fixed}
 @media (max-width:760px){
@@ -113,6 +118,8 @@ header,.htitle,#mission,.legend,footer{pointer-events:none}header a,header .chip
   .hl{font-size:9.5px;letter-spacing:.8px}.hl.src{font-size:8.5px}.hl.bot{font-size:10px}.hl.bot small{display:none}.hl.src{opacity:.85}
   .hint{white-space:nowrap;letter-spacing:.6px}.hdr-r .chip{white-space:nowrap}.xm{display:none}
   #card{width:min(320px,92vw)}
+  .snd{top:108px;right:10px;bottom:auto;padding:5px 9px;font-size:9.5px}
+  .credit{position:relative;left:auto;bottom:auto;display:block;text-align:center;padding:0 10px 18px;font-size:8.5px}
 }
 </style></head><body>
 <div id="holo"></div><div class="scanl"></div><div class="sweep"></div><div class="vig"></div>
@@ -129,6 +136,8 @@ header,.htitle,#mission,.legend,footer{pointer-events:none}header a,header .chip
 <div id="card"></div>
 <div class="legend"><span><i style="background:#5fd8ff"></i>scan thread</span><span><i style="background:#ffffff"></i>signal thread</span><span><i style="background:#2d6f8a"></i>dim = not cited yet / no output</span><span>suit route = real signals, oldest→newest · click nodes</span></div>
 <footer id="foot"></footer>
+<button class="snd" id="snd" type="button" aria-pressed="false" title="Toggle sound effects (synthesized)">🔇 SOUND OFF</button>
+<div class="credit">suit model: “Sci-fi Soldier” by Irondust · <a href="https://opengameart.org/content/sci-fi-soldier" target="_blank" rel="noopener">CC0</a></div>
 <script>
 function panel(id,t,d,key){
   const el=document.getElementById(id);

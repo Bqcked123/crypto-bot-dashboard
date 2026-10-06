@@ -5,14 +5,17 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { loadSuit, makeSuitEnv } from './suit_rig.js';
+import { SFX } from './sfx.js';
 
 const SD = window.SD, host = document.getElementById('holo');
 const CY = 0x5fd8ff, CYB = 0x9eeaff, WHITE = 0xe8fbff;
 const MOBILE = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: coarse)').matches;
 let W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(MOBILE ? Math.min(devicePixelRatio || 1, 1.25) : 1); renderer.setSize(W, H); renderer.setClearColor(0x01070f, 1);
+const DPR_LEVELS = MOBILE ? [Math.min(devicePixelRatio || 1, 1.5), Math.min(devicePixelRatio || 1, 1.25), 1, .85] : [Math.min(devicePixelRatio || 1, 1.25), 1, .85];
+let qLevel = MOBILE ? 1 : 1;   // start one step down; raised again if fps allows
+renderer.setPixelRatio(DPR_LEVELS[qLevel]); renderer.setSize(W, H); renderer.setClearColor(0x01070f, 1);
 host.appendChild(renderer.domElement);
 const labels = new CSS2DRenderer(); labels.setSize(W, H);
 Object.assign(labels.domElement.style, { position: 'absolute', top: '0', left: '0', pointerEvents: 'none' });
@@ -34,7 +37,12 @@ renderer.domElement.style.cursor = 'grab';
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), MOBILE ? 0.75 : 0.85, 0.45, 0.12); composer.addPass(bloom);
-if (MOBILE) composer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.25));
+composer.setPixelRatio(DPR_LEVELS[qLevel]);
+let partScale = MOBILE ? .6 : 1;   // thruster particle spawn factor (lowered when fps drops)
+function setQuality(l) { l = Math.max(0, Math.min(DPR_LEVELS.length - 1, l)); if (l === qLevel) return; qLevel = l; const r = DPR_LEVELS[l]; renderer.setPixelRatio(r); composer.setPixelRatio(r); renderer.setSize(W, H); composer.setSize(W, H); bloom.resolution.set(W * r * (l >= 2 ? .5 : 1), H * r * (l >= 2 ? .5 : 1)); partScale = (MOBILE ? .6 : 1) * (l >= 2 ? .55 : 1); pg.setDrawRange(0, l >= 2 ? Math.floor(PN * .5) : PN); }
+const fpsMon = { n: 0, t: 0, good: 0 };
+function watchFps(rawDt) { fpsMon.n++; fpsMon.t += rawDt; if (fpsMon.t < 2) return; const fps = fpsMon.n / fpsMon.t; fpsMon.n = 0; fpsMon.t = 0;
+  if (fps < 40) { fpsMon.good = 0; setQuality(qLevel + 1); } else if (fps > 57) { if (++fpsMon.good >= 3) { fpsMon.good = 0; setQuality(qLevel - 1); } } else fpsMon.good = 0; window.__fps = Math.round(fps); }
 
 const world = new THREE.Group(); scene.add(world);
 const add = (o, p = world) => (p.add(o), o);
@@ -145,149 +153,91 @@ function path(from, to) { if (from === to) return []; const prev = { [from]: nul
   while (q.length) { const u = q.shift(); for (const h of adj[u] || []) if (!(h.to in prev)) { prev[h.to] = { u, h }; if (h.to === to) { const p = []; let v = to; while (prev[v]) { p.unshift(prev[v].h); v = prev[v].u; } return p; } q.push(h.to); } } return []; }
 const hop = (a, b) => { const h = (adj[a] || []).find(x => x.to === b); return h ? [h] : path(a, b); };
 
-// ---------- armored suit (original design built from primitives; solid metal, NOT part of the hologram) ----------
-// Metal plates live on layers 0+1. In the bloom pass (layer 0) they are swapped to flat black, so they occlude the glow
-// behind them but never bloom; afterwards layer 1 is drawn on top with real PBR lighting + tone mapping (see frame()).
+// ---------- the SUIT: licensed CC0 model ("Sci-fi Soldier" by Irondust) on a posable skeleton (see suit_rig.js) ----------
+// Metal lives on layers 0+1. In the bloom pass (layer 0) it is swapped to flat black, so it occludes the glow behind it but
+// never blooms; afterwards layer 1 is drawn on top with real PBR lighting + tone mapping (see frame()).
 const suit = add(new THREE.Group());           // position + heading (slerped)
 const bankG = add(new THREE.Group(), suit);    // roll into turns
-const figure = add(new THREE.Group(), bankG);  // pitch: upright (hover) <-> horizontal (flight)
-suit.scale.setScalar(1.12);
-const pmrem = new THREE.PMREMGenerator(renderer), envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; pmrem.dispose();
-// Original design (not any film character): crimson lacquered plates over gunmetal sub-plates, thin champagne-gold trim,
-// an elongated helmet with ONE continuous wraparound visor band + top crest, and a round lens in a hexagonal housing.
-const RED = new THREE.MeshPhysicalMaterial({ color: 0x9c1219, metalness: .55, roughness: .3, clearcoat: 1, clearcoatRoughness: .04, envMap: envTex, envMapIntensity: 1.5 });   // painted metal
-const STEEL = new THREE.MeshPhysicalMaterial({ color: 0x454b55, metalness: .9, roughness: .5, clearcoat: .2, envMap: envTex, envMapIntensity: .75 });                         // gunmetal plates
-const GOLD = new THREE.MeshPhysicalMaterial({ color: 0xd2a55a, metalness: 1, roughness: .18, clearcoat: .5, clearcoatRoughness: .1, envMap: envTex, envMapIntensity: 1.4 });    // trim only
-const GAP = new THREE.MeshStandardMaterial({ color: 0x121418, metalness: .6, roughness: .6, envMap: envTex, envMapIntensity: .4 });                                             // under-suit
+const figure = add(new THREE.Group(), bankG);  // pitch: upright (landed / hovering) <-> horizontal (flight); pivot = hips
+const SUIT_SCALE = .6, SK = SUIT_SCALE / 1.12; figure.scale.setScalar(SUIT_SCALE);   // ~1.4x a scanner node's height (was 1.12)
 const BLACK = new THREE.MeshBasicMaterial({ color: 0x000000 });
 const metal = [];
 const both = o => { o.traverse(c => c.layers.enable(1)); return o; };   // glowing bits: bloom pass AND drawn over the metal
-function part(geom, parent, pos, rot, scl, mat = RED) {
-  const m = new THREE.Mesh(geom, mat); if (pos) m.position.set(...pos); if (rot) m.rotation.set(...rot); if (scl) m.scale.set(...scl);
-  m.userData.mat = mat; m.layers.enable(1); metal.push(m); parent.add(m); return m;
-}
-const solidGlow = (c, extra = {}) => new THREE.MeshBasicMaterial({ color: c, toneMapped: false, ...extra });
-const box = (w, h, d) => new THREE.BoxGeometry(w, h, d), cyl = (rt, rb, h, n = 20) => new THREE.CylinderGeometry(rt, rb, h, n);
-// torso (broad chest, dark under-suit visible in the gaps)
-part(cyl(.09, .078, .36, 16), figure, [0, .1, 0], null, [1, 1, .74], GAP);
-part(cyl(.158, .118, .17, 28), figure, [0, .22, 0], null, [1, 1, .78]);                                  // chest shell
-part(cyl(.084, .118, .03, 28), figure, [0, .318, 0], null, [1, 1, .8], STEEL);                          // shoulder yoke
-part(box(.034, .16, .02), figure, [0, .215, .113], [-.08, 0, 0], null, STEEL);                          // centre keel
-[-1, 1].forEach(s => {
-  part(box(.085, .05, .02), figure, [s * .07, .262, .1], [-.18, s * .42, s * .2]);                       // upper chest plate (layered over shell)
-  part(box(.08, .006, .024), figure, [s * .07, .236, .106], [-.18, s * .42, s * .2], null, GOLD);       // gold trim line
-  part(box(.03, .1, .06), figure, [s * .135, .2, .005], [0, 0, s * -.12], null, STEEL);                 // flank plates
-});
-for (let k = 0; k < 3; k++) part(cyl(.102 - k * .007, .096 - k * .007, .028, 24), figure, [0, .12 - k * .036, 0], null, [1, 1, .74], STEEL); // segmented abdomen
-part(cyl(.101, .101, .022, 24), figure, [0, -.03, 0], null, [1, 1, .78], STEEL);                        // belt
-part(cyl(.0145, .0145, .006, 6), figure, [0, -.03, .08], [Math.PI / 2, 0, 0], null, GOLD);              // hex buckle
-part(cyl(.098, .077, .09, 24), figure, [0, -.083, 0], null, [1, 1, .78]);                               // pelvis
-part(cyl(.038, .046, .06, 12), figure, [0, .335, 0], null, null, GAP);                                  // neck
-// helmet: elongated crimson shell, gunmetal lower mask, top crest, ONE wraparound visor band
-const helm = add(new THREE.Group(), figure); helm.position.set(0, .405, -.004);
-part(new THREE.SphereGeometry(.086, 32, 22), helm, [0, 0, 0], null, [1, 1.12, 1.2]);
-part(new THREE.SphereGeometry(.0885, 32, 14, Math.PI / 2 - 1.15, 2.3, 1.72, .95), helm, [0, 0, 0], null, [1, 1.12, 1.2], STEEL);  // lower mask / jaw
-part(box(.012, .016, .17), helm, [0, .088, -.02], [.1, 0, 0], null, STEEL);                              // crest ridge
-part(box(.014, .003, .1), helm, [0, .097, 0], [.1, 0, 0], null, GOLD);                               // crest trim
-[-1, 1].forEach(s => part(box(.012, .04, .05), helm, [s * .085, -.012, -.01], [0, 0, 0], null, STEEL));  // cheek vents
-const visor = both(add(new THREE.Mesh(new THREE.CylinderGeometry(.0905, .0905, .015, 32, 1, true, -1.25, 2.5), solidGlow(0xe4f6ff, { side: THREE.DoubleSide })), helm));
-visor.position.y = .012; visor.scale.set(1, 1, 1.2);
-const eyeGlow = both(add(glow(.11, .4, 0xbfe9ff), helm)); eyeGlow.position.set(0, .012, .11); eyeGlow.material.toneMapped = false;
-// chest light: round lens in a hexagonal gunmetal housing
-const chest = add(new THREE.Group(), figure); chest.position.set(0, .222, .124);
-part(cyl(.036, .036, .014, 6), chest, [0, 0, 0], [Math.PI / 2, 0, 0], null, STEEL);
-both(add(new THREE.Mesh(new THREE.CircleGeometry(.021, 28), solidGlow(0xdff8ff)), chest)).position.z = .0075;
-const chestGlow = both(add(glow(.2, .8, 0xbff2ff), chest)); chestGlow.material.toneMapped = false;
-// back thruster packs
-[-1, 1].forEach(s => part(box(.036, .16, .07), figure, [s * .06, .18, -.095], [.2, 0, s * .12], null, STEEL));
-// limbs: pivot groups so arms/legs can pose
+let rig = null; suit.visible = false;
 const emitters = [];
-const flameGeo = new THREE.ConeGeometry(.024, .12, 14, 1, true).rotateX(Math.PI).translate(0, -.06, 0), flameCoreGeo = new THREE.ConeGeometry(.011, .07, 10, 1, true).rotateX(Math.PI).translate(0, -.035, 0);
-const thrusterGlow = (parent, y) => {
-  const g = both(add(glow(.28, 1, 0xd8f8ff), parent)); g.position.y = y; g.material.toneMapped = false;
-  const fl = both(add(new THREE.Mesh(flameGeo, meshMat(0x8fdcff, .75, { toneMapped: false })), parent)); fl.position.y = y;
-  const fc = both(add(new THREE.Mesh(flameCoreGeo, meshMat(0xffffff, .95, { toneMapped: false })), parent)); fc.position.y = y;
-  const em = new THREE.Object3D(); em.position.y = y; parent.add(em); emitters.push({ em, g, fl, fc }); return g;
-};
-const arms = [-1, 1].map(s => {
-  const sh = add(new THREE.Group(), figure); sh.position.set(s * .19, .252, 0);
-  part(new THREE.SphereGeometry(.051, 16, 12), sh, [0, 0, 0], null, null, GAP);
-  part(new THREE.SphereGeometry(.072, 24, 14, 0, Math.PI * 2, 0, Math.PI * .5), sh, [0, .012, 0], null, [1.12, .9, 1.05]);          // pauldron (layer 1)
-  part(new THREE.SphereGeometry(.068, 24, 8, 0, Math.PI * 2, Math.PI * .5, Math.PI * .14), sh, [0, .0, 0], null, [1.16, 1, 1.08], STEEL); // pauldron lower lip (layer 2)
-  part(cyl(.043, .037, .17, 18), sh, [0, -.11, 0]);
-  part(box(.016, .1, .05), sh, [s * .04, -.1, 0], null, null, STEEL);                                    // bicep side plate
-  const el = add(new THREE.Group(), sh); el.position.y = -.21;
-  part(new THREE.SphereGeometry(.038, 14, 10), el, [0, 0, 0], null, null, GAP);
-  part(cyl(.04, .05, .16, 18), el, [0, -.1, 0]);
-  part(box(.02, .12, .06), el, [s * .043, -.1, 0], [0, 0, s * .06], null, STEEL);                        // bracer plate
-  part(cyl(.054, .054, .008, 18), el, [0, -.184, 0], null, null, GOLD);                                  // thin cuff trim
-  part(box(.064, .068, .056), el, [0, -.232, 0], null, null, STEEL);                                     // gauntlet
-  part(box(.066, .022, .024), el, [0, -.214, .022], null, null, RED);                                    // knuckle plate
-  thrusterGlow(el, -.272); return { s, sh, el };
-});
-const legsS = [-1, 1].map(s => {
-  const hp = add(new THREE.Group(), figure); hp.position.set(s * .072, -.15, 0);
-  part(new THREE.SphereGeometry(.05, 14, 10), hp, [0, 0, 0], null, null, GAP);
-  part(cyl(.063, .05, .24, 18), hp, [0, -.135, 0]);
-  part(box(.018, .16, .07), hp, [s * .058, -.13, 0], [0, 0, s * -.06], null, STEEL);                     // outer thigh plate
-  const kn = add(new THREE.Group(), hp); kn.position.y = -.27;
-  part(new THREE.SphereGeometry(.044, 14, 10), kn, [0, 0, 0], null, null, GAP);
-  part(new THREE.SphereGeometry(.036, 14, 10), kn, [0, .002, .032], null, [1.1, 1.2, .6], STEEL);        // knee cap
-  part(new THREE.TorusGeometry(.024, .003, 6, 20), kn, [0, .002, .05], null, [1.1, 1.2, 1], GOLD);      // knee trim
-  part(cyl(.048, .056, .2, 18), kn, [0, -.125, 0]);
-  part(box(.046, .055, .016), kn, [0, -.075, .053], [-.06, 0, 0], null, STEEL);                          // layered shin plates
-  part(box(.05, .055, .016), kn, [0, -.135, .057], [-.06, 0, 0], null, STEEL);
-  part(cyl(.06, .06, .008, 18), kn, [0, -.232, 0], null, null, GOLD);                                    // thin boot trim
-  part(box(.078, .062, .13), kn, [0, -.282, .025], null, null, STEEL);                                   // boot
-  part(box(.07, .03, .05), kn, [0, -.27, .075], [-.2, 0, 0], null, RED);                                 // toe cap
-  thrusterGlow(kn, -.316); return { s, hp, kn };
-});
+const flameGeo = new THREE.ConeGeometry(.022, .11, 14, 1, true).rotateX(Math.PI).translate(0, -.055, 0), flameCoreGeo = new THREE.ConeGeometry(.01, .065, 10, 1, true).rotateX(Math.PI).translate(0, -.032, 0);
+function thruster(em, kind) {   // flame + glow on an emitter whose -Y is the thrust direction (palms and boot soles)
+  const s = kind === 'hand' ? .8 : 1;
+  const g = both(add(glow(.26 * s, 1, 0xd8f8ff), em)); g.material.toneMapped = false;
+  const fl = both(add(new THREE.Mesh(flameGeo, meshMat(0x8fdcff, .75, { toneMapped: false })), em)); fl.scale.setScalar(s);
+  const fc = both(add(new THREE.Mesh(flameCoreGeo, meshMat(0xffffff, .95, { toneMapped: false })), em)); fc.scale.setScalar(s);
+  emitters.push({ em, g, fl, fc, s, kind });
+}
+makeSuitEnv(renderer).then(env => loadSuit({ renderer, envTex: env })).then(r => {
+  rig = r; figure.add(rig.root);
+  for (const m of [...rig.meshes, ...rig.metalParts]) { m.userData.mat = m.material; m.layers.enable(1); metal.push(m); }
+  rig.glowParts.forEach(both);
+  rig.emitters.forEach(e => thruster(e.em, e.kind));
+  rig.setWeights(pw); rig.update(0, camera); suit.visible = true;
+}).catch(e => { console.error('suit failed to load', e); const c = document.getElementById('mission'); if (c) c.textContent = 'SUIT MODEL FAILED TO LOAD'; });
 // key + rim light ride with the camera so the suit always reads clearly; they only affect the metal (hologram is unlit)
 scene.add(camera);
-const keyL = new THREE.DirectionalLight(0xfff1e2, 3.4); keyL.position.set(3, 4, 2.5); camera.add(keyL);
+const keyL = new THREE.DirectionalLight(0xfff1e2, 3.2); keyL.position.set(3, 4, 2.5); camera.add(keyL);
 const rimL = new THREE.DirectionalLight(0x86dcff, 3.2); rimL.position.set(-3, 3, -24); camera.add(rimL);
 const rimL2 = new THREE.DirectionalLight(0xffc89a, 1.2); rimL2.position.set(4, -1, -20); camera.add(rimL2);
 const fillL = new THREE.HemisphereLight(0xbfe6ff, 0x200c06, .55); scene.add(fillL);
 [keyL, rimL, rimL2, fillL].forEach(l => l.layers.enable(1));
 // thruster particle trails (in scene space so they stream behind the suit)
-const TP = 700, tpg = new THREE.BufferGeometry(), tpos = new Float32Array(TP * 3), tcol = new Float32Array(TP * 3), tvel = new Float32Array(TP * 3), tlife = new Float32Array(TP);
+const TP = MOBILE ? 420 : 700, tpg = new THREE.BufferGeometry(), tpos = new Float32Array(TP * 3), tcol = new Float32Array(TP * 3), tvel = new Float32Array(TP * 3), tlife = new Float32Array(TP);
 tpg.setAttribute('position', new THREE.BufferAttribute(tpos, 3)); tpg.setAttribute('color', new THREE.BufferAttribute(tcol, 3));
-const trailPts = new THREE.Points(tpg, new THREE.PointsMaterial({ size: .065, map: glowTex, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+const trailPts = new THREE.Points(tpg, new THREE.PointsMaterial({ size: .06 * Math.sqrt(SK), map: glowTex, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
 scene.add(trailPts); let tNext = 0;
 const _p = new THREE.Vector3(), _q = new THREE.Quaternion(), _d = new THREE.Vector3();
 function emit(dt, power) {
-  emitters.forEach(({ em, g, fl, fc }) => {
-    g.material.opacity = .45 + .35 * Math.random(); g.scale.setScalar((.09 + .07 * power) * (0.85 + .3 * Math.random()));
-    const L = (.45 + .85 * power) * (.8 + .4 * Math.random()); fl.scale.set(1, L, 1); fc.scale.set(1, L * 1.1, 1); fl.material.opacity = .5 + .3 * Math.random();
-    const n = Math.round(2 + 3 * power);
+  const on = power > .03;
+  emitters.forEach(({ em, g, fl, fc, s, kind }) => {
+    const pw_ = kind === 'hand' ? power * .85 : power;
+    g.visible = fl.visible = fc.visible = on; if (!on) return;
+    g.material.opacity = Math.min(1, .3 + .45 * pw_) * (.8 + .3 * Math.random()); g.scale.setScalar((.07 + .08 * pw_) * s * (0.85 + .3 * Math.random()));
+    const L = (.35 + .8 * pw_) * (.8 + .4 * Math.random()) * s; fl.scale.set(s, L, s); fc.scale.set(s, L * 1.1, s); fl.material.opacity = Math.min(.85, .35 + .35 * pw_) + .1 * Math.random();
+    const n = Math.round((1 + 3 * pw_) * partScale + Math.random() * .6);
     em.getWorldPosition(_p); em.getWorldQuaternion(_q); _d.set(0, -1, 0).applyQuaternion(_q);
     for (let k = 0; k < n; k++) { const i = tNext; tNext = (tNext + 1) % TP;
-      tpos[i * 3] = _p.x; tpos[i * 3 + 1] = _p.y; tpos[i * 3 + 2] = _p.z; const sp = .6 + power * 1.2;
-      tvel[i * 3] = _d.x * sp + (Math.random() - .5) * .25; tvel[i * 3 + 1] = _d.y * sp + (Math.random() - .5) * .25; tvel[i * 3 + 2] = _d.z * sp + (Math.random() - .5) * .25; tlife[i] = .45 + Math.random() * .2; }
+      tpos[i * 3] = _p.x; tpos[i * 3 + 1] = _p.y; tpos[i * 3 + 2] = _p.z; const sp = (.5 + pw_ * 1.2) * SK;
+      tvel[i * 3] = _d.x * sp + (Math.random() - .5) * .22 * SK; tvel[i * 3 + 1] = _d.y * sp + (Math.random() - .5) * .22 * SK; tvel[i * 3 + 2] = _d.z * sp + (Math.random() - .5) * .22 * SK; tlife[i] = .4 + Math.random() * .2; }
   });
   for (let i = 0; i < TP; i++) { if (tlife[i] <= 0) { tcol[i * 3] = tcol[i * 3 + 1] = tcol[i * 3 + 2] = 0; continue; }
     tlife[i] -= dt; const f = Math.max(0, tlife[i] / .6); tpos[i * 3] += tvel[i * 3] * dt; tpos[i * 3 + 1] += tvel[i * 3 + 1] * dt; tpos[i * 3 + 2] += tvel[i * 3 + 2] * dt;
     tcol[i * 3] = .7 * f; tcol[i * 3 + 1] = .95 * f; tcol[i * 3 + 2] = 1 * f; }
   tpg.attributes.position.needsUpdate = true; tpg.attributes.color.needsUpdate = true;
 }
-let pitch = 0.15, bank = 0; const prevF = new THREE.Vector3(0, 0, 1), curF = new THREE.Vector3(), dummy = new THREE.Object3D();
-function poseSuit(dt, t, flying) {
-  pitch += ((flying ? 1.32 : 0.12) - pitch) * (1 - Math.exp(-dt * 4)); figure.rotation.x = pitch;
-  const fl = THREE.MathUtils.clamp((pitch - .12) / 1.2, 0, 1); // 0 hover .. 1 flight
-  arms.forEach(({ s, sh, el }) => { sh.rotation.z = s * THREE.MathUtils.lerp(.42, .14, fl); sh.rotation.x = THREE.MathUtils.lerp(-.25, .12, fl) + (flying ? 0 : Math.sin(t * 2 + s) * .05); el.rotation.x = THREE.MathUtils.lerp(-.5, 0, fl); });
-  legsS.forEach(({ s, hp, kn }) => { hp.rotation.z = s * THREE.MathUtils.lerp(.08, .03, fl); hp.rotation.x = THREE.MathUtils.lerp(.05, -.06, fl) + Math.sin(t * 2.4 + s) * .03; kn.rotation.x = THREE.MathUtils.lerp(.2, .1, fl); });
-  chestGlow.material.opacity = .75 + .25 * Math.sin(t * 6); emit(dt, flying ? 1 : .35);
+// ---- pose / thrust state (blended every frame) ----
+const POSE_KEYS = ['stand', 'hover', 'crouch', 'launch', 'fly', 'tuck', 'brake', 'turnL', 'turnR'];
+const pw = { stand: 0, hover: 1, crouch: 0, launch: 0, fly: 0, tuck: 0, brake: 0, turnL: 0, turnR: 0 }, pwE = { ...pw };
+let pitch = 0.1, bank = 0, power = 0, headYaw = 0, speedNow = 0, flightW = 0, flightTarget = 0, turnS = 0, lookYaw = 0, accS = 0;
+const prevF = new THREE.Vector3(0, 0, 1), curF = new THREE.Vector3(), dummy = new THREE.Object3D();
+const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2, sstep = (a, b, x) => { const k = THREE.MathUtils.clamp((x - a) / (b - a), 0, 1); return k * k * (3 - 2 * k); };   // works for a > b too
+function blendPose(target, rate, dt) { const k = 1 - Math.exp(-dt * rate); for (const n of POSE_KEYS) pw[n] += ((target[n] || 0) - pw[n]) * k; }
+function driveRig(dt, t, pitchTarget, pitchRate, powerTarget, powerRate = 8) {
+  pitch += (pitchTarget - pitch) * (1 - Math.exp(-dt * pitchRate)); figure.rotation.x = pitch;
+  power += (powerTarget - power) * (1 - Math.exp(-dt * powerRate));
+  flightW += (flightTarget - flightW) * (1 - Math.exp(-dt * 3));
+  for (const k of POSE_KEYS) { const w = Math.min(1, Math.max(0, pw[k])); pwE[k] = w * w * (3 - 2 * w); }
+  if (rig) { rig.setWeights(pwE); rig.headYaw = headYaw; rig.flight = flightW; rig.update(t, camera); }
+  emit(dt, power); SFX.thrust(power, speedNow);
 }
+const hipY = () => (rig ? rig.hipH : .5) * SUIT_SCALE;      // hips height above the feet for the current blended pose
+const nodeTop = n => n.type === 'source' ? .085 : n.kind === 'trader' ? .27 : .19;
 const trail = add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(new Array(30).fill(0).map(() => new THREE.Vector3())), addMat(0xffffff, .9)));
-// suit state machine (same scan-driven route as before)
-let route = [], cur = null, curT = 0, atNode = 'core', pause = 0, mIdx = -1, mission = null, phase = '', readFx = null;
+// suit state machine (same scan-driven route; now lands on every node where it stops)
+let route = [], cur = null, curT = 0, atNode = 'core', mIdx = -1, mission = null, phase = '', readFx = null, landPhase = 'fly';
 const SPEED = 1.35; // units / s
 const cap = document.getElementById('mission');
 function caption(m, ph) {
   const sc = SD.botName(m.scanner).toUpperCase(), so = nodesById[m.source].label.toUpperCase();
   let top, sub = '';
   if (ph === 'out') top = `${sc} ⟶ SCANNING ${so}`;
-  else if (ph === 'read') top = `◉ READING ${so}`;
+  else if (ph === 'read') top = `◉ LANDED · SCANNING ${so}`;
   else if (ph === 'back') top = `${so} ⟶ ${sc}`;
   else top = `SIGNAL ${m.sig.coin || 'MARKET'} ${SD.dirIcon(m.sig.direction)} ${m.sig.direction.toUpperCase()} ⟶ ${SD.botName(m.trader).toUpperCase()}`;
   if (m.sig) sub = `signal on file ${SD.hm(m.sig.time)} ET · ${m.sig.from === 'x' ? 'X' : SD.botName(m.sig.from)} → ${m.trader === 'core' ? 'Crypto Paper Trader' : 'Memecoin Paper Trader'} · "${SD.trunc(m.sig.text, 70)}" · source ${m.matched ? 'named in signal text' : 'inferred from scanner coverage'}`;
@@ -295,52 +245,118 @@ function caption(m, ph) {
   else if (m.patrol) sub = 'no scan/signal events on file yet: patrolling sources';
   cap.innerHTML = `${SD.esc(top)}<small>${SD.esc(sub)}</small>`;
 }
+// landing timeline (seconds): descend on thrusters, impact crouch, stand up, scan, crouch, launch
+const LT = { descend: .8, impact: .32, rise: .9, launchCrouch: .38, liftoff: .62 };
 function nextMission() {
   if (!missions.length) return;
   mIdx = (mIdx + 1) % missions.length; mission = missions[mIdx];
   const legsOut = [...hop(atNode, mission.scanner).map(h => ({ h, ph: 'out' })), ...hop(mission.scanner, mission.source).map(h => ({ h, ph: 'out' }))];
-  route = [...legsOut, { read: 2.2 }, ...hop(mission.source, mission.scanner).map(h => ({ h, ph: 'back' }))];
-  if (mission.trader) route.push(...hop(mission.scanner, mission.trader).map(h => ({ h, ph: 'signal' })), { deliver: 1.0 });
+  route = [...legsOut, { stop: 'read', node: mission.source, scan: 2.8 }, ...hop(mission.source, mission.scanner).map(h => ({ h, ph: 'back' }))];
+  if (mission.trader) route.push(...hop(mission.scanner, mission.trader).map(h => ({ h, ph: 'signal' })), { stop: 'deliver', node: mission.trader, scan: 1.6 });
+  route.forEach((r, i) => { if (r.h && route[i + 1] && route[i + 1].stop) r.land = true; });
   phase = ''; advance();
 }
+let stopT = 0, stopFlags = {}, P0 = new THREE.Vector3(), liftY = 0, burstDone = false;
 function advance() {
-  cur = route.shift(); curT = 0;
+  const prev = cur; cur = route.shift(); curT = 0; burstDone = false;
+  if (prev && prev.stop) liftY = suit.position.y;   // remember the take-off height so the next leg eases down to its flight line
+  else liftY = null;
   if (!cur) return nextMission();
-  if (cur.read) { pause = cur.read; phase = 'read'; caption(mission, 'read'); const n = nodesById[mission.source]; n.lab.element.classList.add('hot'); readFx = { n, t0: performance.now() }; return; }
-  if (cur.deliver) { pause = cur.deliver; const n = nodesById[mission.trader]; ripples.push({ s: add(glow(.4, 1, 0xffffff)), pos: n.pos.clone(), t0: performance.now() }); return; }
+  if (cur.stop) {
+    stopT = 0; stopFlags = {}; P0.copy(suit.position);
+    if (cur.stop === 'read') { phase = 'read'; caption(mission, 'read'); const n = nodesById[mission.source]; n.lab.element.classList.add('hot'); readFx = { n, t0: performance.now() }; }
+    return;
+  }
   if (cur.ph !== phase) { phase = cur.ph; caption(mission, phase); }
 }
 const ripples = [];
-const tmpA = new THREE.Vector3(), tmpB = new THREE.Vector3(), HOVER_UP = .5, FLY_UP = .12;
+const tmpA = new THREE.Vector3(), tmpB = new THREE.Vector3(), tmpC = new THREE.Vector3(), wA = new THREE.Vector3(), wB = new THREE.Vector3(), wL = new THREE.Vector3(), fwV = new THREE.Vector3(), velS = new THREE.Vector3(), outV = new THREE.Vector3(), standV = new THREE.Vector3(), FLY_UP = .12, qYaw = new THREE.Quaternion(), UPV = new THREE.Vector3(0, 1, 0);
+function once(k, fn) { if (!stopFlags[k]) { stopFlags[k] = 1; fn(); } }
+function stepStop(dt, t) {
+  const n = nodesById[cur.node]; stopT += dt; const T = stopT, ground = n.pos.y + nodeTop(n);
+  const t1 = LT.descend, t2 = t1 + LT.impact, t3 = t2 + LT.rise, t4 = t3 + cur.scan, t5 = t4 + LT.launchCrouch, t6 = t5 + LT.liftoff;
+  // face outward from the hologram centre while landed
+  const out = outV.copy(n.pos).setY(0); if (out.lengthSq() < .01) out.set(0, 0, 1); qYaw.setFromAxisAngle(UPV, Math.atan2(out.x, out.z));
+  suit.quaternion.slerp(qYaw, 1 - Math.exp(-dt * 3)); bank += (0 - bank) * (1 - Math.exp(-dt * 4)); bankG.rotation.z = bank; speedNow = 0; trail.visible = false;
+  const stand = standV.set(n.pos.x, 0, n.pos.z); velS.set(0, 0, 0); flightTarget = 0; turnS *= .9;
+  if (T < t1) {                       // descend: palms + boots firing, legs reaching for the ground
+    landPhase = 'descend'; once('burst', () => SFX.burst());
+    const k = ease(T / t1); stand.y = ground + hipY(); suit.position.lerpVectors(P0, stand, k);
+    blendPose({ hover: 1 }, 6, dt); driveRig(dt, t, .03, 6, 1.35 - .75 * k);
+  } else if (T < t2) {                // touchdown: heavy crouch, thrusters cut
+    landPhase = 'impact'; once('clank', () => { SFX.clank(); SFX.powerDown(); ripples.push({ s: add(glow(.35, 1, 0xffffff)), pos: new THREE.Vector3(n.pos.x, ground, n.pos.z), t0: performance.now() }); });
+    blendPose({ crouch: 1 }, 20, dt); suit.position.set(n.pos.x, ground + hipY(), n.pos.z); driveRig(dt, t, 0, 8, 0, 18);
+  } else if (T < t3) {                // stand up into the relaxed hero stance (plates settle, servos whir)
+    landPhase = 'rise'; once('settle', () => SFX.settle());
+    blendPose({ stand: 1 }, 5, dt); suit.position.set(n.pos.x, ground + hipY(), n.pos.z); driveRig(dt, t, 0, 6, 0);
+  } else if (T < t4) {                // scanning: subtle head turn left/right
+    landPhase = 'scan'; const s = (T - t3) / cur.scan; headYaw = .42 * Math.sin(s * Math.PI * 2) * sstep(0, .12, s) * (1 - sstep(.85, 1, s));
+    blendPose({ stand: 1 }, 5, dt); suit.position.set(n.pos.x, ground + hipY(), n.pos.z); driveRig(dt, t, 0, 6, 0);
+  } else if (T < t5) {                // load the legs
+    landPhase = 'launch'; headYaw *= .8; once('servo', () => SFX.servo());
+    blendPose({ launch: 1 }, 12, dt); suit.position.set(n.pos.x, ground + hipY(), n.pos.z); driveRig(dt, t, .05, 6, .25, 10);
+  } else if (T < t6) {                // lift-off
+    landPhase = 'liftoff'; headYaw = 0; once('launch', () => SFX.launch());
+    const k = (T - t5) / LT.liftoff; flightTarget = .5 * k; blendPose({ hover: .45, tuck: .35, fly: .2 }, 7, dt);
+    suit.position.set(n.pos.x, ground + hipY() + .55 * SK * k * k, n.pos.z); driveRig(dt, t, .35 * k, 5, 1.45, 12);
+  } else { headYaw = 0; return true; }
+  if (cur.stop === 'read' && readFx) { const k = (performance.now() - readFx.t0) / 1000; readFx.n.glow.scale.setScalar(.35 + .45 * Math.abs(Math.sin(k * 5))); if (landPhase === 'scan' && k % .45 < dt) ripples.push({ s: add(glow(.3, 1, 0x9eeaff)), pos: readFx.n.pos.clone(), t0: performance.now() }); }
+  return false;
+}
 function stepSuit(dt, t) {
   if (!cur) return;
-  if (cur.read || cur.deliver) {
-    pause -= dt;
-    const n = nodesById[cur.read ? mission.source : mission.trader], target = n.pos.clone(); target.y += HOVER_UP + Math.sin(t * 3) * .035;
-    suit.position.lerp(target, 1 - Math.exp(-dt * 5));
-    bank += (0 - bank) * (1 - Math.exp(-dt * 3)); bankG.rotation.z = bank; poseSuit(dt, t, false);
-    if (cur.read && readFx) { const k = (performance.now() - readFx.t0) / 1000; readFx.n.glow.scale.setScalar(.35 + .45 * Math.abs(Math.sin(k * 5))); if (k % .45 < dt) ripples.push({ s: add(glow(.3, 1, 0x9eeaff)), pos: readFx.n.pos.clone(), t0: performance.now() }); }
-    if (pause <= 0) { if (cur.read && readFx) { readFx.n.glow.scale.setScalar(readFx.n.seen ? .34 : .2); readFx.n.lab.element.classList.remove('hot'); readFx = null; } advance(); }
-    trail.visible = false; return;
+  if (cur.stop) {
+    if (stepStop(dt, t)) {
+      if (cur.stop === 'read' && readFx) { readFx.n.glow.scale.setScalar(readFx.n.seen ? .34 : .2); readFx.n.lab.element.classList.remove('hot'); readFx = null; }
+      if (cur.stop === 'deliver') ripples.push({ s: add(glow(.4, 1, 0xffffff)), pos: nodesById[cur.node].pos.clone(), t0: performance.now() });
+      advance();
+    }
+    return;
   }
-  const { h } = cur, e = h.e; curT += dt * SPEED / e.len;
+  const { h } = cur, e = h.e;
+  const rem = (1 - Math.min(1, curT)) * e.len, land = cur.land ? sstep(1.25, .35, rem) : 0;   // 0 = cruising .. 1 = final approach
+  const f = cur.land ? THREE.MathUtils.clamp(rem / 1.05, .32, 1) : 1; speedNow = f;
+  curT += dt * SPEED * f / e.len;
   const u = Math.min(1, curT), p = h.rev ? 1 - u : u, p2 = h.rev ? Math.max(0, p - .03) : Math.min(1, p + .03);
-  e.curve.getPoint(p, tmpA); e.curve.getPoint(p2, tmpB); tmpA.y += FLY_UP; tmpB.y += FLY_UP;
-  suit.position.lerp(tmpA, 1 - Math.exp(-dt * 12));
+  if (!cur.path) { const pts = [suit.position.clone()]; for (let k = 1; k <= 8; k++) { const q = k / 8; pts.push(e.curve.getPoint(h.rev ? 1 - q : q).add(tmpC.set(0, FLY_UP, 0))); } cur.path = new THREE.CatmullRomCurve3(pts, false, 'centripetal'); }
+  cur.path.getPoint(u, tmpA); cur.path.getPoint(Math.min(1, u + .03), tmpB);
+  if (liftY != null) { const k = 1 - sstep(0, .45, u); tmpA.y += (liftY - tmpA.y) * k; tmpB.y += (liftY - tmpB.y) * k; }
+  if (cur.land) { const n = nodesById[h.to], hov = n.pos.y + nodeTop(n) + .5 * SUIT_SCALE + .42 * SK; tmpA.y += (hov - tmpA.y) * land; }
+  { const w = 9, ex = Math.exp(-w * dt);   // critically damped spring toward the path point (exact, frame-rate independent)
+    tmpC.subVectors(suit.position, tmpA); wL.copy(velS).addScaledVector(tmpC, w).multiplyScalar(dt);
+    velS.addScaledVector(wL, -w).multiplyScalar(ex); suit.position.copy(tmpA).add(tmpC.add(wL).multiplyScalar(ex)); }
   // heading: smooth slerp toward the direction of travel; bank from the signed yaw rate
-  const wA = world.localToWorld(suit.position.clone()), wB = world.localToWorld(tmpB.clone());
-  curF.subVectors(wB, wA); if (curF.lengthSq() > 1e-8) { curF.normalize();
+  world.localToWorld(wA.copy(suit.position)); world.localToWorld(wB.copy(tmpB));
+  curF.subVectors(wB, wA); if (curF.lengthSq() > 1e-8 && land < .7) { curF.normalize();
     dummy.position.copy(suit.position); world.add(dummy); dummy.lookAt(wB); world.remove(dummy);
-    suit.quaternion.slerp(dummy.quaternion, 1 - Math.exp(-dt * 6));
+    suit.quaternion.slerp(dummy.quaternion, 1 - Math.exp(-dt * 4.5));   // body follows a beat behind the head
     const yaw = Math.atan2(prevF.x * curF.z - prevF.z * curF.x, prevF.x * curF.x + prevF.z * curF.z) / Math.max(dt, 1e-3);
-    bank += (THREE.MathUtils.clamp(yaw * .45, -.85, .85) - bank) * (1 - Math.exp(-dt * 4)); prevF.copy(curF); }
-  bankG.rotation.z = bank; poseSuit(dt, t, true);
+    turnS += (THREE.MathUtils.clamp(yaw * .55, -1, 1) - turnS) * (1 - Math.exp(-dt * 5));
+    bank += (THREE.MathUtils.clamp(yaw * .45, -.85, .85) * (1 - land) - bank) * (1 - Math.exp(-dt * 4)); prevF.copy(curF); }
+  bankG.rotation.z = bank;
+  // head leads: look at a point further along the route (or onto the next hop) before the body turns
+  { const pa = h.rev ? p - .22 : p + .22; let ok = true;
+    if (pa < 0 || pa > 1) { const nx = route[0] && route[0].h; if (nx) nx.e.curve.getPoint(nx.rev ? 1 - Math.min(1, Math.abs(pa - (pa > 1 ? 1 : 0)) * e.len / nx.e.len + .05) : Math.min(1, Math.abs(pa - (pa > 1 ? 1 : 0)) * e.len / nx.e.len + .05), tmpB); else ok = false; }
+    else e.curve.getPoint(pa, tmpB);
+    let ly = 0;
+    if (ok) { tmpB.y += FLY_UP; world.localToWorld(wL.copy(tmpB)).sub(world.localToWorld(tmpC.copy(suit.position))); const fw = fwV.set(0, 0, 1).applyQuaternion(suit.getWorldQuaternion(qYaw));
+      if (wL.x * wL.x + wL.z * wL.z > 1e-6) ly = Math.atan2(fw.z * wL.x - fw.x * wL.z, fw.x * wL.x + fw.z * wL.z); }
+    lookYaw += (THREE.MathUtils.clamp(ly * 1.3, -.7, .7) * (1 - land) - lookYaw) * (1 - Math.exp(-dt * 6)); headYaw = lookYaw; }
+  // posture from the flight state: tucked while accelerating, banking stabiliser arms in turns, upright palms-forward braking
+  const acc = liftY != null ? 1 - sstep(.05, .42, u) : 0; accS += (acc - accS) * (1 - Math.exp(-dt * 4));
+  const cruise = 1 - land, brk = sstep(.08, .4, land) * (1 - sstep(.82, 1, land)), tw = Math.min(.85, Math.abs(turnS)) * cruise, tk = accS * .8 * cruise;
+  if (land > .02) { landPhase = land < .5 ? 'approach' : 'decel'; if (land > .25) once2(() => SFX.burst()); } else landPhase = 'fly';
+  flightTarget = cruise * (1 - .5 * accS);
+  blendPose({ fly: Math.max(0, cruise - tw - tk), tuck: tk, turnL: turnS < 0 ? tw : 0, turnR: turnS > 0 ? tw : 0, brake: land * brk, hover: land * (1 - brk) }, liftY != null && u < .5 ? 4 : 5, dt);
+  driveRig(dt, t, THREE.MathUtils.lerp(1.32 + .12 * accS, .1, sstep(0, .75, land)) - .25 * brk * land, land > 0 ? 4 : 3, 1 + .25 * accS + .45 * land);
   e.line.material.opacity = Math.min(1, e.base + .55);
   const sp = trail.geometry.attributes.position, start = h.rev ? 1 : 0;
   for (let k = 0; k < 30; k++) { const q = start + (p - start) * k / 29; e.curve.getPoint(q, tmpB); sp.setXYZ(k, tmpB.x, tmpB.y, tmpB.z); }
   sp.needsUpdate = true; trail.visible = true; trail.material.color.set(cur.ph === 'signal' ? 0xffffff : 0x9eeaff);
-  if (curT >= 1) { e.line.material.opacity = e.base; atNode = h.to; if (cur.ph === 'signal' || cur.ph === 'back') ripples.push({ s: add(glow(.25, 1, 0xffffff)), pos: nodesById[atNode].pos.clone(), t0: performance.now() }); advance(); }
+  if (curT >= 1) { e.line.material.opacity = e.base; atNode = h.to; if (!cur.land && (cur.ph === 'signal' || cur.ph === 'back')) ripples.push({ s: add(glow(.25, 1, 0xffffff)), pos: nodesById[atNode].pos.clone(), t0: performance.now() }); advance(); }
 }
+function once2(fn) { if (!burstDone) { burstDone = true; fn(); } }
+function idleSuit(dt, t) { flightTarget = 0; headYaw *= .9; blendPose({ stand: 1 }, 6, dt); driveRig(dt, t, 0, 6, 0); }   // frozen for inspection: relaxed stance, thrusters off
 
 // ---------- interaction: hover, click (not drag), info cards ----------
 const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2(), pickables = [];
@@ -373,7 +389,7 @@ function showCard(n) {
     const b = d.bots.find(x => x.id === n.id) || {}, sg = d.signals.filter(g => g.from === n.id).sort((a, b) => rank(a) - rank(b)).slice(0, 3), sc = (d.scanners || {})[n.id] || {};
     html = `<h4>${SD.esc(b.name || n.label)}</h4><div class="st">${SD.esc(SD.botSub(n))}</div><div class="mut">last activity ${SD.esc(b.last_activity || '—')}${b.note ? ' · ' + SD.esc(b.note) : ''}</div><div class="mut">feeds: ${d.links.filter(l => l.type === 'signal' && l.source === n.id).map(l => SD.botName(l.target)).join(', ')} · sources: ${d.sources.filter(s => s.scanned_by.includes(n.id)).map(s => SD.esc(s.label)).join(', ')}</div><div class="hd">Latest signals</div><ul>${sg.map(sigRow).join('') || '<li class="mut">no signals published yet</li>'}</ul>`;
   }
-  cardEl.innerHTML = `<button class="x" aria-label="close">✕</button>` + html; cardEl.classList.add('on'); placeCard();
+  cardEl.innerHTML = `<button class="x" aria-label="close">✕</button>` + html; cardEl.classList.add('on'); placeCard(); SFX.beep();
 }
 function hideCard() { cardNode = null; cardEl.classList.remove('on'); }
 function placeCard() { if (!cardNode) return; const v = new THREE.Vector3(); cardNode.obj.getWorldPosition(v); v.project(camera);
@@ -384,22 +400,24 @@ cardEl.addEventListener('click', e => { if (e.target.closest('.x')) hideCard(); 
 const cv = renderer.domElement;
 cv.addEventListener('pointermove', e => { if (e.buttons || !built) return; setHover(pickAt(e.clientX, e.clientY)); });
 cv.addEventListener('pointerleave', () => setHover(null));
-cv.addEventListener('pointerdown', e => { downAt = { x: e.clientX, y: e.clientY, t: performance.now() }; });
+cv.addEventListener('pointerdown', e => { SFX.gesture(); downAt = { x: e.clientX, y: e.clientY, t: performance.now() }; });
 cv.addEventListener('pointerup', e => {
   if (!downAt || !built) return; const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y), quick = performance.now() - downAt.t < 650; downAt = null;
   if (moved > 6 || !quick) return; // that was a drag, not a click
   const n = pickAt(e.clientX, e.clientY);
   if (!n) return hideCard();
-  if (n.type === 'source') { const url = (SD.data.sources.find(s => 's_' + s.id === n.id) || {}).url; if (url) window.open(url, '_blank', 'noopener'); }
+  if (n.type === 'source') { SFX.beep(1.25); const url = (SD.data.sources.find(s => 's_' + s.id === n.id) || {}).url; if (url) window.open(url, '_blank', 'noopener'); }
   else showCard(n);
 });
 document.addEventListener('click', e => { const li = e.target.closest('.sd-link'); if (li && li.dataset.link) window.open(li.dataset.link, '_blank', 'noopener'); });
 
 // ---------- loop ----------
-const clock = new THREE.Clock(), v3 = new THREE.Vector3(); let spinY = 0, suitFrozen = false;
+const clock = new THREE.Clock(), v3 = new THREE.Vector3(), camDir = new THREE.Vector3(); let spinY = 0, suitFrozen = false, timeScale = 1, follow = null, simT = 0;
 function frame() {
-  const dt = Math.min(.05, clock.getDelta()), t = clock.elapsedTime, now = performance.now();
+  const rawDt = clock.getDelta(); watchFps(rawDt); controls.dampingFactor = 1 - Math.pow(1 - .08, Math.min(rawDt, .1) * 60);
+  const dt = Math.min(.05, rawDt) * timeScale, now = performance.now(); simT += dt; const t = simT;
   if (autoSpin) spinY += dt * .07; world.rotation.y = spinY; world.rotation.x = Math.sin(t * .23) * .035;
+  if (follow) { suit.getWorldPosition(v3); controls.target.lerp(v3, 1 - Math.exp(-Math.min(rawDt, .1) * 12)); const dir = camDir.copy(camera.position).sub(controls.target).normalize(); camera.position.copy(controls.target).addScaledVector(dir, follow.dist); }
   controls.update(); const camD = camera.position.distanceTo(controls.target);
   rings.forEach(r => r.g.rotation.y += r.s * dt); ticks.rotation.y -= dt * .1; base.rotation.y += dt * .05;
   beam.material.uniforms.t.value = t;
@@ -409,7 +427,7 @@ function frame() {
       n.obj.getWorldPosition(v3); const depth = camD - v3.distanceTo(camera.position), k = THREE.MathUtils.clamp((depth + 1.2) / 3.6, 0, 1); n.lab.element.style.opacity = (n.type === 'source' ? (n.lab.element.classList.contains('hot') ? 1 : 0.06 + 0.94 * k * k) : 0.4 + 0.6 * k).toFixed(2); });
     for (let i = pulses.length - 1; i >= 0; i--) { const p = pulses[i], q = (now - p.t0) / p.dur; if (q >= 1) { world.remove(p.s); pulses.splice(i, 1); continue; } p.e.curve.getPoint(q, p.s.position); }
     for (let i = ripples.length - 1; i >= 0; i--) { const r = ripples[i], q = (now - r.t0) / 900; if (q >= 1) { world.remove(r.s); ripples.splice(i, 1); continue; } r.s.position.copy(r.pos); r.s.scale.setScalar(.3 + q * 1.4); r.s.material.opacity = (1 - q) * .5; }
-    if (!suitFrozen) stepSuit(dt, t); else poseSuit(dt, t, false); placeCard();
+    if (!suitFrozen) stepSuit(dt, t); else idleSuit(dt, t); placeCard();
   }
   for (const m of metal) m.material = BLACK;            // metal never blooms; it only masks glow behind it
   composer.render();
@@ -433,7 +451,12 @@ function fitCamera() { const d = Math.max(11.6, 9.4 / (W / H)), dir = camera.pos
 fitCamera(); addEventListener('resize', resize); new ResizeObserver(resize).observe(host);
 window.__holo = {
   // test helper: freeze the suit and put the camera close to it (yaw 0 = facing the suit's front)
-  inspectSuit(yawDeg = 0, dist = 1.9, up = .15) { suitFrozen = true; autoSpin = false; clearTimeout(resumeTimer); const p = new THREE.Vector3(); suit.getWorldPosition(p); const q = new THREE.Quaternion(); suit.getWorldQuaternion(q); const f = new THREE.Vector3(0, 0, 1).applyQuaternion(q); f.y = 0; f.normalize().applyAxisAngle(new THREE.Vector3(0, 1, 0), yawDeg * Math.PI / 180); controls.minDistance = .5; controls.target.copy(p); camera.position.copy(p).addScaledVector(f, dist).add(new THREE.Vector3(0, up, 0)); controls.update(); }, get mission() { return mission; }, get phase() { return phase; }, get autoSpin() { return autoSpin; },
+  inspectSuit(yawDeg = 0, dist = 3.2, up = .15) { dist = Math.max(dist, 3.2); suitFrozen = true; autoSpin = false; clearTimeout(resumeTimer); const p = new THREE.Vector3(); suit.getWorldPosition(p); const q = new THREE.Quaternion(); suit.getWorldQuaternion(q); const f = new THREE.Vector3(0, 0, 1).applyQuaternion(q); f.y = 0; f.normalize().applyAxisAngle(new THREE.Vector3(0, 1, 0), yawDeg * Math.PI / 180); controls.minDistance = .5; controls.target.copy(p); camera.position.copy(p).addScaledVector(f, dist).add(new THREE.Vector3(0, up, 0)); controls.update(); }, get mission() { return mission; }, get phase() { return phase; }, get landPhase() { return cur && (cur.stop || cur.land) ? landPhase : 'fly'; }, get suitReady() { return !!rig; }, get pitch() { return pitch; }, get pose() { return { ...pw, headYaw, bank, flight: flightW }; }, get onLandLeg() { return !!(cur && cur.land); }, set timeScale(v) { timeScale = v; }, aimCam(yawDeg = 30, dist = 3.6, up = .25) { dist = Math.max(dist, 3.2); const p = new THREE.Vector3(); suit.getWorldPosition(p); const q = new THREE.Quaternion(); suit.getWorldQuaternion(q); const f = new THREE.Vector3(0, 0, 1).applyQuaternion(q); f.y = 0; f.normalize().applyAxisAngle(new THREE.Vector3(0, 1, 0), yawDeg * Math.PI / 180); controls.minDistance = .5; controls.target.copy(p); camera.position.copy(p).addScaledVector(f, dist).add(new THREE.Vector3(0, up, 0)); follow = { dist }; autoSpin = false; clearTimeout(resumeTimer); controls.update(); }, followSuit(dist = 3.6) { if (dist) dist = Math.max(dist, 3.2); follow = dist ? { dist } : null; autoSpin = false; clearTimeout(resumeTimer); controls.minDistance = .5; }, sfx: SFX, get autoSpin() { return autoSpin; },
   view() { const p = camera.position, d = p.distanceTo(controls.target); return { azimuthDeg: +(controls.getAzimuthalAngle() * 180 / Math.PI).toFixed(1), polarDeg: +(controls.getPolarAngle() * 180 / Math.PI).toFixed(1), distance: +d.toFixed(2), spinDeg: +(spinY * 180 / Math.PI).toFixed(1) }; },
   labelXY(id) { const n = nodesById[id]; if (!n) return null; const r = n.lab.element.getBoundingClientRect(), v = new THREE.Vector3(); n.obj.getWorldPosition(v); v.project(camera); const rc = renderer.domElement.getBoundingClientRect(); return { label: { x: r.left + r.width / 2, y: r.top + r.height / 2 }, node: { x: rc.left + (v.x + 1) / 2 * W, y: rc.top + (1 - v.y) / 2 * H } }; }, pick(x, y) { const n = pickAt(x, y); return n && n.id; }, suitXY() { return this.spiderXY(); }, openCard(id) { showCard(nodesById[id]); }, spiderXY() { const v = new THREE.Vector3(); suit.getWorldPosition(v); v.project(camera); return { x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H, phase, scanner: mission && mission.scanner, source: mission && mission.source }; } };
+// sound toggle (starts muted; preference saved in localStorage by sfx.js)
+const sndBtn = document.getElementById('snd');
+if (sndBtn) { SFX.onChange(m => { sndBtn.textContent = m ? '🔇 SOUND OFF' : '🔊 SOUND ON'; sndBtn.classList.toggle('on', !m); sndBtn.setAttribute('aria-pressed', String(!m)); });
+  sndBtn.addEventListener('click', () => { SFX.toggle(); if (!SFX.muted) SFX.beep(); }); }
+addEventListener('pointerdown', () => SFX.gesture(), { passive: true }); addEventListener('keydown', () => SFX.gesture());
 requestAnimationFrame(frame);
