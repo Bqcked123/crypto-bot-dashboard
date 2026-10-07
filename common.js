@@ -146,10 +146,11 @@
     const side = (dt.side || 'flat').toLowerCase();
     const pnl = dt.pnl_session_pct;
     const start = dt.starting_equity != null && !isNaN(+dt.starting_equity) ? +dt.starting_equity : 100000;
-    const bal = SD.dayTradeBalance(dt);
+    let bal = SD.dayTradeBalance(dt);
+    if (bal == null && waiting) bal = start;  // paper desk always shows starting equity while waiting
     const balCls = bal == null ? 'flat' : (bal >= start - 0.005 ? 'up' : 'down');
     const sym = dt.symbol || (waiting ? 'SPY' : '—');
-    const sess = SD.dayTradeSessionLabel(dt);
+    const sess = dt.session_date ? SD.dayTradeSessionLabel(dt) : (waiting ? 'WAIT' : 'DAY');
     const label = `BALANCE · ${sess} · ${sym}`;
     let chart = '';
     if (bars.length >= 8) chart = SD.dayTradeCandleSVG(bars, 420, 48);
