@@ -27,7 +27,7 @@
       .catch(e => { console.warn('data.json not available', e); document.documentElement.classList.add('sd-nodata'); if (first) render(SD.empty(), true); first = false; });
     tick(); setInterval(tick, SD.POLL_MS);
   };
-  SD.empty = () => ({ empty: true, generated_at_et: 'waiting for data.json', price_source: 'none', bots: [], sources: [], links: [], traders: { core: { name: 'Crypto Paper Trader', available: false }, meme: { name: 'Memecoin Paper Trader', available: false } }, scanners: { x: {}, news: {} }, signals: [], provenance: ['data.json not found yet: run python3 data.py'] });
+  SD.empty = () => ({ empty: true, generated_at_et: 'waiting for data.json', price_source: 'none', bots: [], sources: [], links: [], traders: { core: { name: 'Crypto Paper Trader', available: false }, meme: { name: 'Memecoin Paper Trader', available: false } }, scanners: { x: {}, news: {} }, signals: [], day_trade: { symbol: null, bars: [], equity: [], side: 'flat', paper: true, status: 'waiting_for_next_session' }, provenance: ['data.json not found yet: run python3 data.py'] });
 
   /* Graph model: bots + sources with resolved links */
   SD.graph = function (d) {
@@ -82,7 +82,73 @@
     return `<ul class="sd-status">${(d.bots || []).map(b => `<li class="st-${b.status === 'active' ? 'on' : 'off'}"><i></i><b>${esc(b.name)}</b><span>${esc(b.status)}${b.last_activity ? ' · ' + esc(SD.hm(b.last_activity)) : ''}</span></li>`).join('')}</ul>`;
   };
   SD.botSub = b => b.status === 'active' && b.note ? '◐ working · no signals yet' : b.status === 'active' ? '● active' + (b.last_activity || b.last ? ' · ' + SD.hm(b.last_activity || b.last) : '') : '○ awaiting first output';
-  SD.footHTML = d => `<span class="sd-paper">PAPER TRADING · pretend money</span> <span>data ${esc(d.generated_at_et)}</span> · <span>prices: ${esc(d.price_source)}</span> · <span>pulses are illustrative</span>`;
+  SD.dayTradeCandleSVG = function (bars, w, h) {
+    bars = (bars || []).filter(b => b && b.o != null && b.h != null && b.l != null && b.c != null);
+    if (!bars.length) return '';
+    const pad = 4, n = bars.length;
+    const lo = Math.min(...bars.map(b => +b.l)), hi = Math.max(...bars.map(b => +b.h));
+    const r = hi - lo || 1;
+    const y = v => pad + (1 - (v - lo) / r) * (h - pad * 2);
+    const slot = (w - pad * 2) / n, bw = Math.max(1.2, Math.min(6, slot * 0.55));
+    let parts = '';
+    bars.forEach((b, i) => {
+      const x = pad + i * slot + slot / 2;
+      const up = +b.c >= +b.o;
+      const col = up ? '#3dffa8' : '#ff5470';
+      parts += `<line x1="${x.toFixed(1)}" y1="${y(+b.h).toFixed(1)}" x2="${x.toFixed(1)}" y2="${y(+b.l).toFixed(1)}" stroke="${col}" stroke-width="1" opacity=".85"/>`;
+      const y1 = y(Math.max(+b.o, +b.c)), y2 = y(Math.min(+b.o, +b.c));
+      const bh = Math.max(1, y2 - y1);
+      parts += `<rect x="${(x - bw / 2).toFixed(1)}" y="${y1.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="${col}" opacity=".9"/>`;
+    });
+    return `<svg class="dt-chart" viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" aria-hidden="true">${parts}</svg>`;
+  };
+  SD.dayTradeLineSVG = function (bars, w, h) {
+    bars = (bars || []).filter(b => b && b.c != null);
+    if (bars.length < 2) return SD.dayTradeCandleSVG(bars, w, h);
+    const pad = 4;
+    const vals = bars.map(b => +b.c);
+    const lo = Math.min(...vals), hi = Math.max(...vals), r = hi - lo || 1;
+    const path = vals.map((v, i) => {
+      const x = pad + i / (vals.length - 1) * (w - pad * 2);
+      const y = pad + (1 - (v - lo) / r) * (h - pad * 2);
+      return (i ? 'L' : 'M') + x.toFixed(1) + ',' + y.toFixed(1);
+    }).join('');
+    const last = vals[vals.length - 1], first = vals[0];
+    const col = last >= first ? '#3dffa8' : '#ff5470';
+    return `<svg class="dt-chart" viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" aria-hidden="true"><path d="${path}" fill="none" stroke="${col}" stroke-width="1.8" filter="drop-shadow(0 0 3px ${col})"/></svg>`;
+  };
+  SD.dayTradeEquitySVG = function (eq, w, h) {
+    const pts = (eq || []).filter(p => p && p.v != null);
+    const p = SD.sparkPath(pts, w, h);
+    if (!p) return '';
+    return `<svg class="dt-eq" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="none" aria-hidden="true"><path d="${p}" fill="none" stroke="#5fd8ff" stroke-width="1.4" opacity=".9"/></svg>`;
+  };
+  SD.footHTML = function (d) {
+    const dt = (d && d.day_trade) || {};
+    const bars = dt.bars || [];
+    const waiting = !bars.length || dt.status === 'waiting_for_next_session';
+    if (waiting) {
+      return `<div class="dt-panel dt-wait"><div class="dt-wait-msg">Stock Day Trader · waiting for next session (9:30 AM ET)</div><div class="dt-meta"><span class="dt-paper">paper</span>${dt.symbol ? `<span class="dt-sym">${esc(dt.symbol)}</span>` : ''}<span>data ${esc(d.generated_at_et || '')}</span></div></div>`;
+    }
+    const side = (dt.side || 'flat').toLowerCase();
+    const chg = dt.change_pct, pnl = dt.pnl_session_pct;
+    const lastStr = dt.last == null || +dt.last === 0 ? '—' : SD.price(+dt.last);
+    const chart = bars.length >= 8 ? SD.dayTradeCandleSVG(bars, 420, 56) : SD.dayTradeLineSVG(bars, 420, 56);
+    const eq = SD.dayTradeEquitySVG(dt.equity, 72, 22);
+    return `<div class="dt-panel">
+      <div class="dt-top">
+        <span class="dt-sym">${esc(dt.symbol || '—')}</span>
+        <span class="dt-last">${lastStr}</span>
+        <span class="dt-chg ${SD.cls(chg)}">${SD.pct(chg)}</span>
+        <span class="dt-side side-${esc(side)}">${esc(side)}</span>
+        <span class="dt-pnl ${SD.cls(pnl)}">P&amp;L ${SD.pct(pnl)}</span>
+        <span class="dt-paper">paper</span>
+        ${eq ? `<span class="dt-eqwrap" title="session equity">${eq}</span>` : ''}
+      </div>
+      <div class="dt-body">${chart}</div>
+    </div>`;
+  };
+
   SD.sparkPath = function (pts, w, h) {
     const v = (pts || []).map(p => p.v); if (v.length < 2) return null;
     const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1;
