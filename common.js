@@ -27,7 +27,7 @@
       .catch(e => { console.warn('data.json not available', e); document.documentElement.classList.add('sd-nodata'); if (first) render(SD.empty(), true); first = false; });
     tick(); setInterval(tick, SD.POLL_MS);
   };
-  SD.empty = () => ({ empty: true, generated_at_et: 'waiting for data.json', price_source: 'none', bots: [], sources: [], links: [], traders: { core: { name: 'Crypto Paper Trader', available: false }, meme: { name: 'Memecoin Paper Trader', available: false } }, scanners: { x: {}, news: {} }, signals: [], day_trade: { symbol: null, bars: [], equity: [], side: 'flat', paper: true, status: 'waiting_for_next_session' }, provenance: ['data.json not found yet: run python3 data.py'] });
+  SD.empty = () => ({ empty: true, generated_at_et: 'waiting for data.json', price_source: 'none', bots: [], sources: [], links: [], traders: { core: { name: 'Crypto Paper Trader', available: false }, meme: { name: 'Memecoin Paper Trader', available: false } }, scanners: { x: {}, news: {} }, signals: [], day_trade: { symbol: 'SPY', bars: [], equity: [], balance: 100000, starting_equity: 100000, side: 'flat', paper: true, status: 'waiting_for_next_session' }, provenance: ['data.json not found yet: run python3 data.py'] });
 
   /* Graph model: bots + sources with resolved links */
   SD.graph = function (d) {
@@ -121,31 +121,62 @@
     const pts = (eq || []).filter(p => p && p.v != null);
     const p = SD.sparkPath(pts, w, h);
     if (!p) return '';
-    return `<svg class="dt-eq" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="none" aria-hidden="true"><path d="${p}" fill="none" stroke="#5fd8ff" stroke-width="1.4" opacity=".9"/></svg>`;
+    const wide = w >= 120;
+    const cls = wide ? 'dt-chart' : 'dt-eq';
+    const wh = wide ? `width="100%" height="${h}"` : `width="${w}" height="${h}"`;
+    return `<svg class="${cls}" viewBox="0 0 ${w} ${h}" ${wh} preserveAspectRatio="none" aria-hidden="true"><path d="${p}" fill="none" stroke="#5fd8ff" stroke-width="${wide ? 1.8 : 1.4}" opacity=".9" filter="drop-shadow(0 0 3px #5fd8ff)"/></svg>`;
+  };
+  SD.dayTradeBalance = function (dt) {
+    if (dt && dt.balance != null && !isNaN(+dt.balance)) return +dt.balance;
+    const eq = ((dt && dt.equity) || []).filter(p => p && p.v != null);
+    if (eq.length) return +eq[eq.length - 1].v;
+    return null;
+  };
+  SD.dayTradeSessionLabel = function (dt) {
+    const s = (dt && dt.session_date) || '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+    if (!m) return (dt && dt.status === 'waiting_for_next_session') ? 'WAIT' : 'DAY';
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    return months[+m[2] - 1] + ' ' + (+m[3]);
   };
   SD.footHTML = function (d) {
     const dt = (d && d.day_trade) || {};
     const bars = dt.bars || [];
     const waiting = !bars.length || dt.status === 'waiting_for_next_session';
-    if (waiting) {
-      return `<div class="dt-panel dt-wait"><div class="dt-wait-msg">Stock Day Trader · waiting for next session (9:30 AM ET)</div><div class="dt-meta"><span class="dt-paper">paper</span>${dt.symbol ? `<span class="dt-sym">${esc(dt.symbol)}</span>` : ''}<span>data ${esc(d.generated_at_et || '')}</span></div></div>`;
-    }
     const side = (dt.side || 'flat').toLowerCase();
-    const chg = dt.change_pct, pnl = dt.pnl_session_pct;
-    const lastStr = dt.last == null || +dt.last === 0 ? '—' : SD.price(+dt.last);
-    const chart = bars.length >= 8 ? SD.dayTradeCandleSVG(bars, 420, 56) : SD.dayTradeLineSVG(bars, 420, 56);
-    const eq = SD.dayTradeEquitySVG(dt.equity, 72, 22);
-    return `<div class="dt-panel">
-      <div class="dt-top">
-        <span class="dt-sym">${esc(dt.symbol || '—')}</span>
-        <span class="dt-last">${lastStr}</span>
-        <span class="dt-chg ${SD.cls(chg)}">${SD.pct(chg)}</span>
-        <span class="dt-side side-${esc(side)}">${esc(side)}</span>
-        <span class="dt-pnl ${SD.cls(pnl)}">P&amp;L ${SD.pct(pnl)}</span>
-        <span class="dt-paper">paper</span>
-        ${eq ? `<span class="dt-eqwrap" title="session equity">${eq}</span>` : ''}
+    const pnl = dt.pnl_session_pct;
+    const start = dt.starting_equity != null && !isNaN(+dt.starting_equity) ? +dt.starting_equity : 100000;
+    const bal = SD.dayTradeBalance(dt);
+    const balCls = bal == null ? 'flat' : (bal >= start - 0.005 ? 'up' : 'down');
+    const sym = dt.symbol || (waiting ? 'SPY' : '—');
+    const sess = SD.dayTradeSessionLabel(dt);
+    const label = `BALANCE · ${sess} · ${sym}`;
+    let chart = '';
+    if (bars.length >= 8) chart = SD.dayTradeCandleSVG(bars, 420, 48);
+    else if (bars.length >= 2) chart = SD.dayTradeLineSVG(bars, 420, 48);
+    else chart = SD.dayTradeEquitySVG(dt.equity, 420, 48) || SD.dayTradeEquitySVG([{ t: 'a', v: start }, { t: 'b', v: bal != null ? bal : start }], 420, 48);
+    const waitLine = waiting
+      ? `<div class="dt-wait-line">Stock Day Trader · waiting for next session (9:30 AM ET)</div>`
+      : (dt.last != null && +dt.last !== 0
+          ? `<div class="dt-wait-line"><span class="dt-sym-inline">${esc(sym)}</span> ${SD.price(+dt.last)} <span class="${SD.cls(dt.change_pct)}">${SD.pct(dt.change_pct)}</span></div>`
+          : '');
+    return `<div class="dt-panel${waiting ? ' dt-wait' : ''}">
+      <div class="dt-row">
+        <div class="dt-left">
+          <div class="dt-label">${esc(label)}</div>
+          <div class="dt-body">${chart}</div>
+          ${waitLine}
+        </div>
+        <div class="dt-right">
+          <div class="dt-bal-meta">
+            <span class="dt-bal-tag">BALANCE</span>
+            <span class="dt-side side-${esc(side)}">${esc(side)}</span>
+            <span class="dt-pnl ${SD.cls(pnl)}">${SD.pct(pnl)}</span>
+            <span class="dt-paper">paper</span>
+          </div>
+          <div class="dt-balance ${balCls}" title="paper equity">${SD.usd(bal)}</div>
+        </div>
       </div>
-      <div class="dt-body">${chart}</div>
     </div>`;
   };
 
