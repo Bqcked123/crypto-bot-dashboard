@@ -120,6 +120,16 @@ header,.htitle,#mission,.legend,footer{pointer-events:none}header a,header .chip
 .dt-chart{display:block;width:100%;height:48px}
 .dt-wait-line{font:10px 'JetBrains Mono';color:#4fa6c4;letter-spacing:.3px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dt-eqwrap{opacity:.85}
+.dt-foot-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-width:0}.dt-foot-row .dt-wait-line{min-width:0}
+.dt-legend{display:flex;gap:10px;flex:0 0 auto;margin-left:auto;font:9.5px 'JetBrains Mono';color:#8fb9cc;white-space:nowrap}
+.dt-legend .lg i{display:inline-block;width:12px;height:2px;border-radius:1px;vertical-align:middle;margin-right:4px}
+.dt-legend .lg-bot i{background:#5fd8ff;box-shadow:0 0 4px #5fd8ff}.dt-legend .lg-spy i{background:#ffb547}
+.dt-legend .lg-since{color:#4f8aa3;display:none}.dt-foot-row .dt-wait-line{flex:0 0 auto}
+.dt-trading{font:600 10.5px 'JetBrains Mono',monospace;color:#bfefff;letter-spacing:.2px;margin:0 0 3px;max-width:410px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dt-trading .dt-tk{font:700 14px Rajdhani,sans-serif;letter-spacing:1.2px;color:#fff;text-shadow:0 0 8px #2fc8ff}
+.dt-trading .dt-nm{color:#9eeaff;font-weight:500}
+.dt-trading .dt-sd{font-weight:700;letter-spacing:1px}.dt-trading .side-long{color:#3dffa8}.dt-trading .side-short{color:#ff5470}.dt-trading .side-flat{color:#8f9bbb}
+.dt-trading .dt-more{color:#6fb6cf;font-weight:500}
 
 /* sound toggle + model credit */
 .snd{position:absolute;right:22px;bottom:12px;z-index:7;font:600 10px 'JetBrains Mono';letter-spacing:1px;color:#9eeaff;background:rgba(3,18,32,.72);border:1px solid rgba(95,216,255,.45);border-radius:14px;padding:5px 11px;cursor:pointer;box-shadow:0 0 12px rgba(47,200,255,.18)}
@@ -146,6 +156,8 @@ header,.htitle,#mission,.legend,footer{pointer-events:none}header a,header .chip
   .dt-balance{font-size:28px;letter-spacing:-1px}
   .dt-body{height:44px}.dt-chart{height:44px}
   .dt-label{font-size:9.5px;letter-spacing:1px}
+  .dt-foot-row{flex-wrap:wrap;gap:2px 10px}.dt-legend{font-size:9px;gap:8px;margin-left:0}.dt-legend .lg-since{display:inline}
+  .dt-trading{max-width:100%;white-space:normal;font-size:10.5px;line-height:1.35}
   .dt-wait-line{white-space:normal;line-height:1.35;font-size:9.5px}
   .hl{font-size:9.5px;letter-spacing:.8px}.hl.src{font-size:8.5px}.hl.bot{font-size:10px}.hl.bot small{display:none}.hl.src{opacity:.85}
   .hint{white-space:nowrap;letter-spacing:.6px}.hdr-r .chip{white-space:nowrap}.xm{display:none}

@@ -139,6 +139,46 @@
     const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
     return months[+m[2] - 1] + ' ' + (+m[3]);
   };
+  /* Bot vs S&P 500 (SPY), both as % change from the bot's session start (data.py day_trade.compare). Real data only. */
+  SD.dayTradeCompareSVG = function (cmp, w, h) {
+    if (!cmp) return '';
+    const mins = t => { const m = /(\d{1,2}):(\d{2})/.exec(String(t || '')); return m ? +m[1] * 60 + +m[2] : null; };
+    const prep = a => (a || []).map(p => ({ x: mins(p.t), y: +p.pct })).filter(p => p.x != null && !isNaN(p.y));
+    const bot = prep(cmp.bot), spy = prep(cmp.spy);
+    if (!bot.length && spy.length < 2) return '';
+    const xs = bot.concat(spy).map(p => p.x), ys = bot.concat(spy).map(p => p.y).concat([0]);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), xr = x1 - x0 || 1;
+    let lo = Math.min(...ys), hi = Math.max(...ys);
+    const mid = (lo + hi) / 2; if (hi - lo < 0.1) { lo = mid - 0.05; hi = mid + 0.05; }   // >=0.1pt range so tiny moves don't look huge
+    const pad = 4, X = v => pad + (v - x0) / xr * (w - pad * 2), Y = v => pad + (1 - (v - lo) / (hi - lo)) * (h - pad * 2);
+    const path = a => a.map((p, i) => (i ? 'L' : 'M') + X(p.x).toFixed(1) + ',' + Y(p.y).toFixed(1)).join('');
+    let g = `<line x1="0" x2="${w}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}" stroke="#4f7f99" stroke-width="1" stroke-dasharray="3 4" opacity=".7" vector-effect="non-scaling-stroke"/>`;
+    if (spy.length >= 2) g += `<path d="${path(spy)}" fill="none" stroke="#ffb547" stroke-width="1.6" opacity=".95" vector-effect="non-scaling-stroke"/>`;
+    if (bot.length >= 2) g += `<path d="${path(bot)}" fill="none" stroke="#5fd8ff" stroke-width="2" filter="drop-shadow(0 0 3px #5fd8ff)" vector-effect="non-scaling-stroke"/>`;
+    const lb = bot[bot.length - 1];
+    if (lb) g += `<circle cx="${X(lb.x).toFixed(1)}" cy="${Y(lb.y).toFixed(1)}" r="2.6" fill="#5fd8ff"/>`;
+    return `<svg class="dt-chart dt-cmp" viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" aria-label="Bot vs S&amp;P 500, % change since session start">${g}</svg>`;
+  };
+  SD.dayTradeLegendHTML = function (cmp) {
+    if (!cmp) return '';
+    const f = v => v == null || isNaN(+v) ? '' : ` <b class="${SD.cls(+v)}">${(+v >= 0 ? '+' : '') + (+v).toFixed(2)}%</b>`;
+    const hasBot = (cmp.bot || []).length > 0, hasSpy = (cmp.spy || []).length >= 2;
+    if (!hasBot && !hasSpy) return '';
+    return `<span class="dt-legend" title="% change since the bot's session start${cmp.start_t ? ' (' + esc(cmp.start_t) + ' ET)' : ''}${cmp.spy_source ? '; S&amp;P 500 = SPY, ' + esc(cmp.spy_source) : ''}">${hasBot ? `<span class="lg lg-bot"><i></i>Bot${f(cmp.bot_pct)}</span>` : ''}${hasSpy ? `<span class="lg lg-spy"><i></i>S&amp;P 500${f(cmp.spy_pct)}</span>` : ''}${cmp.start_t ? `<span class="lg-since">since ${esc(cmp.start_t)}</span>` : ''}</span>`;
+  };
+  SD.dayTradeTradingHTML = function (dt) {
+    const side = String(dt.side || 'flat').toLowerCase();
+    if (side !== 'flat' && dt.symbol) {
+      const more = (dt.open_positions || []).filter(p => p && p.symbol && p.symbol !== dt.symbol);
+      return `<div class="dt-trading" title="${esc(['Open: ' + dt.symbol].concat(more.map(p => p.symbol)).join(', '))}">Trading <b class="dt-tk">${esc(dt.symbol)}</b>${dt.name ? ` · <span class="dt-nm">${esc(dt.name)}</span>` : ''} · <span class="dt-sd side-${esc(side)}">${esc(side.toUpperCase())}</span>${more.length ? ` <span class="dt-more">+${more.map(p => esc(p.symbol)).join(' +')}</span>` : ''}</div>`;
+    }
+    const last = dt.last_traded;
+    if (last) {
+      const nm = dt.symbol && dt.name && String(dt.symbol).toUpperCase() === String(last).toUpperCase() ? dt.name : '';
+      return `<div class="dt-trading">Last <b class="dt-tk">${esc(last)}</b>${nm ? ` · <span class="dt-nm">${esc(nm)}</span>` : ''} · <span class="dt-sd side-flat">flat</span></div>`;
+    }
+    return `<div class="dt-trading"><span class="dt-sd side-flat">Flat</span></div>`;
+  };
   SD.footHTML = function (d) {
     const dt = (d && d.day_trade) || {};
     const bars = dt.bars || [];
@@ -153,7 +193,9 @@
     const sess = dt.session_date ? SD.dayTradeSessionLabel(dt) : (waiting ? 'WAIT' : 'DAY');
     const label = `BALANCE · ${sess} · ${sym}`;
     let chart = '';
-    if (bars.length >= 8) chart = SD.dayTradeCandleSVG(bars, 420, 48);
+    const cmpSVG = SD.dayTradeCompareSVG(dt.compare, 420, 48);
+    if (cmpSVG) chart = cmpSVG;
+    else if (bars.length >= 8) chart = SD.dayTradeCandleSVG(bars, 420, 48);
     else if (bars.length >= 2) chart = SD.dayTradeLineSVG(bars, 420, 48);
     else chart = SD.dayTradeEquitySVG(dt.equity, 420, 48) || SD.dayTradeEquitySVG([{ t: 'a', v: start }, { t: 'b', v: bal != null ? bal : start }], 420, 48);
     const waitLine = waiting
@@ -166,7 +208,7 @@
         <div class="dt-left">
           <div class="dt-label">${esc(label)}</div>
           <div class="dt-body">${chart}</div>
-          ${waitLine}
+          ${cmpSVG ? `<div class="dt-foot-row">${waitLine}${SD.dayTradeLegendHTML(dt.compare)}</div>` : waitLine}
         </div>
         <div class="dt-right">
           <div class="dt-bal-meta">
@@ -175,6 +217,7 @@
             <span class="dt-pnl ${SD.cls(pnl)}">${SD.pct(pnl)}</span>
             <span class="dt-paper">paper</span>
           </div>
+          ${SD.dayTradeTradingHTML(dt)}
           <div class="dt-balance ${balCls}" title="paper equity">${SD.usd(bal)}</div>
         </div>
       </div>
