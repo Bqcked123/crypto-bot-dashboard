@@ -179,48 +179,144 @@
     }
     return `<div class="dt-trading"><span class="dt-sd side-flat">Flat</span></div>`;
   };
+  /* Light "frosted card" day-trade footer: live trade card + TOP CLOSES. Real data only (data.py day_trade). */
+  SD.dtMins = t => { const m = /(?:T|^)(\d{1,2}):(\d{2})/.exec(String(t || '')); return m ? +m[1] * 60 + +m[2] : null; };
+  /* Candlestick chart of the traded stock (5m) with the bot's real B/S fills; optional thin gold SPY session line.
+     o: { upto: draw only bars with time <= upto (replay), last, spy: [{t,pct}], label } */
+  SD.dtCandlesInner = function (bars, trades, o) {
+    o = o || {};
+    bars = (bars || []).filter(b => b && b.o != null && b.h != null && b.l != null && b.c != null && SD.dtMins(b.t) != null);
+    if (!bars.length) return '';
+    const w = 600, h = 100, padR = 13, padL = 1, padY = 9;
+    const x0 = SD.dtMins(bars[0].t), x1 = SD.dtMins(bars[bars.length - 1].t) + 5, xr = x1 - x0 || 1;
+    const fills = (trades || []).filter(t => t && t.price != null && SD.dtMins(t.t) != null);
+    const lo = Math.min(...bars.map(b => +b.l), ...fills.map(t => +t.price)), hi = Math.max(...bars.map(b => +b.h), ...fills.map(t => +t.price)), r = hi - lo || 1;
+    const X = m => padL + (m - x0) / xr * (100 - padL - padR);         // percent of width
+    const Yp = v => padY + (1 - (v - lo) / r) * (100 - padY * 2);       // percent of height
+    const upto = o.upto != null ? o.upto : Infinity;
+    const shown = bars.filter(b => SD.dtMins(b.t) <= upto);
+    const slot = (100 - padL - padR) / Math.max(bars.length, 1), bw = Math.max(0.25, Math.min(1.1, slot * 0.62));
+    let g = '';
+    if (o.spy && o.spy.length >= 2) {   // whole-session S&P 500 (SPY) %, own scale, thin gold
+      const sp = o.spy.filter(p => SD.dtMins(p.t) != null && SD.dtMins(p.t) <= upto);
+      const vs = o.spy.map(p => +p.pct); let a = Math.min(...vs), z = Math.max(...vs); if (z - a < 0.1) { const m = (a + z) / 2; a = m - 0.05; z = m + 0.05; }
+      if (sp.length >= 2) g += `<path d="${sp.map((p, i) => (i ? 'L' : 'M') + (X(SD.dtMins(p.t) + 2.5) * w / 100).toFixed(1) + ',' + ((padY + (1 - (+p.pct - a) / (z - a)) * (100 - padY * 2)) * h / 100).toFixed(1)).join('')}" fill="none" stroke="#e3a21a" stroke-width="1.2" opacity=".75" vector-effect="non-scaling-stroke"/>`;
+    }
+    shown.forEach(b => {
+      const xc = X(SD.dtMins(b.t) + 2.5) * w / 100, up = +b.c >= +b.o, col = up ? '#1fb889' : '#f06a7f';
+      g += `<line x1="${xc.toFixed(2)}" y1="${(Yp(+b.h) * h / 100).toFixed(2)}" x2="${xc.toFixed(2)}" y2="${(Yp(+b.l) * h / 100).toFixed(2)}" stroke="${col}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
+      const y1 = Yp(Math.max(+b.o, +b.c)) * h / 100, y2 = Yp(Math.min(+b.o, +b.c)) * h / 100;
+      g += `<rect x="${(xc - bw * w / 200).toFixed(2)}" y="${y1.toFixed(2)}" width="${(bw * w / 100).toFixed(2)}" height="${Math.max(0.8, y2 - y1).toFixed(2)}" fill="${col}"/>`;
+    });
+    let html = '';
+    const lastBar = shown[shown.length - 1];
+    const last = o.last != null && o.upto == null ? +o.last : lastBar ? +lastBar.c : null;
+    if (last != null) {
+      const ly = Yp(last);
+      g += `<line x1="0" x2="${w}" y1="${(ly * h / 100).toFixed(1)}" y2="${(ly * h / 100).toFixed(1)}" stroke="#9aa3c7" stroke-width="1" stroke-dasharray="1.5 3" vector-effect="non-scaling-stroke"/>`;
+      html += `<span class="dtc-tag ${last >= +bars[0].o ? 'up' : 'down'}" style="top:${ly.toFixed(1)}%">${esc(SD.price(last))}</span>`;
+    }
+    fills.filter(t => SD.dtMins(t.t) <= upto).forEach(t => {   // exact time + price of each fill
+      const m = /T(\d{2}):(\d{2})(?::(\d{2}))?/.exec(t.t) || [], mins = SD.dtMins(t.t) + (+(m[3] || 0)) / 60;
+      const buy = String(t.side).toUpperCase().startsWith('B');
+      html += `<span class="mk ${buy ? 'b' : 's'}${o.upto != null ? ' pop' : ''}" style="left:${X(mins).toFixed(2)}%;top:${Yp(+t.price).toFixed(2)}%" title="${buy ? 'BUY' : 'SELL'} ${esc(t.qty != null ? (+t.qty).toLocaleString('en-US') + ' ' : '')}${esc(t.symbol)} @ ${esc(SD.price(+t.price))} · ${esc((m[1] || '') + ':' + (m[2] || ''))} ET${t.pnl != null ? ' · P&amp;L ' + esc(SD.usd(+t.pnl)) : ''}">${buy ? '<i>▲</i><b>B</b>' : '<b>S</b><i>▼</i>'}<em>${esc(SD.price(+t.price))}</em></span>`;
+    });
+    return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true">${g}</svg>${html}${o.label ? `<span class="dtc-clabel">${o.label}</span>` : ''}`;
+  };
+  SD.dtFillsFor = (trades, sym, day) => (trades || []).filter(t => t && t.symbol === String(sym || '').toUpperCase() && (!day || String(t.t).startsWith(day)));
+  SD.dtChartHTML = function (dt) {
+    const sym = String(dt.symbol || '').toUpperCase(), day = dt.session_date;
+    const inner = SD.dtCandlesInner(dt.bars, SD.dtFillsFor(dt.trades, sym, day), { last: dt.last, spy: (dt.compare || {}).spy_session,
+      label: `<b class="live-dot"></b>LIVE · ${esc(SD.dayTradeSessionLabel(dt))} · ${esc(sym)} · 5m` });
+    return inner ? `<div class="dtc-chart">${inner}</div>` : '';
+  };
+  /* Replay: candles drawn one by one, fills pop in at their real times, running P&L; loops. State survives re-renders. */
+  SD.dtReplayState = { key: null, t0: 0, n: -1 };
+  SD.dtReplayLabel = rp => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(rp.date || ''); return m ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) : (rp.date || ''); };
+  SD.dtReplayPnl = function (rp, upto) {
+    const start = rp.starting_equity != null ? +rp.starting_equity : null;
+    const eq = (rp.equity || []).filter(p => p && p.v != null && SD.dtMins(p.t) != null && SD.dtMins(p.t) <= upto);
+    if (start != null && (rp.equity || []).length) return eq.length ? +eq[eq.length - 1].v - start : 0;
+    return (rp.trades || []).filter(t => t.pnl != null && SD.dtMins(t.t) <= upto).reduce((s, t) => s + +t.pnl, 0);
+  };
+  SD.dtReplayTick = function () {
+    const el = document.querySelector('.dtc-chart[data-replay]');
+    const rp = SD.data && SD.data.day_trade && SD.data.day_trade.mode === 'replay' && SD.data.day_trade.replay;
+    if (!el || !rp || !(rp.bars || []).length) return;
+    const st = SD.dtReplayState, key = rp.date + '|' + rp.symbol + '|' + rp.bars.length;
+    if (st.key !== key) { st.key = key; st.t0 = performance.now(); st.n = -1; }
+    const N = rp.bars.length, drawMs = Math.max(8000, Math.min(16000, N * 160)), holdMs = 3500;
+    const t = (performance.now() - st.t0) % (drawMs + holdMs), n = Math.min(N, Math.floor(t / drawMs * N) + 1);
+    if (n === st.n && el.firstChild) return;
+    st.n = n;
+    const upto = SD.dtMins(rp.bars[n - 1].t) + (n === N ? 1440 : 4.99);
+    el.innerHTML = SD.dtCandlesInner(rp.bars, SD.dtFillsFor(rp.trades, rp.symbol, rp.date), { upto, label: `REPLAY · ${esc(SD.dtReplayLabel(rp).toUpperCase())} · ${esc(rp.symbol)} · ${esc(rp.bars[n - 1].t)} ET` });
+    const pnl = SD.dtReplayPnl(rp, upto), pe = document.querySelector('.dtc-rp-pnl');
+    if (pe) { pe.textContent = (pnl >= 0 ? '+' : '−') + SD.usd(Math.abs(pnl)); pe.className = 'dtc-rp-pnl ' + SD.cls(pnl); }
+  };
+  if (typeof setInterval === 'function' && typeof document !== 'undefined' && document.querySelector) setInterval(SD.dtReplayTick, 90);
+  SD.dtLegendHTML = function (cmp) {
+    if (!cmp) return '';
+    const f = v => v == null || isNaN(+v) ? '—' : `<b class="${SD.cls(+v)}">${(+v >= 0 ? '+' : '−') + Math.abs(+v).toFixed(2)}%</b>`;
+    const sess = (cmp.spy_session || []).length >= 2, since = (cmp.bot || []).length > 0 && (cmp.spy || []).length >= 2;
+    if (!sess && !since) return '';
+    return `<div class="dtc-legend" title="Gold line: SPY % from the 9:30 open (own scale). Bot vs S&amp;P: % change since the bot's session start${cmp.start_t ? ' (' + esc(cmp.start_t) + ' ET)' : ''}${cmp.spy_source ? '. SPY: ' + esc(cmp.spy_source) : ''}">${sess ? `<span class="lg spy"><i></i>S&amp;P 500 ${f(cmp.spy_session_pct)} today</span>` : ''}${since ? `<span class="lg cmp">since ${esc(cmp.start_t)}: Bot ${f(cmp.bot_pct)} vs S&amp;P ${f(cmp.spy_pct)}</span>` : ''}</div>`;
+  };
+  SD.dtTopClosesHTML = function (dt) {
+    const closed = (dt.trades || []).filter(t => t && t.closed && t.pnl != null && !isNaN(+t.pnl));
+    const top = closed.slice().sort((a, b) => +b.pnl - +a.pnl).slice(0, 3);
+    const total = closed.reduce((s, t) => s + +t.pnl, 0);
+    const mx = Math.max(1e-9, ...top.map(t => Math.abs(+t.pnl)));
+    const sgn = v => (v >= 0 ? '+' : '−') + SD.usd(Math.abs(v));
+    let rows = top.map(t => `<div class="tc-row"><b class="tc-tk">${esc(t.symbol)}</b><span class="tc-bar"><i class="${+t.pnl >= 0 ? 'up' : 'down'}" style="width:${Math.max(6, Math.abs(+t.pnl) / mx * 100).toFixed(0)}%"></i></span><span class="tc-usd ${+t.pnl >= 0 ? 'up' : 'down'}">${sgn(+t.pnl)}</span></div>`).join('');
+    for (let i = top.length; i < 3; i++) rows += `<div class="tc-row tc-empty"><span class="tc-dots"></span></div>`;
+    return `<div class="dtc-card dtc-closes">
+      <div class="dtc-head"><span class="dtc-cap">TOP CLOSES</span><span class="tc-total ${closed.length ? (total >= 0 ? 'up' : 'down') : 'flat'}" title="realized P&amp;L of all ${closed.length} closed trade(s)">${closed.length ? sgn(total) : '—'}</span></div>
+      ${rows}
+      <div class="tc-note">${closed.length ? `${closed.length} closed trade${closed.length > 1 ? 's' : ''} · realized` : 'no closed trades yet'}</div>
+    </div>`;
+  };
   SD.footHTML = function (d) {
     const dt = (d && d.day_trade) || {};
     const bars = dt.bars || [];
     const waiting = !bars.length || dt.status === 'waiting_for_next_session';
-    const side = (dt.side || 'flat').toLowerCase();
-    const pnl = dt.pnl_session_pct;
+    const side = String(dt.side || 'flat').toLowerCase();
     const start = dt.starting_equity != null && !isNaN(+dt.starting_equity) ? +dt.starting_equity : 100000;
     let bal = SD.dayTradeBalance(dt);
-    if (bal == null && waiting) bal = start;  // paper desk always shows starting equity while waiting
-    const balCls = bal == null ? 'flat' : (bal >= start - 0.005 ? 'up' : 'down');
-    const sym = dt.symbol || (waiting ? 'SPY' : '—');
-    const sess = dt.session_date ? SD.dayTradeSessionLabel(dt) : (waiting ? 'WAIT' : 'DAY');
-    const label = `BALANCE · ${sess} · ${sym}`;
-    let chart = '';
-    const cmpSVG = SD.dayTradeCompareSVG(dt.compare, 420, 48);
-    if (cmpSVG) chart = cmpSVG;
-    else if (bars.length >= 8) chart = SD.dayTradeCandleSVG(bars, 420, 48);
-    else if (bars.length >= 2) chart = SD.dayTradeLineSVG(bars, 420, 48);
-    else chart = SD.dayTradeEquitySVG(dt.equity, 420, 48) || SD.dayTradeEquitySVG([{ t: 'a', v: start }, { t: 'b', v: bal != null ? bal : start }], 420, 48);
-    const waitLine = waiting
-      ? `<div class="dt-wait-line">Stock Day Trader · waiting for next session (9:30 AM ET)</div>`
-      : (dt.last != null && +dt.last !== 0
-          ? `<div class="dt-wait-line"><span class="dt-sym-inline">${esc(sym)}</span> ${SD.price(+dt.last)} <span class="${SD.cls(dt.change_pct)}">${SD.pct(dt.change_pct)}</span></div>`
-          : '');
-    return `<div class="dt-panel${waiting ? ' dt-wait' : ''}">
-      <div class="dt-row">
-        <div class="dt-left">
-          <div class="dt-label">${esc(label)}</div>
-          <div class="dt-body">${chart}</div>
-          ${cmpSVG ? `<div class="dt-foot-row">${waitLine}${SD.dayTradeLegendHTML(dt.compare)}</div>` : waitLine}
-        </div>
-        <div class="dt-right">
-          <div class="dt-bal-meta">
-            <span class="dt-bal-tag">BALANCE</span>
-            <span class="dt-side side-${esc(side)}">${esc(side)}</span>
-            <span class="dt-pnl ${SD.cls(pnl)}">${SD.pct(pnl)}</span>
-            <span class="dt-paper">paper</span>
+    if (bal == null && waiting) bal = start;
+    const gain = bal != null ? bal - start : null;
+    const dir = gain == null || Math.abs(gain) < 0.005 ? 'flat' : gain > 0 ? 'up' : 'down';
+    const whole = bal == null ? '—' : '$' + Math.trunc(bal).toLocaleString('en-US');
+    const cents = bal == null ? '' : '.' + Math.round(Math.abs(bal % 1) * 100).toString().padStart(2, '0').slice(-2);
+    const pos = dt.position;
+    const uDir = pos ? SD.cls(pos.unrealized_usd) : 'flat';
+    const pill = (dt.mode === 'replay' && dt.replay) ? '<span class="dtc-pill replay">REPLAY</span>' : side === 'long' ? '<span class="dtc-pill long">LONG</span>' : side === 'short' ? '<span class="dtc-pill short">SHORT</span>' : '<span class="dtc-pill flat">FLAT</span>';
+    const mode = dt.mode || (bars.length && side !== 'flat' ? 'live' : 'waiting'), rp = dt.replay;
+    const chart = mode === 'replay' && rp ? `<div class="dtc-chart dtc-replay" data-replay="1">${SD.dtCandlesInner(rp.bars, SD.dtFillsFor(rp.trades, rp.symbol, rp.date), { upto: -1, label: `REPLAY · ${esc(SD.dtReplayLabel(rp).toUpperCase())} · ${esc(rp.symbol)}` })}</div>`
+      : mode === 'live' ? SD.dtChartHTML(dt) : '';
+    const sub = waiting ? 'waiting for next session (9:30 AM ET)' : `${dt.symbol ? esc(dt.symbol) + ' ' : ''}${dt.last != null ? SD.price(+dt.last) : ''} <span class="${SD.cls(dt.change_pct)}">${dt.change_pct != null ? SD.pct(dt.change_pct) : ''}</span> today${dt.session_date ? ' · ' + esc(SD.dayTradeSessionLabel(dt)) : ''}`;
+    return `<div class="dtc-wrap">
+      <div class="dtc-card dtc-trade">
+        <div class="dtc-head">${SD.dayTradeTradingHTML(dt)}${pill}</div>
+        <div class="dtc-mid">
+          <div class="dtc-eq">
+            <div class="dt-balance dtc-bal ${dir}" title="paper equity"><span class="w">${whole}</span><span class="c">${cents}</span></div>
+            <div class="dtc-gain"><span class="tri ${dir}">${dir === 'down' ? '▼' : '▲'}</span><b class="${dir}">${gain == null ? '—' : (gain >= 0 ? '+' : '−') + SD.usd(Math.abs(gain))}</b><span class="from">from ${SD.usd(start, 0)}</span><span class="paper">paper</span></div>
           </div>
-          ${SD.dayTradeTradingHTML(dt)}
-          <div class="dt-balance ${balCls}" title="paper equity">${SD.usd(bal)}</div>
+          ${mode === 'replay' && rp ? `<div class="dtc-unr">
+            <div class="dtc-cap">REPLAY P&amp;L · ${esc(SD.dtReplayLabel(rp))}</div>
+            <div class="dtc-unr-row"><b class="dtc-rp-pnl flat">$0.00</b></div>
+            <div class="dtc-mut">${esc(rp.symbol)}${rp.name ? ' · ' + esc(rp.name) : ''} · ${(rp.trades || []).length} fill${(rp.trades || []).length === 1 ? '' : 's'}</div>
+          </div>` : `<div class="dtc-unr">
+            <div class="dtc-cap">UNREALIZED${pos ? ' · ' + esc(pos.symbol) : ''}</div>
+            <div class="dtc-unr-row"><b class="${uDir}">${pos ? (pos.unrealized_usd >= 0 ? '+' : '−') + SD.usd(Math.abs(pos.unrealized_usd)) : '—'}</b><b class="pct ${uDir}">${pos ? SD.pct(pos.unrealized_pct) : ''}</b></div>
+            <div class="dtc-mut">${pos ? `${(+pos.qty).toLocaleString('en-US')} sh @ ${SD.price(+pos.entry)} → ${SD.price(+pos.last)}` : 'no open position'}</div>
+          </div>`}
         </div>
+        ${chart || `<div class="dtc-chart dtc-chart-empty">Stock Day Trader · waiting for next session (9:30 AM ET)</div>`}
+        <div class="dtc-foot">${mode === 'replay' && rp ? `<span class="dtc-mut">bot is not in a trade · replaying the last session with trades · <span class="mk-key b">▲B</span> buy <span class="mk-key s">S▼</span> sell</span>` : mode === 'live' ? `<span class="dtc-mut">${sub}</span>${SD.dtLegendHTML(dt.compare)}` : `<span class="dtc-mut">no past session with trades yet</span>`}</div>
       </div>
+      ${SD.dtTopClosesHTML(dt)}
     </div>`;
   };
 
