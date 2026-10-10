@@ -166,7 +166,14 @@
     if (!hasBot && !hasSpy) return '';
     return `<span class="dt-legend" title="% change since the bot's session start${cmp.start_t ? ' (' + esc(cmp.start_t) + ' ET)' : ''}${cmp.spy_source ? '; S&amp;P 500 = SPY, ' + esc(cmp.spy_source) : ''}">${hasBot ? `<span class="lg lg-bot"><i></i>Bot${f(cmp.bot_pct)}</span>` : ''}${hasSpy ? `<span class="lg lg-spy"><i></i>S&amp;P 500${f(cmp.spy_pct)}</span>` : ''}${cmp.start_t ? `<span class="lg-since">since ${esc(cmp.start_t)}</span>` : ''}</span>`;
   };
+  SD.dtMarkets = { '1': 'NASDAQ', '2': 'NYSE' };
+  SD.dtTraderTag = tr => tr ? `T${tr}${SD.dtMarkets[tr] ? ' · ' + SD.dtMarkets[tr] : ''}` : '';
   SD.dayTradeTradingHTML = function (dt) {
+    const ops = (dt.open_positions || []).filter(p => p && p.symbol && p.trader);
+    const per = ['1', '2'].map(tr => ops.find(p => p.trader === tr)).filter(Boolean);
+    if (String(dt.side || 'flat').toLowerCase() !== 'flat' && per.length === 2) {   // both traders hold positions
+      return `<div class="dt-trading" title="${esc(ops.map(p => p.symbol + ' (' + SD.dtTraderTag(p.trader) + ')').join(', '))}">Trading ${per.map(p => `<b class="dt-tk">${esc(p.symbol)}</b> <span class="dt-trtag">${esc(SD.dtTraderTag(p.trader))}</span> <span class="dt-sd side-${esc(p.side || 'long')}">${esc(String(p.side || '').toUpperCase())}</span>`).join(' <span class="dt-plus">+</span> ')}</div>`;
+    }
     const side = String(dt.side || 'flat').toLowerCase();
     if (side !== 'flat' && dt.symbol) {
       const more = (dt.open_positions || []).filter(p => p && p.symbol && p.symbol !== dt.symbol);
@@ -219,7 +226,7 @@
     fills.filter(t => SD.dtMins(t.t) <= upto).forEach(t => {   // exact time + price of each fill
       const m = /T(\d{2}):(\d{2})(?::(\d{2}))?/.exec(t.t) || [], mins = SD.dtMins(t.t) + (+(m[3] || 0)) / 60;
       const buy = String(t.side).toUpperCase().startsWith('B');
-      html += `<span class="mk ${buy ? 'b' : 's'}${o.upto != null ? ' pop' : ''}" style="left:${X(mins).toFixed(2)}%;top:${Yp(+t.price).toFixed(2)}%" title="${t.trader ? 'Trader ' + esc(t.trader) + ' · ' : ''}${buy ? 'BUY' : 'SELL'} ${esc(t.qty != null ? (+t.qty).toLocaleString('en-US') + ' ' : '')}${esc(t.symbol)} @ ${esc(SD.price(+t.price))} · ${esc((m[1] || '') + ':' + (m[2] || ''))} ET${t.pnl != null ? ' · P&amp;L ' + esc(SD.usd(+t.pnl)) : ''}">${buy ? `<i>▲</i><b${t.trader ? ' class="tr"' : ''}>B${esc(t.trader || '')}</b>` : `<b${t.trader ? ' class="tr"' : ''}>S${esc(t.trader || '')}</b><i>▼</i>`}<em>${esc(SD.price(+t.price))}</em></span>`;
+      html += `<span class="mk ${buy ? 'b' : 's'}${o.upto != null ? ' pop' : ''}" style="left:${X(mins).toFixed(2)}%;top:${Yp(+t.price).toFixed(2)}%" title="${t.trader ? esc(SD.dtTraderTag(t.trader)) + ' · ' : ''}${buy ? 'BUY' : 'SELL'} ${esc(t.qty != null ? (+t.qty).toLocaleString('en-US') + ' ' : '')}${esc(t.symbol)} @ ${esc(SD.price(+t.price))} · ${esc((m[1] || '') + ':' + (m[2] || ''))} ET${t.pnl != null ? ' · P&amp;L ' + esc(SD.usd(+t.pnl)) : ''}">${buy ? `<i>▲</i><b${t.trader ? ' class="tr"' : ''}>B${esc(t.trader || '')}</b>` : `<b${t.trader ? ' class="tr"' : ''}>S${esc(t.trader || '')}</b><i>▼</i>`}<em>${esc(SD.price(+t.price))}</em></span>`;
     });
     return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true">${g}</svg>${html}${o.label ? `<span class="dtc-clabel">${o.label}</span>` : ''}`;
   };
@@ -268,12 +275,12 @@
     const total = closed.reduce((s, t) => s + +t.pnl, 0);
     const mx = Math.max(1e-9, ...top.map(t => Math.abs(+t.pnl)));
     const sgn = v => (v >= 0 ? '+' : '−') + SD.usd(Math.abs(v));
-    let rows = top.map(t => `<div class="tc-row"><b class="tc-tk">${esc(t.symbol)}${t.trader ? `<sup class="tc-tr" title="Trader ${esc(t.trader)}">T${esc(t.trader)}</sup>` : ''}</b><span class="tc-bar"><i class="${+t.pnl >= 0 ? 'up' : 'down'}" style="width:${Math.max(6, Math.abs(+t.pnl) / mx * 100).toFixed(0)}%"></i></span><span class="tc-usd ${+t.pnl >= 0 ? 'up' : 'down'}">${sgn(+t.pnl)}</span></div>`).join('');
+    let rows = top.map(t => `<div class="tc-row"><b class="tc-tk">${esc(t.symbol)}${t.trader ? `<span class="tc-tr">${esc(SD.dtTraderTag(t.trader))}</span>` : ''}</b><span class="tc-bar"><i class="${+t.pnl >= 0 ? 'up' : 'down'}" style="width:${Math.max(6, Math.abs(+t.pnl) / mx * 100).toFixed(0)}%"></i></span><span class="tc-usd ${+t.pnl >= 0 ? 'up' : 'down'}">${sgn(+t.pnl)}</span></div>`).join('');
     for (let i = top.length; i < 3; i++) rows += `<div class="tc-row tc-empty"><span class="tc-dots"></span></div>`;
     return `<div class="dtc-card dtc-closes">
       <div class="dtc-head"><span class="dtc-cap">TOP CLOSES</span><span class="tc-total ${closed.length ? (total >= 0 ? 'up' : 'down') : 'flat'}" title="realized P&amp;L of all ${closed.length} closed trade(s)">${closed.length ? sgn(total) : '—'}</span></div>
       ${rows}
-      <div class="tc-note">${closed.length ? `${closed.length} closed trade${closed.length > 1 ? 's' : ''} · realized` : 'no closed trades yet'}</div>
+      <div class="tc-note">${closed.length ? `${closed.length} closed trade${closed.length > 1 ? 's' : ''} · realized` : 'no closed trades yet'}${(dt.trades || []).some(t => t && t.trader) ? ' · <b class="tc-key">T1 NASDAQ · T2 NYSE</b>' : ''}</div>
     </div>`;
   };
   SD.footHTML = function (d) {
