@@ -194,7 +194,7 @@
     o = o || {};
     bars = (bars || []).filter(b => b && b.o != null && b.h != null && b.l != null && b.c != null && SD.dtMins(b.t) != null);
     if (!bars.length) return '';
-    const w = 600, h = 100, padR = 13, padL = 1, padY = 9;
+    const w = 600, h = 100, padR = 13, padL = 1, padY = 16;
     const x0 = SD.dtMins(bars[0].t), x1 = SD.dtMins(bars[bars.length - 1].t) + 5, xr = x1 - x0 || 1;
     const fills = (trades || []).filter(t => t && t.price != null && SD.dtMins(t.t) != null);
     const lo = Math.min(...bars.map(b => +b.l), ...fills.map(t => +t.price)), hi = Math.max(...bars.map(b => +b.h), ...fills.map(t => +t.price)), r = hi - lo || 1;
