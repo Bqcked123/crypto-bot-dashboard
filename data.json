@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-10-10T12:50:27.044655-04:00",
- "generated_at_et": "2026-10-10 12:50:27 EDT",
+ "generated_at": "2026-10-10T12:51:04.565607-04:00",
+ "generated_at_et": "2026-10-10 12:51:04 EDT",
  "paper_trading": true,
  "price_source": "CoinGecko quote 2026-10-10 12:50 EDT",
- "price_status": "live",
+ "price_status": "cache",
  "prices": {
   "bonk": {
    "usd": 3.41e-06,
@@ -3531,6 +3531,13 @@
     }
    ],
    "decisions": [
+    {
+     "title": "2026-10-10 12:55 PM ET: strategy research + test sleeves",
+     "bullets": [
+      "Added strategies.md (11 YouTube videos, transcripts via youtube-transcript-api), plus sleeves dip_reclaim and runner at $1,000 each (pretend). price_check.py now tags trades/positions by strategy. Tested on a scratch copy with simulated prices before going live.",
+      "Live screen: no T1/T2 entry met, so no trades."
+     ]
+    },
     {
      "title": "2026-10-06 ~02:41 EDT: initial allocation",
      "bullets": [
