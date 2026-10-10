@@ -238,6 +238,20 @@ footer#foot{width:min(744px,calc(100% - 696px));bottom:8px}
 .tc-bar{background:rgba(140,160,255,.12)}
 .tc-bar i{background:linear-gradient(90deg,#a78bff,#4cc9ff)}
 .tc-dots{border-top-color:rgba(140,160,255,.25)}
+
+/* ---- crypto trader cards inside the side panels ---- */
+.tc-wrap{display:flex;flex-direction:column;gap:8px}
+.tc-wrap .dtc-card{padding:8px 11px 7px}
+.tc-wrap .dtc-bal{font-size:26px}
+.tc-wrap .dtc-gain{flex-wrap:wrap}.tc-wrap .dtc-gain .from{margin-left:2px}
+.tc-wrap .dtc-chart.tc-chart{height:96px;margin-top:4px}
+.tc-wrap .dtc-unr-row{font-size:16px}
+.tc-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.tc-chip{font:600 9px 'JetBrains Mono',monospace;color:#9fb0d6;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:999px;padding:2px 7px;cursor:pointer;pointer-events:auto}
+.tc-chip.on{color:#fff;border-color:rgba(95,216,255,.6);box-shadow:0 0 8px rgba(76,201,255,.3)}
+.tc-chip span{font-size:8.5px}
+.tc-wrap .dtc-closes .tc-row{grid-template-columns:48px 1fr auto;height:17px}.tc-wrap .dtc-closes .tc-row.tc-empty{grid-template-columns:1fr}
+.tc-wrap .dtc-legend{flex-wrap:wrap;white-space:normal}
 /* ---------- phones / narrow screens ---------- */
 #card{position:fixed}
 @media (max-width:760px){
@@ -294,9 +308,9 @@ footer#foot{width:min(744px,calc(100% - 696px));bottom:8px}
 function panel(id,t,d,key){
   const el=document.getElementById(id);
   el.innerHTML=`<div class="ph"><span class="dot"></span><b>${SD.esc(t.name)}</b><small>${t.strategy?'strategy '+t.strategy+' · ':''}${t.last_check?'checked '+SD.hm(t.last_check):''}</small></div>
-  ${SD.kpiHTML(t)}<div class="spark">${t.available?SD.sparkSVG(t,284,34):''}</div>
+  ${t.tc?`<div class="tc-box" id="tc-${key}">${SD.tcCardHTML(t,key)}</div>`:`${SD.kpiHTML(t)}<div class="spark">${t.available?SD.sparkSVG(t,284,34):''}</div>
   ${t.available?`<div class="sec">Positions · marked ${SD.esc((t.positions[0]||{}).price_source||'')}</div>${SD.positionsHTML(t,id==='pl'?4:5)}`:''}
-  ${t.available?`<div class="sec">Recent trades</div>${SD.tradesHTML(t,3,44)}`:''}
+  ${t.available?`<div class="sec">Recent trades</div>${SD.tradesHTML(t,3,44)}`:''}`}
   <div class="sec">Latest signals in</div>${SD.signalsHTML(d,3,g=>g.to===key,96)}`;
 }
 

@@ -262,6 +262,114 @@
     if (pe) { pe.textContent = (pnl >= 0 ? '+' : '−') + SD.usd(Math.abs(pnl)); pe.className = 'dtc-rp-pnl ' + SD.cls(pnl); }
   };
   if (typeof setInterval === 'function' && typeof document !== 'undefined' && document.querySelector) setInterval(SD.dtReplayTick, 90);
+  /* ---- crypto trader cards (core / meme): epoch-time candles, real fills, BTC hold benchmark, replay ---- */
+  SD.tcSel = {};
+  SD.tcCandlesInner = function (candles, fills, o) {
+    o = o || {};
+    candles = (candles || []).filter(b => b && b.ts && b.o != null && b.h != null && b.l != null && b.c != null);
+    if (!candles.length) return '';
+    const step = candles.length > 1 ? candles[1].ts - candles[0].ts : 14400;
+    const w = 600, h = 100, padR = 15, padL = 1, padY = 16;
+    const x0 = candles[0].ts - step, x1 = candles[candles.length - 1].ts, xr = x1 - x0 || 1;
+    const fl = (fills || []).filter(f => f && f.ts >= x0 && f.price != null);
+    const lo = Math.min(...candles.map(b => +b.l), ...fl.map(f => +f.price)), hi = Math.max(...candles.map(b => +b.h), ...fl.map(f => +f.price)), r = hi - lo || hi * 0.01 || 1;
+    const X = ts => padL + (ts - x0) / xr * (100 - padL - padR), Yp = v => padY + (1 - (v - lo) / r) * (100 - padY * 2);
+    const upto = o.upto != null ? o.upto : Infinity;
+    const shown = candles.filter(b => b.ts <= upto);
+    const bw = Math.max(0.3, Math.min(1.4, (100 - padL - padR) / candles.length * 0.62));
+    let g = '';
+    const line = (o.line || []).filter(p => p.ts >= x0 && p.ts <= upto);
+    if (line.length >= 2) {
+      const vs = (o.line || []).map(p => +p.pct); let a = Math.min(...vs), z = Math.max(...vs); if (z - a < 0.2) { const m = (a + z) / 2; a = m - 0.1; z = m + 0.1; }
+      g += `<path d="${line.map((p, i) => (i ? 'L' : 'M') + (X(p.ts - step / 2) * w / 100).toFixed(1) + ',' + ((padY + (1 - (p.pct - a) / (z - a)) * (100 - padY * 2)) * h / 100).toFixed(1)).join('')}" fill="none" stroke="#ffb547" stroke-width="1.3" opacity=".85" vector-effect="non-scaling-stroke"/>`;
+    }
+    shown.forEach(b => {
+      const xc = X(b.ts - step / 2) * w / 100, up = +b.c >= +b.o, col = up ? '#3dffa8' : '#ff5470';
+      g += `<line x1="${xc.toFixed(2)}" y1="${(Yp(+b.h) * h / 100).toFixed(2)}" x2="${xc.toFixed(2)}" y2="${(Yp(+b.l) * h / 100).toFixed(2)}" stroke="${col}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
+      const y1 = Yp(Math.max(+b.o, +b.c)) * h / 100, y2 = Yp(Math.min(+b.o, +b.c)) * h / 100;
+      g += `<rect x="${(xc - bw * w / 200).toFixed(2)}" y="${y1.toFixed(2)}" width="${(bw * w / 100).toFixed(2)}" height="${Math.max(0.8, y2 - y1).toFixed(2)}" fill="${col}"/>`;
+    });
+    let html = '';
+    const lb = shown[shown.length - 1], last = o.last != null && o.upto == null ? +o.last : lb ? +lb.c : null;
+    if (last != null) {
+      const ly = Yp(last);
+      g += `<line x1="0" x2="${w}" y1="${(ly * h / 100).toFixed(1)}" y2="${(ly * h / 100).toFixed(1)}" stroke="#7d88a8" stroke-width="1" stroke-dasharray="1.5 3" vector-effect="non-scaling-stroke"/>`;
+      html += `<span class="dtc-tag ${last >= +candles[0].o ? 'up' : 'down'}" style="top:${Math.max(4, Math.min(96, ly)).toFixed(1)}%">${esc(SD.price(last))}</span>`;
+    }
+    const fmt = ts => { const d = new Date(ts * 1000); return d.toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
+    fl.filter(f => f.ts <= upto).forEach(f => {
+      const buy = String(f.side).toUpperCase().startsWith('B');
+      html += `<span class="mk ${buy ? 'b' : 's'}${o.upto != null ? ' pop' : ''}" style="left:${X(f.ts).toFixed(2)}%;top:${Yp(+f.price).toFixed(2)}%" title="${buy ? 'BUY' : 'SELL'} ${esc(o.sym || '')} @ ${esc(SD.price(+f.price))} · ${esc(fmt(f.ts))} ET">${buy ? '<i>▲</i><b>B</b>' : '<b>S</b><i>▼</i>'}<em>${esc(SD.price(+f.price))}</em></span>`;
+    });
+    return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true">${g}</svg>${html}${o.label ? `<span class="dtc-clabel">${o.label}</span>` : ''}`;
+  };
+  SD.tcFmtDay = s => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || '')); return m ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) : ''; };
+  SD.tcCardHTML = function (t, key) {
+    const tc = t && t.tc;
+    if (!t || !t.available || !tc) return '';
+    const start = +t.start || 10000, bal = t.equity != null ? +t.equity : null, gain = bal != null ? bal - start : null;
+    const dir = gain == null || Math.abs(gain) < 0.005 ? 'flat' : gain > 0 ? 'up' : 'down';
+    const whole = bal == null ? '—' : '$' + Math.trunc(bal).toLocaleString('en-US'), cents = bal == null ? '' : '.' + Math.round(Math.abs(bal % 1) * 100).toString().padStart(2, '0').slice(-2);
+    const held = tc.holding || [], mode = tc.mode;
+    let sym = SD.tcSel[key]; if (!sym || !tc.charts[sym]) sym = tc.main;
+    const ch = sym ? tc.charts[sym] : null, hp = held.find(h => h.sym === sym);
+    const pill = mode === 'live' ? '<span class="dtc-pill long">LONG</span>' : mode === 'replay' ? '<span class="dtc-pill replay">REPLAY</span>' : '<span class="dtc-pill flat">FLAT</span>';
+    const line = held.length ? `Holding <b class="dt-tk">${esc(held[0].sym)}</b>${held.length > 1 ? ` <span class="dt-more">+${held.length - 1} more</span>` : ''}` : `<span class="dt-sd side-flat">Flat</span>${tc.last_trade ? ` · last <b class="dt-tk">${esc(tc.last_trade)}</b>` : ''}`;
+    const chips = held.length > 1 ? `<div class="tc-chips">${held.map(h => `<button type="button" class="tc-chip${h.sym === sym ? ' on' : ''}" data-tc="${esc(key)}" data-sym="${esc(h.sym)}">${esc(h.sym)}${h.pnl_pct != null ? ` <span class="${SD.cls(h.pnl_pct)}">${SD.pct(h.pnl_pct, 1)}</span>` : ''}</button>`).join('')}</div>` : '';
+    const replay = mode === 'replay' && ch;
+    const chart = ch ? `<div class="dtc-chart tc-chart${replay ? ' dtc-replay' : ''}"${replay ? ` data-tcreplay="${esc(key)}"` : ''}>${SD.tcCandlesInner(ch.candles, ch.fills, { upto: replay ? -1 : null, line: ch.btc_line, sym, label: replay ? `REPLAY · ${esc(sym)} · 4h · 7d` : `<b class="live-dot"></b>LIVE · ${esc(sym)} · 4h · 7d` })}</div>` : `<div class="dtc-chart dtc-chart-empty">${held.length || tc.last_trade ? 'chart: no candle data right now' : 'no trades yet'}</div>`;
+    const b = tc.bench || {}, f = v => v == null ? '—' : `<b class="${SD.cls(v)}">${SD.pct(v)}</b>`;
+    const legend = b.btc_pct != null ? `<div class="dtc-legend" title="BTC buy-and-hold from the bot's start${b.since ? ' (' + esc(b.since) + ')' : ''}">${ch && (ch.btc_line || []).length >= 2 ? '<span class="lg spy"><i></i>BTC</span>' : ''}<span class="lg cmp">since ${esc(SD.tcFmtDay(b.since))}: bot ${f(b.bot_pct)} vs BTC hold ${f(b.btc_pct)}</span></div>` : '';
+    const right = replay ? `<div class="dtc-unr"><div class="dtc-cap">REPLAY P&amp;L</div><div class="dtc-unr-row"><b class="tc-rp-pnl flat" data-tcpnl="${esc(key)}">$0.00</b></div></div>`
+      : hp ? `<div class="dtc-unr"><div class="dtc-cap">${esc(sym)} vs ENTRY</div><div class="dtc-unr-row"><b class="${SD.cls(hp.pnl_pct)}">${SD.pct(hp.pnl_pct)}</b></div><div class="dtc-mut">${SD.usd(hp.value, 0)} held</div></div>` : '';
+    const closes = tc.closes || [], top = closes.slice().sort((a, b) => b.pnl - a.pnl).slice(0, 3), mx = Math.max(1e-9, ...top.map(c => Math.abs(c.pnl)));
+    const sg = v => (v >= 0 ? '+' : '−') + SD.usd(Math.abs(v));
+    let rows = top.map(c => `<div class="tc-row"><b class="tc-tk">${esc(c.coin)}</b><span class="tc-bar"><i class="${c.pnl >= 0 ? 'up' : 'down'}" style="width:${Math.max(6, Math.abs(c.pnl) / mx * 100).toFixed(0)}%"></i></span><span class="tc-usd ${c.pnl >= 0 ? 'up' : 'down'}">${sg(c.pnl)}</span></div>`).join('');
+    for (let i = top.length; i < 3; i++) rows += `<div class="tc-row tc-empty"><span class="tc-dots"></span></div>`;
+    if (!closes.length) rows += '<div class="tc-note">no closed trades yet</div>';
+    return `<div class="tc-wrap dtc-wrap">
+      <div class="dtc-card dtc-trade">
+        <div class="dtc-head"><div class="dt-trading">${line}</div>${pill}</div>
+        <div class="dtc-mid">
+          <div class="dtc-eq"><div class="dtc-bal" title="paper equity"><span class="w">${whole}</span><span class="c">${cents}</span></div>
+            <div class="dtc-gain"><span class="tri ${dir}">${dir === 'down' ? '▼' : '▲'}</span><b class="${dir}">${gain == null ? '—' : sg(gain)}</b><b class="${dir}">${SD.pct(t.pnl_pct)}</b><span class="from">from ${SD.usd(start, 0)}</span></div></div>
+          ${right}
+        </div>
+        ${chips}${chart}
+        <div class="dtc-foot">${legend || '<span></span>'}</div>
+      </div>
+      <div class="dtc-card dtc-closes">
+        <div class="dtc-head"><span class="dtc-cap">TOP CLOSES</span><span class="tc-total ${closes.length ? (tc.closes_total >= 0 ? 'up' : 'down') : 'flat'}" title="realized P&amp;L of all ${closes.length} closing sells (average cost, fees included)">${closes.length ? sg(tc.closes_total) : '—'}</span></div>
+        ${rows}
+      </div>
+    </div>`;
+  };
+  SD.tcState = {};
+  SD.tcReplayTick = function () {
+    document.querySelectorAll('[data-tcreplay]').forEach(el => {
+      const key = el.getAttribute('data-tcreplay'), t = SD.data && SD.data.traders && SD.data.traders[key], tc = t && t.tc;
+      if (!tc || tc.mode !== 'replay') return;
+      const sym = (SD.tcSel[key] && tc.charts[SD.tcSel[key]]) ? SD.tcSel[key] : tc.main, ch = tc.charts[sym];
+      if (!ch || !ch.candles.length) return;
+      const st = SD.tcState[key] = SD.tcState[key] || {}, k = sym + '|' + ch.candles.length;
+      if (st.k !== k) { st.k = k; st.t0 = performance.now(); st.n = -1; }
+      const N = ch.candles.length, drawMs = 10000, holdMs = 3500, tt = (performance.now() - st.t0) % (drawMs + holdMs), n = Math.min(N, Math.floor(tt / drawMs * N) + 1);
+      if (n === st.n && el.firstChild) return; st.n = n;
+      const upto = n === N ? Infinity : ch.candles[n - 1].ts;
+      const d = new Date(ch.candles[n - 1].ts * 1000).toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric' });
+      el.innerHTML = SD.tcCandlesInner(ch.candles, ch.fills, { upto: n === N ? 1e12 : upto, line: ch.btc_line, sym, label: `REPLAY · ${esc(sym)} · ${esc(d)} ET` });
+      const pe = document.querySelector(`[data-tcpnl="${key}"]`), eq = (tc.equity_hist || []).filter(p => p.ts <= upto);
+      if (pe) { if (!eq.length) { pe.textContent = '—'; pe.className = 'tc-rp-pnl flat'; } else { const v = eq[eq.length - 1].v - (+t.start || 10000); pe.textContent = (v >= 0 ? '+' : '−') + SD.usd(Math.abs(v)); pe.className = 'tc-rp-pnl ' + SD.cls(v); } }
+    });
+  };
+  if (typeof setInterval === 'function' && typeof document !== 'undefined' && document.querySelectorAll) {
+    setInterval(SD.tcReplayTick, 100);
+    document.addEventListener('click', e => {
+      const b = e.target && e.target.closest && e.target.closest('.tc-chip'); if (!b) return;
+      const key = b.getAttribute('data-tc'); SD.tcSel[key] = b.getAttribute('data-sym');
+      const box = document.getElementById('tc-' + key); if (box && SD.data) box.innerHTML = SD.tcCardHTML(SD.data.traders[key], key);
+    });
+  }
   SD.dtLegendHTML = function (cmp) {
     if (!cmp) return '';
     const f = v => v == null || isNaN(+v) ? '—' : `<b class="${SD.cls(+v)}">${(+v >= 0 ? '+' : '−') + Math.abs(+v).toFixed(2)}%</b>`;
