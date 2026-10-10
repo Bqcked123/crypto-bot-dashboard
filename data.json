@@ -1,37 +1,37 @@
 {
- "generated_at": "2026-10-10T12:25:19.050959-04:00",
- "generated_at_et": "2026-10-10 12:25:19 EDT",
+ "generated_at": "2026-10-10T12:37:52.929760-04:00",
+ "generated_at_et": "2026-10-10 12:37:52 EDT",
  "paper_trading": true,
- "price_source": "CoinGecko quote 2026-10-10 12:25 EDT",
+ "price_source": "CoinGecko quote 2026-10-10 12:37 EDT",
  "price_status": "cache",
  "prices": {
   "bonk": {
    "usd": 3.41e-06,
-   "chg24": 2.1380170142777684
+   "chg24": 2.1928790568882364
   },
   "cat-in-a-dogs-world": {
-   "usd": 0.00047574,
-   "chg24": 1.944944931947568
+   "usd": 0.00047554,
+   "chg24": 1.9211500780837918
   },
   "dogecoin": {
-   "usd": 0.086043,
-   "chg24": 1.6275464284633507
+   "usd": 0.086107,
+   "chg24": 1.6231916695983062
   },
   "dogwifcoin": {
-   "usd": 0.217595,
-   "chg24": 2.7467367228153017
+   "usd": 0.217382,
+   "chg24": 2.7849111675915426
   },
   "pepe": {
    "usd": 4.03e-06,
-   "chg24": 3.471228811293582
+   "chg24": 3.586182675044422
   },
   "pudgy-penguins": {
-   "usd": 0.00830383,
-   "chg24": 2.898611554239379
+   "usd": 0.00830201,
+   "chg24": 3.372196682698748
   },
   "pump-fun": {
-   "usd": 0.00568574,
-   "chg24": 4.376065958252197
+   "usd": 0.00562696,
+   "chg24": 2.8700738653646445
   }
  },
  "bots": [
@@ -111,7 +111,7 @@
    "short": "CORE",
    "kind": "trader",
    "status": "active",
-   "last_activity": "2026-10-10 12:08 EDT"
+   "last_activity": "2026-10-10 12:36 EDT"
   },
   {
    "id": "meme",
@@ -651,7 +651,7 @@
    "start": 10000.0,
    "strategy": "v4",
    "cash": 9871.350525723283,
-   "last_check": "2026-10-10 12:08 EDT",
+   "last_check": "2026-10-10 12:36 EDT",
    "realized": {
     "core": -121.30724159056952,
     "meme": -0.3633046108936247
@@ -3146,6 +3146,11 @@
      "ts": 1791649517.2971833,
      "t": "2026-10-10 12:25 EDT",
      "v": 9871.35
+    },
+    {
+     "ts": 1791650210.3923619,
+     "t": "2026-10-10 12:36 EDT",
+     "v": 9871.35
     }
    ]
   },
@@ -3165,21 +3170,21 @@
      "sym": "DOGE",
      "qty": 15725.601491019994,
      "avg": 0.094432,
-     "price": 0.086043,
-     "price_source": "CoinGecko quote 2026-10-10 12:25 EDT",
-     "chg24": 1.6275464284633507,
-     "value": 1353.0779290918333,
+     "price": 0.086107,
+     "price_source": "CoinGecko quote 2026-10-10 12:37 EDT",
+     "chg24": 1.6231916695983062,
+     "value": 1354.0843675872586,
      "cost": 1485.0,
-     "pnl": -131.9220709081667,
-     "pnl_pct": -8.883641138597087
+     "pnl": -130.9156324127414,
+     "pnl_pct": -8.815867502541508
     },
     {
      "sym": "PEPE",
      "qty": 229698375.8700696,
      "avg": 4.31e-06,
      "price": 4.03e-06,
-     "price_source": "CoinGecko quote 2026-10-10 12:25 EDT",
-     "chg24": 3.471228811293582,
+     "price_source": "CoinGecko quote 2026-10-10 12:37 EDT",
+     "chg24": 3.586182675044422,
      "value": 925.6844547563805,
      "cost": 990.0,
      "pnl": -64.31554524361945,
@@ -3189,21 +3194,21 @@
      "sym": "PUMP",
      "qty": 126170.90422481361,
      "avg": 0.0062772,
-     "price": 0.00568574,
-     "price_source": "CoinGecko quote 2026-10-10 12:25 EDT",
-     "chg24": 4.376065958252197,
-     "value": 717.3749569871917,
+     "price": 0.00562696,
+     "price_source": "CoinGecko quote 2026-10-10 12:37 EDT",
+     "chg24": 2.8700738653646445,
+     "value": 709.9586312368572,
      "cost": 792.0,
-     "pnl": -74.6250430128083,
-     "pnl_pct": -9.422353915758618
+     "pnl": -82.04136876314283,
+     "pnl_pct": -10.358758682215008
     },
     {
      "sym": "BONK",
      "qty": 184308510.6382979,
      "avg": 3.76e-06,
      "price": 3.41e-06,
-     "price_source": "CoinGecko quote 2026-10-10 12:25 EDT",
-     "chg24": 2.1380170142777684,
+     "price_source": "CoinGecko quote 2026-10-10 12:37 EDT",
+     "chg24": 2.1928790568882364,
      "value": 628.4920212765958,
      "cost": 693.0,
      "pnl": -64.50797872340422,
@@ -3213,44 +3218,44 @@
      "sym": "WIF",
      "qty": 2791.3046630496515,
      "avg": 0.248271,
-     "price": 0.217595,
-     "price_source": "CoinGecko quote 2026-10-10 12:25 EDT",
-     "chg24": 2.7467367228153017,
-     "value": 607.373938156289,
+     "price": 0.217382,
+     "price_source": "CoinGecko quote 2026-10-10 12:37 EDT",
+     "chg24": 2.7849111675915426,
+     "value": 606.7793902630593,
      "cost": 693.0,
-     "pnl": -85.626061843711,
-     "pnl_pct": -12.35585307990058
+     "pnl": -86.22060973694067,
+     "pnl_pct": -12.441646426686969
     },
     {
      "sym": "PENGU",
      "qty": 62689.57263441848,
      "avg": 0.00947526,
-     "price": 0.00830383,
-     "price_source": "CoinGecko quote 2026-10-10 12:25 EDT",
-     "chg24": 2.898611554239379,
-     "value": 520.5635539288633,
+     "price": 0.00830201,
+     "price_source": "CoinGecko quote 2026-10-10 12:37 EDT",
+     "chg24": 3.372196682698748,
+     "value": 520.4494589066686,
      "cost": 594.0,
-     "pnl": -73.43644607113674,
-     "pnl_pct": -12.36303805911393
+     "pnl": -73.55054109333139,
+     "pnl_pct": -12.382245975308315
     },
     {
      "sym": "MEW",
      "qty": 748922.0062031924,
      "avg": 0.00052876,
-     "price": 0.00047574,
-     "price_source": "CoinGecko quote 2026-10-10 12:25 EDT",
-     "chg24": 1.944944931947568,
-     "value": 356.29215523110673,
+     "price": 0.00047554,
+     "price_source": "CoinGecko quote 2026-10-10 12:37 EDT",
+     "chg24": 1.9211500780837918,
+     "value": 356.1423708298661,
      "cost": 396.0,
-     "pnl": -39.70784476889327,
-     "pnl_pct": -10.027233527498304
+     "pnl": -39.85762917013392,
+     "pnl_pct": -10.06505787124594
     }
    ],
-   "positions_value": 5108.85900942826,
-   "equity": 9408.859009428259,
-   "pnl": -591.140990571741,
-   "pnl_pct": -5.911409905717409,
-   "cash_pct": 45.70160946923675,
+   "positions_value": 5101.590694856686,
+   "equity": 9401.590694856686,
+   "pnl": -598.4093051433138,
+   "pnl_pct": -5.984093051433137,
+   "cash_pct": 45.73694111521356,
    "trades": [
     {
      "time": "2026-10-06 02:41:29 EDT",
@@ -5740,6 +5745,11 @@
      "ts": 1791649517.2972052,
      "t": "2026-10-10 12:25 EDT",
      "v": 9408.86
+    },
+    {
+     "ts": 1791650210.3924181,
+     "t": "2026-10-10 12:36 EDT",
+     "v": 9401.64
     }
    ]
   }
@@ -8798,7 +8808,7 @@
  },
  "provenance": [
   "Portfolio, trades, signals and scan notes are read from the bots' own files (read-only).",
-  "Position values = file quantities x CoinGecko quote 2026-10-10 12:25 EDT; if no quote, the bot's own last price or entry price is used (labeled per position).",
+  "Position values = file quantities x CoinGecko quote 2026-10-10 12:37 EDT; if no quote, the bot's own last price or entry price is used (labeled per position).",
   "Pulse animations along threads are illustrative of scanning/signalling, not individual logged events."
  ],
  "public_view": "public read-only copy; file paths and account names removed"
