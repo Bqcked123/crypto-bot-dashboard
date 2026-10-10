@@ -207,10 +207,10 @@
     if (o.spy && o.spy.length >= 2) {   // whole-session S&P 500 (SPY) %, own scale, thin gold
       const sp = o.spy.filter(p => SD.dtMins(p.t) != null && SD.dtMins(p.t) <= upto);
       const vs = o.spy.map(p => +p.pct); let a = Math.min(...vs), z = Math.max(...vs); if (z - a < 0.1) { const m = (a + z) / 2; a = m - 0.05; z = m + 0.05; }
-      if (sp.length >= 2) g += `<path d="${sp.map((p, i) => (i ? 'L' : 'M') + (X(SD.dtMins(p.t) + 2.5) * w / 100).toFixed(1) + ',' + ((padY + (1 - (+p.pct - a) / (z - a)) * (100 - padY * 2)) * h / 100).toFixed(1)).join('')}" fill="none" stroke="#e3a21a" stroke-width="1.2" opacity=".75" vector-effect="non-scaling-stroke"/>`;
+      if (sp.length >= 2) g += `<path d="${sp.map((p, i) => (i ? 'L' : 'M') + (X(SD.dtMins(p.t) + 2.5) * w / 100).toFixed(1) + ',' + ((padY + (1 - (+p.pct - a) / (z - a)) * (100 - padY * 2)) * h / 100).toFixed(1)).join('')}" fill="none" stroke="#ffb547" stroke-width="1.3" opacity=".85" vector-effect="non-scaling-stroke"/>`;
     }
     shown.forEach(b => {
-      const xc = X(SD.dtMins(b.t) + 2.5) * w / 100, up = +b.c >= +b.o, col = up ? '#1fb889' : '#f06a7f';
+      const xc = X(SD.dtMins(b.t) + 2.5) * w / 100, up = +b.c >= +b.o, col = up ? '#3dffa8' : '#ff5470';
       g += `<line x1="${xc.toFixed(2)}" y1="${(Yp(+b.h) * h / 100).toFixed(2)}" x2="${xc.toFixed(2)}" y2="${(Yp(+b.l) * h / 100).toFixed(2)}" stroke="${col}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
       const y1 = Yp(Math.max(+b.o, +b.c)) * h / 100, y2 = Yp(Math.min(+b.o, +b.c)) * h / 100;
       g += `<rect x="${(xc - bw * w / 200).toFixed(2)}" y="${y1.toFixed(2)}" width="${(bw * w / 100).toFixed(2)}" height="${Math.max(0.8, y2 - y1).toFixed(2)}" fill="${col}"/>`;
@@ -220,7 +220,7 @@
     const last = o.last != null && o.upto == null ? +o.last : lastBar ? +lastBar.c : null;
     if (last != null) {
       const ly = Yp(last);
-      g += `<line x1="0" x2="${w}" y1="${(ly * h / 100).toFixed(1)}" y2="${(ly * h / 100).toFixed(1)}" stroke="#9aa3c7" stroke-width="1" stroke-dasharray="1.5 3" vector-effect="non-scaling-stroke"/>`;
+      g += `<line x1="0" x2="${w}" y1="${(ly * h / 100).toFixed(1)}" y2="${(ly * h / 100).toFixed(1)}" stroke="#7d88a8" stroke-width="1" stroke-dasharray="1.5 3" vector-effect="non-scaling-stroke"/>`;
       html += `<span class="dtc-tag ${last >= +bars[0].o ? 'up' : 'down'}" style="top:${ly.toFixed(1)}%">${esc(SD.price(last))}</span>`;
     }
     fills.filter(t => SD.dtMins(t.t) <= upto).forEach(t => {   // exact time + price of each fill

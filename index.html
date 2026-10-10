@@ -200,6 +200,44 @@ footer#foot{width:min(744px,calc(100% - 696px));bottom:8px}
 .dtc-legend .cmp{color:#8a8fa8}
 .dtc-chart{overflow:visible}
 @media (min-width:761px){.mk em{display:none}.mk:hover em{display:block}}
+/* ---- dark holo theme for the day-trade cards (overrides the earlier light styling) ---- */
+.dtc-wrap{background:none;box-shadow:none;padding:0;color:var(--txt)}
+.dtc-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 0 22px rgba(47,200,255,.12),inset 0 0 22px rgba(76,201,255,.05);backdrop-filter:blur(14px)}
+.dtc-trade{border-color:rgba(95,216,255,.32)}
+.dtc-cap,.dtc-mut,.tc-note{color:var(--mut)}
+.dtc-cap{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:1.3px}
+.dtc-team{color:var(--core);font-family:Rajdhani,sans-serif;font-size:11px;letter-spacing:2.4px;text-shadow:0 0 8px rgba(76,201,255,.5)}
+.dtc-wrap .up{color:var(--up)}.dtc-wrap .down{color:var(--down)}.dtc-wrap .flat{color:var(--mut)}
+.dtc-wrap .dt-trading{color:#9fb0d6}
+.dtc-wrap .dt-trading .dt-tk{color:#fff;text-shadow:0 0 8px rgba(76,201,255,.45)}
+.dtc-wrap .dt-trading .dt-nm,.dtc-wrap .dt-trading .dt-more,.dtc-wrap .dt-trading .dt-plus{color:#9fb0d6}
+.dtc-wrap .dt-trading .side-long{color:var(--up)}.dtc-wrap .dt-trading .side-short{color:var(--down)}.dtc-wrap .dt-trading .side-flat{color:var(--mut)}
+.dtc-wrap .dt-trading .dt-trtag{color:#c9b8ff;background:rgba(167,139,255,.16)}
+.dtc-pill{border:1px solid transparent}
+.dtc-pill.long{background:rgba(61,255,168,.1);color:var(--up);border-color:rgba(61,255,168,.4)}
+.dtc-pill.short{background:rgba(255,84,112,.1);color:var(--down);border-color:rgba(255,84,112,.4)}
+.dtc-pill.flat{background:rgba(125,136,168,.1);color:var(--mut);border-color:rgba(125,136,168,.35)}
+.dtc-pill.replay{background:rgba(167,139,255,.12);color:#c9b8ff;border-color:rgba(167,139,255,.45)}
+.dtc-wrap .dtc-bal,.dtc-wrap .dtc-bal.up,.dtc-wrap .dtc-bal.down,.dtc-wrap .dtc-bal.flat{color:#f2f6ff;text-shadow:0 0 16px rgba(76,201,255,.35)}
+.dtc-bal .c{color:#8d9bc0}
+.dtc-gain .from{color:var(--mut)}
+.dtc-gain .paper{color:#ffd36b;background:rgba(255,211,107,.1);border:1px solid rgba(255,211,107,.35)}
+.dtc-chart{background-image:linear-gradient(90deg,rgba(140,160,255,.08) 1px,transparent 1px)}
+.dtc-chart-empty{color:var(--mut)}
+.dtc-wrap .dtc-tag{color:#04130c}.dtc-tag{background:var(--up)}.dtc-tag.down{background:var(--down)}.dtc-wrap .dtc-tag.down{color:#fff}
+.dtc-clabel{color:#9fb0d6;background:rgba(5,8,16,.75);border:1px solid var(--line)}
+.dtc-replay .dtc-clabel{color:#c9b8ff}
+.live-dot{background:var(--up);box-shadow:0 0 6px var(--up)}
+.dtc-legend{color:#9fb0d6}.dtc-legend .cmp{color:var(--mut)}.dtc-legend .spy i{background:#ffb547}
+.mk.b{color:var(--up)}.mk.s{color:var(--down)}
+.mk.b b{background:#14b981;color:#fff}.mk.s b{background:#ff4d6a;color:#fff}
+.mk em{background:rgba(5,8,16,.85);color:inherit}
+.mk-key.b{color:var(--up)}.mk-key.s{color:var(--down)}
+.tc-tk{color:#f2f6ff}
+.tc-tr,.tc-key{color:#c9b8ff}
+.tc-bar{background:rgba(140,160,255,.12)}
+.tc-bar i{background:linear-gradient(90deg,#a78bff,#4cc9ff)}
+.tc-dots{border-top-color:rgba(140,160,255,.25)}
 /* ---------- phones / narrow screens ---------- */
 #card{position:fixed}
 @media (max-width:760px){
