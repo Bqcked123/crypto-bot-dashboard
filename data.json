@@ -1,37 +1,37 @@
 {
- "generated_at": "2026-10-11T13:45:18.737541-04:00",
- "generated_at_et": "2026-10-11 13:45:18 EDT",
+ "generated_at": "2026-10-11T13:47:20.598188-04:00",
+ "generated_at_et": "2026-10-11 13:47:20 EDT",
  "paper_trading": true,
- "price_source": "CoinGecko quote 2026-10-11 13:45 EDT",
+ "price_source": "CoinGecko quote 2026-10-11 13:47 EDT",
  "price_status": "cache",
  "prices": {
   "bonk": {
    "usd": 3.5e-06,
-   "chg24": 2.9339925884716007
+   "chg24": 2.625075103927743
   },
   "cat-in-a-dogs-world": {
-   "usd": 0.00048379,
-   "chg24": 1.6670505011853611
+   "usd": 0.00048373,
+   "chg24": 1.6613562058217999
   },
   "dogecoin": {
-   "usd": 0.087293,
-   "chg24": 1.4789442351187552
+   "usd": 0.087245,
+   "chg24": 1.424746697240731
   },
   "dogwifcoin": {
-   "usd": 0.222793,
-   "chg24": 2.1115225626885334
+   "usd": 0.222934,
+   "chg24": 2.201343717171523
   },
   "pepe": {
-   "usd": 4.22e-06,
-   "chg24": 4.717480871830941
+   "usd": 4.21e-06,
+   "chg24": 4.465632594335971
   },
   "pudgy-penguins": {
-   "usd": 0.00827398,
-   "chg24": -0.015584700154770476
+   "usd": 0.00826806,
+   "chg24": -0.07783009830096893
   },
   "pump-fun": {
-   "usd": 0.00581102,
-   "chg24": 4.158685543401277
+   "usd": 0.00580742,
+   "chg24": 4.068064840783596
   }
  },
  "bots": [
@@ -41,7 +41,7 @@
    "short": "NEWS",
    "kind": "scanner",
    "status": "active",
-   "last_activity": "2026-10-11 12:48 EDT"
+   "last_activity": "2026-10-11 13:46 EDT"
   },
   {
    "id": "x",
@@ -66,7 +66,7 @@
    "short": "LAUNCH",
    "kind": "scanner",
    "status": "active",
-   "last_activity": "2026-10-11 12:48 EDT",
+   "last_activity": "2026-10-11 13:46 EDT",
    "note": null
   },
   {
@@ -119,7 +119,7 @@
    "short": "MEME",
    "kind": "trader",
    "status": "active",
-   "last_activity": "2026-10-11 13:34:23 EDT"
+   "last_activity": "2026-10-11 13:46:31 EDT"
   }
  ],
  "sources": [
@@ -1746,6 +1746,11 @@
      "ts": 1791740591.914802,
      "t": "2026-10-11 13:43 EDT",
      "v": 9871.35
+    },
+    {
+     "ts": 1791740835.4067872,
+     "t": "2026-10-11 13:47 EDT",
+     "v": 9871.35
     }
    ],
    "tc": {
@@ -2844,6 +2849,10 @@
      {
       "ts": 1791740591,
       "v": 9871.35
+     },
+     {
+      "ts": 1791740835,
+      "v": 9871.35
      }
     ],
     "last_trade": "BTC",
@@ -2861,7 +2870,7 @@
    "available": true,
    "start": 10000.0,
    "cash": 3852.865197161574,
-   "last_check": "2026-10-11 13:34:23 EDT",
+   "last_check": "2026-10-11 13:46:31 EDT",
    "realized": {
     "total": -72.13480283842571
    },
@@ -2871,45 +2880,45 @@
      "sym": "DOGE",
      "qty": 15725.601491019994,
      "avg": 0.094432,
-     "price": 0.087293,
-     "price_source": "CoinGecko quote 2026-10-11 13:45 EDT",
-     "chg24": 1.4789442351187552,
-     "value": 1372.7349309556082,
+     "price": 0.087245,
+     "price_source": "CoinGecko quote 2026-10-11 13:47 EDT",
+     "chg24": 1.424746697240731,
+     "value": 1371.9801020840393,
      "cost": 1485.0,
-     "pnl": -112.2650690443918,
-     "pnl_pct": -7.559937309386655
+     "pnl": -113.01989791596066,
+     "pnl_pct": -7.610767536428331
     },
     {
      "sym": "PEPE",
      "qty": 229698375.8700696,
      "avg": 4.31e-06,
-     "price": 4.22e-06,
-     "price_source": "CoinGecko quote 2026-10-11 13:45 EDT",
-     "chg24": 4.717480871830941,
-     "value": 969.3271461716937,
+     "price": 4.21e-06,
+     "price_source": "CoinGecko quote 2026-10-11 13:47 EDT",
+     "chg24": 4.465632594335971,
+     "value": 967.030162412993,
      "cost": 990.0,
-     "pnl": -20.6728538283063,
-     "pnl_pct": -2.088167053364276
+     "pnl": -22.969837587006964,
+     "pnl_pct": -2.3201856148491906
     },
     {
      "sym": "PUMP",
      "qty": 126170.90422481361,
      "avg": 0.0062772,
-     "price": 0.00581102,
-     "price_source": "CoinGecko quote 2026-10-11 13:45 EDT",
-     "chg24": 4.158685543401277,
-     "value": 733.1816478684764,
+     "price": 0.00580742,
+     "price_source": "CoinGecko quote 2026-10-11 13:47 EDT",
+     "chg24": 4.068064840783596,
+     "value": 732.7274326132671,
      "cost": 792.0,
-     "pnl": -58.818352131523625,
-     "pnl_pct": -7.42655961256612
+     "pnl": -59.27256738673293,
+     "pnl_pct": -7.483910023577389
     },
     {
      "sym": "BONK",
      "qty": 184308510.6382979,
      "avg": 3.76e-06,
      "price": 3.5e-06,
-     "price_source": "CoinGecko quote 2026-10-11 13:45 EDT",
-     "chg24": 2.9339925884716007,
+     "price_source": "CoinGecko quote 2026-10-11 13:47 EDT",
+     "chg24": 2.625075103927743,
      "value": 645.0797872340426,
      "cost": 693.0,
      "pnl": -47.920212765957444,
@@ -2919,224 +2928,224 @@
      "sym": "WIF",
      "qty": 2791.3046630496515,
      "avg": 0.248271,
-     "price": 0.222793,
-     "price_source": "CoinGecko quote 2026-10-11 13:45 EDT",
-     "chg24": 2.1115225626885334,
-     "value": 621.883139794821,
+     "price": 0.222934,
+     "price_source": "CoinGecko quote 2026-10-11 13:47 EDT",
+     "chg24": 2.201343717171523,
+     "value": 622.276713752311,
      "cost": 693.0,
-     "pnl": -71.11686020517902,
-     "pnl_pct": -10.26217318978052
+     "pnl": -70.72328624768897,
+     "pnl_pct": -10.205380410921927
     },
     {
      "sym": "PENGU",
      "qty": 62689.57263441848,
      "avg": 0.00947526,
-     "price": 0.00827398,
-     "price_source": "CoinGecko quote 2026-10-11 13:45 EDT",
-     "chg24": -0.015584700154770476,
-     "value": 518.6922701857259,
+     "price": 0.00826806,
+     "price_source": "CoinGecko quote 2026-10-11 13:47 EDT",
+     "chg24": -0.07783009830096893,
+     "value": 518.3211479157301,
      "cost": 594.0,
-     "pnl": -75.30772981427413,
-     "pnl_pct": -12.678068992302038
+     "pnl": -75.67885208426992,
+     "pnl_pct": -12.740547488934329
     },
     {
      "sym": "MEW",
      "qty": 748922.0062031924,
      "avg": 0.00052876,
-     "price": 0.00048379,
-     "price_source": "CoinGecko quote 2026-10-11 13:45 EDT",
-     "chg24": 1.6670505011853611,
-     "value": 362.32097738104244,
+     "price": 0.00048373,
+     "price_source": "CoinGecko quote 2026-10-11 13:47 EDT",
+     "chg24": 1.6613562058217999,
+     "value": 362.27604206067025,
      "cost": 396.0,
-     "pnl": -33.67902261895756,
-     "pnl_pct": -8.50480369165595
-    },
-    {
-     "sym": "ApZuxdpzMrbEYTGEzeY9afh5pj9d6qPRJCTgQYiipbKg:limitless_bot",
-     "qty": 4459.410265744449,
-     "avg": 0.005494,
-     "price": 0.007193,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
-     "chg24": null,
-     "value": 32.07653804149982,
-     "cost": 24.500000000000004,
-     "pnl": 7.57653804149982,
-     "pnl_pct": 30.9246450673462
+     "pnl": -33.72395793932975,
+     "pnl_pct": -8.516150994780237
     },
     {
      "sym": "HbPDWSqu8hpVMX6gMjwMDGe5rVgicWo3Qh3Jaojypump:limitless_bot",
      "qty": 78904.99194847021,
      "avg": 0.0003105,
-     "price": 0.0004012,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
+     "price": 0.0004596,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
      "chg24": null,
-     "value": 31.65668276972625,
+     "value": 36.26473429951691,
      "cost": 24.5,
-     "pnl": 7.156682769726249,
-     "pnl_pct": 29.210950080515307
+     "pnl": 11.76473429951691,
+     "pnl_pct": 48.019323671497595
     },
     {
-     "sym": "DoVAVzViX8Bjy3r15nwikSaSbzE6dV4ovd28aWpJpump:limitless_bot",
-     "qty": 20976.027397260274,
-     "avg": 0.001168,
-     "price": 0.001357,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
+     "sym": "ApZuxdpzMrbEYTGEzeY9afh5pj9d6qPRJCTgQYiipbKg:limitless_bot",
+     "qty": 4459.410265744449,
+     "avg": 0.005494,
+     "price": 0.006928,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
      "chg24": null,
-     "value": 28.46446917808219,
-     "cost": 24.5,
-     "pnl": 3.96446917808219,
-     "pnl_pct": 16.181506849315053
-    },
-    {
-     "sym": "2j5SaS7xy776qCBpyPQbZjyQSAtKiFgrwjfErthnW2ZM:limitless_bot",
-     "qty": 3015.3846153846152,
-     "avg": 0.008125,
-     "price": 0.008553,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
-     "chg24": null,
-     "value": 25.790584615384613,
-     "cost": 24.5,
-     "pnl": 1.2905846153846134,
-     "pnl_pct": 5.267692307692307
-    },
-    {
-     "sym": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF:limitless_bot",
-     "qty": 5794.701986754967,
-     "avg": 0.004228,
-     "price": 0.004436,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
-     "chg24": null,
-     "value": 25.705298013245034,
-     "cost": 24.5,
-     "pnl": 1.2052980132450344,
-     "pnl_pct": 4.919583727530763
-    },
-    {
-     "sym": "6hTLdzZaaCjmqtn7RtaEMQsCbXT5Pg8q76tRViEGpump:limitless_bot",
-     "qty": 48218.85455618972,
-     "avg": 0.0005081,
-     "price": 0.0005274,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
-     "chg24": null,
-     "value": 25.43062389293446,
-     "cost": 24.5,
-     "pnl": 0.9306238929344595,
-     "pnl_pct": 3.7984648691202327
-    },
-    {
-     "sym": "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump:limitless_bot",
-     "qty": 10986.547085201793,
-     "avg": 0.00223,
-     "price": 0.00226,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
-     "chg24": null,
-     "value": 24.82959641255605,
-     "cost": 24.5,
-     "pnl": 0.3295964125560502,
-     "pnl_pct": 1.3452914798206095
-    },
-    {
-     "sym": "GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump:limitless_bot",
-     "qty": 2437.8109452736317,
-     "avg": 0.01005,
-     "price": 0.01008,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
-     "chg24": null,
-     "value": 24.573134328358208,
-     "cost": 24.499999999999996,
-     "pnl": 0.07313432835821132,
-     "pnl_pct": 0.29850746268658135
-    },
-    {
-     "sym": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv:limitless_bot",
-     "qty": 2959.2946007971977,
-     "avg": 0.008279,
-     "price": 0.008279,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
-     "chg24": null,
-     "value": 24.5,
-     "cost": 24.5,
-     "pnl": 0.0,
-     "pnl_pct": 0.0
+     "value": 30.894794321077544,
+     "cost": 24.500000000000004,
+     "pnl": 6.394794321077541,
+     "pnl_pct": 26.101201310520562
     },
     {
      "sym": "9XKzy4KahcZaGJPJtz1PtqGPB3CiseoBrx7TcQhEpump:limitless_bot",
      "qty": 17562.724014336916,
      "avg": 0.001395,
-     "price": 0.001395,
-     "price_source": "bot file (?)",
+     "price": 0.001581,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
      "chg24": null,
-     "value": 24.499999999999996,
+     "value": 27.766666666666662,
      "cost": 24.499999999999996,
-     "pnl": 0.0,
-     "pnl_pct": 0.0
+     "pnl": 3.2666666666666657,
+     "pnl_pct": 13.33333333333333
     },
     {
-     "sym": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump:limitless_bot",
-     "qty": 71953.01027900148,
-     "avg": 0.0003405,
-     "price": 0.0003306,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
+     "sym": "DoVAVzViX8Bjy3r15nwikSaSbzE6dV4ovd28aWpJpump:limitless_bot",
+     "qty": 20976.027397260274,
+     "avg": 0.001168,
+     "price": 0.001242,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
      "chg24": null,
-     "value": 23.78766519823789,
-     "cost": 24.500000000000004,
-     "pnl": -0.7123348017621147,
-     "pnl_pct": -2.907488986784146
+     "value": 26.05222602739726,
+     "cost": 24.5,
+     "pnl": 1.5522260273972606,
+     "pnl_pct": 6.335616438356162
+    },
+    {
+     "sym": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF:limitless_bot",
+     "qty": 5794.701986754967,
+     "avg": 0.004228,
+     "price": 0.00439,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
+     "chg24": null,
+     "value": 25.438741721854303,
+     "cost": 24.5,
+     "pnl": 0.9387417218543028,
+     "pnl_pct": 3.8315988647114496
+    },
+    {
+     "sym": "2j5SaS7xy776qCBpyPQbZjyQSAtKiFgrwjfErthnW2ZM:limitless_bot",
+     "qty": 3015.3846153846152,
+     "avg": 0.008125,
+     "price": 0.00834,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
+     "chg24": null,
+     "value": 25.148307692307693,
+     "cost": 24.5,
+     "pnl": 0.6483076923076929,
+     "pnl_pct": 2.6461538461538536
+    },
+    {
+     "sym": "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump:limitless_bot",
+     "qty": 10986.547085201793,
+     "avg": 0.00223,
+     "price": 0.002286,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
+     "chg24": null,
+     "value": 25.1152466367713,
+     "cost": 24.5,
+     "pnl": 0.6152466367712996,
+     "pnl_pct": 2.511210762331828
+    },
+    {
+     "sym": "GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump:limitless_bot",
+     "qty": 2437.8109452736317,
+     "avg": 0.01005,
+     "price": 0.01024,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
+     "chg24": null,
+     "value": 24.96318407960199,
+     "cost": 24.499999999999996,
+     "pnl": 0.46318407960199437,
+     "pnl_pct": 1.8905472636816079
     },
     {
      "sym": "7Xgc5RacHtGzfhw2HukUBk5V986yBbvshr7rrCoopump:limitless_bot",
      "qty": 16333.333333333332,
      "avg": 0.0015,
-     "price": 0.001449,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
+     "price": 0.00151,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
      "chg24": null,
-     "value": 23.666999999999998,
+     "value": 24.663333333333334,
      "cost": 24.5,
-     "pnl": -0.833000000000002,
-     "pnl_pct": -3.400000000000003
+     "pnl": 0.163333333333334,
+     "pnl_pct": 0.6666666666666599
+    },
+    {
+     "sym": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv:limitless_bot",
+     "qty": 2959.2946007971977,
+     "avg": 0.008279,
+     "price": 0.008258,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
+     "chg24": null,
+     "value": 24.437854813383257,
+     "cost": 24.5,
+     "pnl": -0.06214518661674262,
+     "pnl_pct": -0.25365382292548144
+    },
+    {
+     "sym": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump:limitless_bot",
+     "qty": 71953.01027900148,
+     "avg": 0.0003405,
+     "price": 0.0003368,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
+     "chg24": null,
+     "value": 24.2337738619677,
+     "cost": 24.500000000000004,
+     "pnl": -0.2662261380323052,
+     "pnl_pct": -1.0866372980910421
     },
     {
      "sym": "7VertkgF9KLhxxJXHX6uaWuoYZTP9LdGj2bWmVXVpump:limitless_bot",
      "qty": 7728.706624605678,
      "avg": 0.00317,
-     "price": 0.003048,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
+     "price": 0.003038,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
      "chg24": null,
-     "value": 23.557097791798107,
+     "value": 23.47981072555205,
      "cost": 24.5,
-     "pnl": -0.9429022082018932,
-     "pnl_pct": -3.8485804416403813
+     "pnl": -1.0201892744479508,
+     "pnl_pct": -4.164037854889591
     },
     {
-     "sym": "2Dx7XJQp2LGdq14nP98swmtUhfhHz8FVs98bt11Mpump:limitless_bot",
-     "qty": 47665.36964980545,
-     "avg": 0.000514,
-     "price": 0.0004745,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
+     "sym": "6hTLdzZaaCjmqtn7RtaEMQsCbXT5Pg8q76tRViEGpump:limitless_bot",
+     "qty": 48218.85455618972,
+     "avg": 0.0005081,
+     "price": 0.0004679,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
      "chg24": null,
-     "value": 22.617217898832685,
-     "cost": 24.500000000000004,
-     "pnl": -1.8827821011673187,
-     "pnl_pct": -7.6848249027237525
+     "value": 22.56160204684117,
+     "cost": 24.5,
+     "pnl": -1.9383979531588302,
+     "pnl_pct": -7.911828380240127
     },
     {
      "sym": "5tCju6YNxHq5zrA6tGndr6F7TK42mpUFmeE31cSFpump:limitless_bot",
      "qty": 10596.88581314879,
      "avg": 0.002312,
-     "price": 0.002111,
-     "price_source": "bot file (2026-10-11 13:33:29 EDT)",
+     "price": 0.002102,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
      "chg24": null,
-     "value": 22.370025951557096,
+     "value": 22.27465397923876,
      "cost": 24.5,
-     "pnl": -2.1299740484429037,
-     "pnl_pct": -8.693771626297565
+     "pnl": -2.22534602076124,
+     "pnl_pct": -9.08304498269894
+    },
+    {
+     "sym": "2Dx7XJQp2LGdq14nP98swmtUhfhHz8FVs98bt11Mpump:limitless_bot",
+     "qty": 47665.36964980545,
+     "avg": 0.000514,
+     "price": 0.0004459,
+     "price_source": "bot file (2026-10-11 13:46:31 EDT)",
+     "chg24": null,
+     "value": 21.253988326848248,
+     "cost": 24.500000000000004,
+     "pnl": -3.246011673151756,
+     "pnl_pct": -13.249027237354106
     }
    ],
-   "positions_value": 5606.745833683622,
-   "equity": 9459.611030845195,
-   "pnl": -540.3889691548047,
-   "pnl_pct": -5.403889691548047,
-   "cash_pct": 40.729636605547924,
+   "positions_value": 5604.240306605411,
+   "equity": 9457.105503766985,
+   "pnl": -542.8944962330152,
+   "pnl_pct": -5.428944962330152,
+   "cash_pct": 40.74042734985761,
    "trades": [
     {
      "time": "2026-10-11 13:34:23 EDT",
@@ -3820,9 +3829,21 @@
      "t": "2026-10-11 13:33:29 EDT",
      "v": 9467.86,
      "src": "history.csv"
+    },
+    {
+     "t": "2026-10-11 13:46:31 EDT",
+     "v": 9457.89,
+     "src": "history.csv"
     }
    ],
    "decisions": [
+    {
+     "title": "2026-10-11 1:46 PM ET: hourly check",
+     "bullets": [
+      "$9,457.89 (-5.42%), no exits triggered, no core trades (no new qualifying signals). PUMP -8.4% vs entry, +4.2% 24h; trim decision deferred to the evening checks closer to the ~10:15 PM ET unlock.",
+      "Sleeve screen (data/screen_1346.json, CG solana-meme-coins by volume): no T1 entry: BOME is the only filtered coin with 7d >= +10% (+15.5%) but 24h +8.0% (needs -20% to 0%). No T2 entry: USELESS +10.9% 24h (MC ~$206M, 1h +2.7%) but vol/MC 0.08 (< 0.25), near-miss; BOME +8.0% (just under +10%). No trades."
+     ]
+    },
     {
      "title": "2026-10-11 12:47 PM ET: hourly check",
      "bullets": [
@@ -3843,13 +3864,6 @@
      "bullets": [
       "$9,393.37 (-6.07%), no exits triggered, no core trades (no new qualifying signals; PUMP trim decision still set for Sunday afternoon/evening).",
       "Sleeve screen (data/screen_1048.json, CG meme-token by volume): no T1 entry (no filtered coin with 7d >= +10%, 12-35% below 7d high and 24h -20% to 0%; APEPE -15% 24h but 7d -5%). No T2 entry: \u5e01\u5b89\u4eba\u751f +11.2% 24h (MC ~$624M) but vol/MC 0.01 (< 0.25); BRETT +10.6% (MC ~$59M) but vol/MC 0.12 and 1h -2.3%, near-misses; HOODCAT +173% (MC ~$17M), SI +22% (MC ~$29M), BASECAT +37% (MC ~$16M), QI (AVOID list, claim scam). No trades."
-     ]
-    },
-    {
-     "title": "2026-10-11 9:41 AM ET: hourly check",
-     "bullets": [
-      "$9,392.53 (-6.07%), no exits triggered, no core trades (no new qualifying signals; PUMP trim decision still set for Sunday afternoon/evening).",
-      "Sleeve screen (data/screen_0941.json, CG meme-token by volume): no T1 entry: only SWORDCAT has 7d >= +10% with 24h -20% to 0% (24h -0.3%), but MC ~$2.7M is far below filters. No T2 entry: no $50M+ coin with 24h +10% to +60% (BRETT dropped off); HOODCAT +197% (MC ~$18M), SI +32% (MC ~$29M), BASECAT +29% (MC ~$14M), QI (AVOID list, claim scam), others under $15M MC. No trades."
      ]
     }
    ],
@@ -4678,6 +4692,11 @@
      "ts": 1791740591.914823,
      "t": "2026-10-11 13:43 EDT",
      "v": 9462.12
+    },
+    {
+     "ts": 1791740835.4068153,
+     "t": "2026-10-11 13:47 EDT",
+     "v": 9457.11
     }
    ],
    "tc": {
@@ -4685,18 +4704,18 @@
     "holding": [
      {
       "sym": "DOGE",
-      "value": 1372.73,
-      "pnl_pct": -7.56
+      "value": 1371.98,
+      "pnl_pct": -7.61
      },
      {
       "sym": "PEPE",
-      "value": 969.33,
-      "pnl_pct": -2.09
+      "value": 967.03,
+      "pnl_pct": -2.32
      },
      {
       "sym": "PUMP",
-      "value": 733.18,
-      "pnl_pct": -7.43
+      "value": 732.73,
+      "pnl_pct": -7.48
      },
      {
       "sym": "BONK",
@@ -4705,93 +4724,93 @@
      },
      {
       "sym": "WIF",
-      "value": 621.88,
-      "pnl_pct": -10.26
+      "value": 622.28,
+      "pnl_pct": -10.21
      },
      {
       "sym": "PENGU",
-      "value": 518.69,
-      "pnl_pct": -12.68
+      "value": 518.32,
+      "pnl_pct": -12.74
      },
      {
       "sym": "MEW",
-      "value": 362.32,
-      "pnl_pct": -8.5
-     },
-     {
-      "sym": "ApZuxdpzMrbEYTGEzeY9afh5pj9d6qPRJCTgQYiipbKg:limitless_bot",
-      "value": 32.08,
-      "pnl_pct": 30.92
+      "value": 362.28,
+      "pnl_pct": -8.52
      },
      {
       "sym": "HbPDWSqu8hpVMX6gMjwMDGe5rVgicWo3Qh3Jaojypump:limitless_bot",
-      "value": 31.66,
-      "pnl_pct": 29.21
+      "value": 36.26,
+      "pnl_pct": 48.02
      },
      {
-      "sym": "DoVAVzViX8Bjy3r15nwikSaSbzE6dV4ovd28aWpJpump:limitless_bot",
-      "value": 28.46,
-      "pnl_pct": 16.18
-     },
-     {
-      "sym": "2j5SaS7xy776qCBpyPQbZjyQSAtKiFgrwjfErthnW2ZM:limitless_bot",
-      "value": 25.79,
-      "pnl_pct": 5.27
-     },
-     {
-      "sym": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF:limitless_bot",
-      "value": 25.71,
-      "pnl_pct": 4.92
-     },
-     {
-      "sym": "6hTLdzZaaCjmqtn7RtaEMQsCbXT5Pg8q76tRViEGpump:limitless_bot",
-      "value": 25.43,
-      "pnl_pct": 3.8
-     },
-     {
-      "sym": "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump:limitless_bot",
-      "value": 24.83,
-      "pnl_pct": 1.35
-     },
-     {
-      "sym": "GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump:limitless_bot",
-      "value": 24.57,
-      "pnl_pct": 0.3
-     },
-     {
-      "sym": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv:limitless_bot",
-      "value": 24.5,
-      "pnl_pct": 0.0
+      "sym": "ApZuxdpzMrbEYTGEzeY9afh5pj9d6qPRJCTgQYiipbKg:limitless_bot",
+      "value": 30.89,
+      "pnl_pct": 26.1
      },
      {
       "sym": "9XKzy4KahcZaGJPJtz1PtqGPB3CiseoBrx7TcQhEpump:limitless_bot",
-      "value": 24.5,
-      "pnl_pct": 0.0
+      "value": 27.77,
+      "pnl_pct": 13.33
      },
      {
-      "sym": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump:limitless_bot",
-      "value": 23.79,
-      "pnl_pct": -2.91
+      "sym": "DoVAVzViX8Bjy3r15nwikSaSbzE6dV4ovd28aWpJpump:limitless_bot",
+      "value": 26.05,
+      "pnl_pct": 6.34
+     },
+     {
+      "sym": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF:limitless_bot",
+      "value": 25.44,
+      "pnl_pct": 3.83
+     },
+     {
+      "sym": "2j5SaS7xy776qCBpyPQbZjyQSAtKiFgrwjfErthnW2ZM:limitless_bot",
+      "value": 25.15,
+      "pnl_pct": 2.65
+     },
+     {
+      "sym": "9AvytnUKsLxPxFHFqS6VLxaxt5p6BhYNr53SD2Chpump:limitless_bot",
+      "value": 25.12,
+      "pnl_pct": 2.51
+     },
+     {
+      "sym": "GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump:limitless_bot",
+      "value": 24.96,
+      "pnl_pct": 1.89
      },
      {
       "sym": "7Xgc5RacHtGzfhw2HukUBk5V986yBbvshr7rrCoopump:limitless_bot",
-      "value": 23.67,
-      "pnl_pct": -3.4
+      "value": 24.66,
+      "pnl_pct": 0.67
+     },
+     {
+      "sym": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv:limitless_bot",
+      "value": 24.44,
+      "pnl_pct": -0.25
+     },
+     {
+      "sym": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump:limitless_bot",
+      "value": 24.23,
+      "pnl_pct": -1.09
      },
      {
       "sym": "7VertkgF9KLhxxJXHX6uaWuoYZTP9LdGj2bWmVXVpump:limitless_bot",
-      "value": 23.56,
-      "pnl_pct": -3.85
+      "value": 23.48,
+      "pnl_pct": -4.16
      },
      {
-      "sym": "2Dx7XJQp2LGdq14nP98swmtUhfhHz8FVs98bt11Mpump:limitless_bot",
-      "value": 22.62,
-      "pnl_pct": -7.68
+      "sym": "6hTLdzZaaCjmqtn7RtaEMQsCbXT5Pg8q76tRViEGpump:limitless_bot",
+      "value": 22.56,
+      "pnl_pct": -7.91
      },
      {
       "sym": "5tCju6YNxHq5zrA6tGndr6F7TK42mpUFmeE31cSFpump:limitless_bot",
-      "value": 22.37,
-      "pnl_pct": -8.69
+      "value": 22.27,
+      "pnl_pct": -9.08
+     },
+     {
+      "sym": "2Dx7XJQp2LGdq14nP98swmtUhfhHz8FVs98bt11Mpump:limitless_bot",
+      "value": 21.25,
+      "pnl_pct": -13.25
      }
     ],
     "main": "DOGE",
@@ -9095,13 +9114,21 @@
      {
       "ts": 1791740591,
       "v": 9462.12
+     },
+     {
+      "ts": 1791740791,
+      "v": 9457.89
+     },
+     {
+      "ts": 1791740835,
+      "v": 9457.11
      }
     ],
     "last_trade": "GOMO",
     "bench": {
      "label": "BTC hold",
-     "bot_pct": -5.4,
-     "btc_pct": -1.64,
+     "bot_pct": -5.43,
+     "btc_pct": -1.61,
      "since": "2026-10-06 02:40:59 EDT"
     }
    }
@@ -9178,7 +9205,7 @@
    "kind": "scanner",
    "available": true,
    "verdicts": [],
-   "last_activity": "2026-10-11 12:48 EDT",
+   "last_activity": "2026-10-11 13:46 EDT",
    "status": "active"
   },
   "chat": {
@@ -9204,7 +9231,7 @@
     "meme"
    ],
    "available": true,
-   "last_activity": "2026-10-11 12:48 EDT",
+   "last_activity": "2026-10-11 13:46 EDT",
    "status": "active",
    "short": "LAUNCH"
   },
@@ -9734,7 +9761,7 @@
    "kind": "scanner note",
    "direction": "neutral",
    "text": "PUMP unlock is Oct 11 around 10:15 PM ET (not Oct 12 2 AM). 6.875B tokens (~$39.8M, 1.31% circ) to team/investors; single source (DefiLlama). No other cliffs on held coins in next 30 days; PENGU only small daily emissions (the Oct 16 lump is not confirmed).",
-   "time": "2026-10-11 12:48 EDT",
+   "time": "2026-10-11 13:46 EDT",
    "expires": null,
    "active": true,
    "link": null,
@@ -9748,7 +9775,7 @@
    "kind": "scanner note",
    "direction": "bearish",
    "text": "Oct 9 1:36 PM ET: usage restored; hourly checks back at :38.",
-   "time": "2026-10-11 12:48 EDT",
+   "time": "2026-10-11 13:46 EDT",
    "expires": null,
    "active": true,
    "link": null,
@@ -12255,7 +12282,7 @@
  },
  "provenance": [
   "Portfolio, trades, signals and scan notes are read from the bots' own files (read-only).",
-  "Position values = file quantities x CoinGecko quote 2026-10-11 13:45 EDT; if no quote, the bot's own last price or entry price is used (labeled per position).",
+  "Position values = file quantities x CoinGecko quote 2026-10-11 13:47 EDT; if no quote, the bot's own last price or entry price is used (labeled per position).",
   "Pulse animations along threads are illustrative of scanning/signalling, not individual logged events."
  ],
  "public_view": "public read-only copy; file paths and account names removed"
