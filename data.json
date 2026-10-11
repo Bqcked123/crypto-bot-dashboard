@@ -1,37 +1,37 @@
 {
- "generated_at": "2026-10-10T21:06:43.345290-04:00",
- "generated_at_et": "2026-10-10 21:06:43 EDT",
+ "generated_at": "2026-10-10T21:08:47.754518-04:00",
+ "generated_at_et": "2026-10-10 21:08:47 EDT",
  "paper_trading": true,
- "price_source": "CoinGecko quote 2026-10-10 21:06 EDT",
+ "price_source": "CoinGecko quote 2026-10-10 21:08 EDT",
  "price_status": "cache",
  "prices": {
   "bonk": {
    "usd": 3.38e-06,
-   "chg24": -0.900543153522372
+   "chg24": -0.9293234762485888
   },
   "cat-in-a-dogs-world": {
-   "usd": 0.00047556,
-   "chg24": 0.5350458746207731
+   "usd": 0.00047513,
+   "chg24": 0.3607634736238212
   },
   "dogecoin": {
-   "usd": 0.085586,
-   "chg24": -0.10636096779018066
+   "usd": 0.085578,
+   "chg24": -0.11178687977154221
   },
   "dogwifcoin": {
-   "usd": 0.214686,
-   "chg24": -1.9791842231369796
+   "usd": 0.214679,
+   "chg24": -1.690062283071812
   },
   "pepe": {
    "usd": 4.01e-06,
-   "chg24": 0.17504447812928312
+   "chg24": 0.25641949651121004
   },
   "pudgy-penguins": {
-   "usd": 0.00819214,
-   "chg24": -1.722909700684354
+   "usd": 0.0081906,
+   "chg24": -1.4885198340298496
   },
   "pump-fun": {
-   "usd": 0.00545002,
-   "chg24": 0.3277666784214154
+   "usd": 0.00545222,
+   "chg24": 0.3806122931162801
   }
  },
  "bots": [
@@ -111,7 +111,7 @@
    "short": "CORE",
    "kind": "trader",
    "status": "active",
-   "last_activity": "2026-10-10 20:40 EDT"
+   "last_activity": "2026-10-10 21:06 EDT"
   },
   {
    "id": "meme",
@@ -651,7 +651,7 @@
    "start": 10000.0,
    "strategy": "v4",
    "cash": 9871.350525723283,
-   "last_check": "2026-10-10 20:40 EDT",
+   "last_check": "2026-10-10 21:06 EDT",
    "realized": {
     "core": -121.30724159056952,
     "meme": -0.3633046108936247
@@ -890,6 +890,14 @@
    ],
    "decisions": [
     {
+     "title": "2026-10-10 21:07 EDT - daily review (no rule change)",
+     "bullets": [
+      "Equity $9,871.35 (-1.29%), all cash, no trades today. Buy-and-hold BTC $9,723.61 (-2.76%), so we're +1.48% ahead. Max drawdown -1.59% from the $10,031 peak.",
+      "BTC $82,885 and ETH $2,503 both still BEARISH (below SMA7 and SMA20); staying out is consistent with rules. No new scanner signals in the last 24h; BTC no-adds hold runs to Tue Oct 14 10 AM ET (CPI 8:30 AM).",
+      "No rule change: no new evidence, and research-based changes still await user review. Shadow books (S2/S3) entered BTC/ETH yesterday at ~$82,978/$2,505; too early to judge."
+     ]
+    },
+    {
      "title": "2026-10-10 12:50 EDT - YouTube strategy research pass + shadow tests started (NO live rule change)",
      "bullets": [
       "Research ran (user-requested, one time): reused research/youtube_strategies.md, added view counts and hype flags for 11 popular/credible videos. Output: strategies.md (9 strategies with codeable rules).",
@@ -910,14 +918,6 @@
      "bullets": [
       "BTC wicked to ~$80.4K (unconfirmed) and is back near $82.6K. Farside confirms ETF outflows for both BTC and ETH (Oct 6-8). No change: the BTC no-adds hold (-5) already runs until Oct 14 10 AM ET, ETH is bearish with no position, and the -8% stop (~$77.2K) is still well below the low.",
       "Passed: DOT (rank 51, outside top-50, catalyst unchecked), ATOM (catalyst unchecked), KAIA (rank 138). The government BTC move and Ledger reseller losses are unconfirmed or don't affect the portfolio."
-     ]
-    },
-    {
-     "title": "v4 - 2026-10-07 21:04 EDT - bearish exits always execute",
-     "bullets": [
-      "Changed: rule 3 / check.py. A 0% target (BEARISH trend) now sells the whole position even when it is below the 7.5%-of-equity no-churn band. Old engine archived as check_v3.py.",
-      "Why: ETH has been BEARISH (price and SMA7 below SMA20) but we still held ~$488 of it (-4.3% from entry) because the leftover was too small to trigger a trade. That contradicted rule 2's intent (bearish = 0%) and left us exposed to a coin our own rule says to be out of. Not based on the YouTube research (those suggestions still await user review).",
-      "Effect: sold 0.1895 ETH at $2,580.10 (~$489, realized about -$22 incl. fee). BTC unaffected (NEUTRAL, target 10% after -5 pt haircut, inside the no-churn band)."
      ]
     }
    ],
@@ -1854,21 +1854,21 @@
      "sym": "DOGE",
      "qty": 15725.601491019994,
      "avg": 0.094432,
-     "price": 0.085586,
-     "price_source": "CoinGecko quote 2026-10-10 21:06 EDT",
-     "chg24": -0.10636096779018066,
-     "value": 1345.891329210437,
+     "price": 0.085578,
+     "price_source": "CoinGecko quote 2026-10-10 21:08 EDT",
+     "chg24": -0.11178687977154221,
+     "value": 1345.7655243985091,
      "cost": 1485.0,
-     "pnl": -139.1086707895629,
-     "pnl_pct": -9.36758725855642
+     "pnl": -139.23447560149089,
+     "pnl_pct": -9.376058963063361
     },
     {
      "sym": "PEPE",
      "qty": 229698375.8700696,
      "avg": 4.31e-06,
      "price": 4.01e-06,
-     "price_source": "CoinGecko quote 2026-10-10 21:06 EDT",
-     "chg24": 0.17504447812928312,
+     "price_source": "CoinGecko quote 2026-10-10 21:08 EDT",
+     "chg24": 0.25641949651121004,
      "value": 921.090487238979,
      "cost": 990.0,
      "pnl": -68.909512761021,
@@ -1878,68 +1878,68 @@
      "sym": "PUMP",
      "qty": 126170.90422481361,
      "avg": 0.0062772,
-     "price": 0.00545002,
-     "price_source": "CoinGecko quote 2026-10-10 21:06 EDT",
-     "chg24": 0.3277666784214154,
-     "value": 687.6339514433187,
+     "price": 0.00545222,
+     "price_source": "CoinGecko quote 2026-10-10 21:08 EDT",
+     "chg24": 0.3806122931162801,
+     "value": 687.9115274326132,
      "cost": 792.0,
-     "pnl": -104.36604855668133,
-     "pnl_pct": -13.17753138341936
+     "pnl": -104.08847256738682,
+     "pnl_pct": -13.142483910023584
     },
     {
      "sym": "BONK",
      "qty": 184308510.6382979,
      "avg": 3.76e-06,
      "price": 3.38e-06,
-     "price_source": "CoinGecko quote 2026-10-10 21:06 EDT",
-     "chg24": -0.900543153522372,
+     "price_source": "CoinGecko quote 2026-10-10 21:08 EDT",
+     "chg24": -0.9293234762485888,
      "value": 622.9627659574468,
      "cost": 693.0,
-     "pnl": -68.19414893617011,
-     "pnl_pct": -9.840425531914876
+     "pnl": -70.03723404255322,
+     "pnl_pct": -10.106382978723405
     },
     {
      "sym": "WIF",
      "qty": 2791.3046630496515,
      "avg": 0.248271,
-     "price": 0.214686,
-     "price_source": "CoinGecko quote 2026-10-10 21:06 EDT",
-     "chg24": -1.9791842231369796,
-     "value": 599.2540328914774,
+     "price": 0.214679,
+     "price_source": "CoinGecko quote 2026-10-10 21:08 EDT",
+     "chg24": -1.690062283071812,
+     "value": 599.2344937588362,
      "cost": 693.0,
-     "pnl": -93.74596710852256,
-     "pnl_pct": -13.527556581316391
+     "pnl": -93.76550624116385,
+     "pnl_pct": -13.530376080976026
     },
     {
      "sym": "PENGU",
      "qty": 62689.57263441848,
      "avg": 0.00947526,
-     "price": 0.00819214,
-     "price_source": "CoinGecko quote 2026-10-10 21:06 EDT",
-     "chg24": -1.722909700684354,
-     "value": 513.5617555613251,
+     "price": 0.0081906,
+     "price_source": "CoinGecko quote 2026-10-10 21:08 EDT",
+     "chg24": -1.4885198340298496,
+     "value": 513.4652136194679,
      "cost": 594.0,
-     "pnl": -80.43824443867493,
-     "pnl_pct": -13.541791993042917
+     "pnl": -80.53478638053207,
+     "pnl_pct": -13.558044845207418
     },
     {
      "sym": "MEW",
      "qty": 748922.0062031924,
      "avg": 0.00052876,
-     "price": 0.00047556,
-     "price_source": "CoinGecko quote 2026-10-10 21:06 EDT",
-     "chg24": 0.5350458746207731,
-     "value": 356.15734926999016,
+     "price": 0.00047513,
+     "price_source": "CoinGecko quote 2026-10-10 21:08 EDT",
+     "chg24": 0.3607634736238212,
+     "value": 355.8353128073228,
      "cost": 396.0,
-     "pnl": -39.84265073000984,
-     "pnl_pct": -10.061275436871176
+     "pnl": -40.164687192677206,
+     "pnl_pct": -10.142597775928586
     }
    ],
-   "positions_value": 5046.551671572975,
-   "equity": 9346.551671572975,
-   "pnl": -653.4483284270245,
-   "pnl_pct": -6.534483284270245,
-   "cash_pct": 46.0062721642915,
+   "positions_value": 5046.265325213176,
+   "equity": 9346.265325213175,
+   "pnl": -653.734674786825,
+   "pnl_pct": -6.53734674786825,
+   "cash_pct": 46.00768168222234,
    "trades": [
     {
      "time": "2026-10-06 02:41:29 EDT",
@@ -2536,8 +2536,8 @@
     "holding": [
      {
       "sym": "DOGE",
-      "value": 1345.89,
-      "pnl_pct": -9.37
+      "value": 1345.77,
+      "pnl_pct": -9.38
      },
      {
       "sym": "PEPE",
@@ -2546,28 +2546,28 @@
      },
      {
       "sym": "PUMP",
-      "value": 687.63,
-      "pnl_pct": -13.18
+      "value": 687.91,
+      "pnl_pct": -13.14
      },
      {
       "sym": "BONK",
-      "value": 624.81,
-      "pnl_pct": -9.84
+      "value": 622.96,
+      "pnl_pct": -10.11
      },
      {
       "sym": "WIF",
-      "value": 599.25,
+      "value": 599.23,
       "pnl_pct": -13.53
      },
      {
       "sym": "PENGU",
-      "value": 513.56,
-      "pnl_pct": -13.54
+      "value": 513.47,
+      "pnl_pct": -13.56
      },
      {
       "sym": "MEW",
-      "value": 356.16,
-      "pnl_pct": -10.06
+      "value": 355.84,
+      "pnl_pct": -10.14
      }
     ],
     "main": "DOGE",
@@ -6309,7 +6309,7 @@
     "last_trade": "MEW",
     "bench": {
      "label": "BTC hold",
-     "bot_pct": -6.53,
+     "bot_pct": -6.54,
      "btc_pct": -2.83,
      "since": "2026-10-06 02:40:59 EDT"
     }
@@ -9422,7 +9422,7 @@
  },
  "provenance": [
   "Portfolio, trades, signals and scan notes are read from the bots' own files (read-only).",
-  "Position values = file quantities x CoinGecko quote 2026-10-10 21:06 EDT; if no quote, the bot's own last price or entry price is used (labeled per position).",
+  "Position values = file quantities x CoinGecko quote 2026-10-10 21:08 EDT; if no quote, the bot's own last price or entry price is used (labeled per position).",
   "Pulse animations along threads are illustrative of scanning/signalling, not individual logged events."
  ],
  "public_view": "public read-only copy; file paths and account names removed"
