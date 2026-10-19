@@ -317,7 +317,7 @@
     const line = held.length ? `Holding <b class="dt-tk">${esc(held[0].sym)}</b>${held.length > 1 ? ` <span class="dt-more">+${held.length - 1} more</span>` : ''}` : `<span class="dt-sd side-flat">Flat</span>${tc.last_trade ? ` · last <b class="dt-tk">${esc(tc.last_trade)}</b>` : ''}`;
     const chips = held.length > 1 ? `<div class="tc-chips">${held.map(h => `<button type="button" class="tc-chip${h.sym === sym ? ' on' : ''}" data-tc="${esc(key)}" data-sym="${esc(h.sym)}">${esc(h.sym)}${h.pnl_pct != null ? ` <span class="${SD.cls(h.pnl_pct)}">${SD.pct(h.pnl_pct, 1)}</span>` : ''}</button>`).join('')}</div>` : '';
     const replay = mode === 'replay' && ch;
-    const chart = ch ? `<div class="dtc-chart tc-chart${replay ? ' dtc-replay' : ''}"${replay ? ` data-tcreplay="${esc(key)}"` : ''}>${SD.tcCandlesInner(ch.candles, ch.fills, { upto: replay ? -1 : null, line: ch.btc_line, sym, label: replay ? `REPLAY · ${esc(sym)} · 4h · 7d` : `<b class="live-dot"></b>LIVE · ${esc(sym)} · 4h · 7d` })}</div>` : `<div class="dtc-chart dtc-chart-empty">${held.length || tc.last_trade ? 'chart: no candle data right now' : 'no trades yet'}</div>`;
+    const chart = ch ? `<div class="dtc-chart tc-chart${replay ? ' dtc-replay' : ''}"${replay ? ` data-tcreplay="${esc(key)}"` : ''}>${SD.tcCandlesInner(ch.candles, ch.fills, { upto: replay ? -1 : null, line: ch.btc_line, sym, label: replay ? `REPLAY · ${esc(sym)} · ${esc(tc.tf || '4h · 7d')}` : `<b class="live-dot"></b>LIVE · ${esc(sym)} · ${esc(tc.tf || '4h · 7d')}` })}</div>` : `<div class="dtc-chart dtc-chart-empty">${held.length || tc.last_trade ? 'chart: no candle data right now' : 'no trades yet'}</div>`;
     const b = tc.bench || {}, f = v => v == null ? '—' : `<b class="${SD.cls(v)}">${SD.pct(v)}</b>`;
     const legend = b.btc_pct != null ? `<div class="dtc-legend" title="BTC buy-and-hold from the bot's start${b.since ? ' (' + esc(b.since) + ')' : ''}">${ch && (ch.btc_line || []).length >= 2 ? '<span class="lg spy"><i></i>BTC</span>' : ''}<span class="lg cmp">since ${esc(SD.tcFmtDay(b.since))}: bot ${f(b.bot_pct)} vs BTC hold ${f(b.btc_pct)}</span></div>` : '';
     const right = replay ? `<div class="dtc-unr"><div class="dtc-cap">REPLAY P&amp;L</div><div class="dtc-unr-row"><b class="tc-rp-pnl flat" data-tcpnl="${esc(key)}">$0.00</b></div></div>`
@@ -336,7 +336,7 @@
           ${right}
         </div>
         ${chips}${chart}
-        <div class="dtc-foot">${legend || '<span></span>'}</div>
+        <div class="dtc-foot">${legend || (tc.tf && ch ? `<div class="dtc-legend"><span class="lg cmp">${esc(ch.source || '')} · markers = paper fills</span></div>` : '<span></span>')}</div>
       </div>
       <div class="dtc-card dtc-closes">
         <div class="dtc-head"><span class="dtc-cap">TOP CLOSES</span><span class="tc-total ${closes.length ? (tc.closes_total >= 0 ? 'up' : 'down') : 'flat'}" title="realized P&amp;L of all ${closes.length} closing sells (average cost, fees included)">${closes.length ? sg(tc.closes_total) : '—'}</span></div>
@@ -356,7 +356,7 @@
       const N = ch.candles.length, drawMs = 10000, holdMs = 3500, tt = (performance.now() - st.t0) % (drawMs + holdMs), n = Math.min(N, Math.floor(tt / drawMs * N) + 1);
       if (n === st.n && el.firstChild) return; st.n = n;
       const upto = n === N ? Infinity : ch.candles[n - 1].ts;
-      const d = new Date(ch.candles[n - 1].ts * 1000).toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric' });
+      const d = new Date(ch.candles[n - 1].ts * 1000).toLocaleString('en-US', Object.assign({ timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric' }, tc.tf === '1m' ? { minute: '2-digit' } : {}));
       el.innerHTML = SD.tcCandlesInner(ch.candles, ch.fills, { upto: n === N ? 1e12 : upto, line: ch.btc_line, sym, label: `REPLAY · ${esc(sym)} · ${esc(d)} ET` });
       const pe = document.querySelector(`[data-tcpnl="${key}"]`), eq = (tc.equity_hist || []).filter(p => p.ts <= upto);
       if (pe) { if (!eq.length) { pe.textContent = '—'; pe.className = 'tc-rp-pnl flat'; } else { const v = eq[eq.length - 1].v - (+t.start || 10000); pe.textContent = (v >= 0 ? '+' : '−') + SD.usd(Math.abs(v)); pe.className = 'tc-rp-pnl ' + SD.cls(v); } }
